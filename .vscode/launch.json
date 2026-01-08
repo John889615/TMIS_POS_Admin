@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Debug React in Firefox",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/src",
+      "reAttach": true,
+      "pathMappings": [
+        {
+          "url": "webpack://",
+          "path": "${workspaceFolder}/src"
+        }
+      ],
+      "preLaunchTask": "npm: start"
+    }
+  ]
+}
