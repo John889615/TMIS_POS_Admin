@@ -15,7 +15,7 @@ const AllRoutes = () => {
     <Header />
     <Sidebar />
     <Outlet />
-    <ThemeSettings />
+    {/* <ThemeSettings /> */}
   </div>
   );
 
@@ -23,7 +23,7 @@ const AllRoutes = () => {
     <div className={data ? "header-collapse" : ""}>
       <Outlet />
       {/* <Loader /> */}
-      <ThemeSettings />
+      {/* <ThemeSettings /> */}
     </div>
   );
 
@@ -32,7 +32,7 @@ const AllRoutes = () => {
       <Header />
       <Outlet />
       {/* <Loader /> */}
-      <ThemeSettings />
+      {/* <ThemeSettings /> */}
     </div>
   );
 

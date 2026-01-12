@@ -4,7 +4,7 @@ const branding = {
     logoWhite: "assets/img/logo-white.png",
     loginImage: "assets/img/authentication/login02.png",
     smallLogo: "assets/img/logo-small.png",
-    appName: "TMIS",
+    appName: "TMIS Admin",
   },
 };
 

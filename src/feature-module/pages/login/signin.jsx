@@ -131,7 +131,7 @@ const Signin = () => {
                     Sign In
                   </button>
                 </div>
-                <div className="signinform">
+                {/* <div className="signinform">
                   <h4>
                     New on our platform?
                     <Link to={route.register} className="hover-a">
@@ -173,7 +173,7 @@ const Signin = () => {
                   <div className="my-4 d-flex justify-content-center align-items-center copyright-text">
                     <p>Copyright © 2023 DreamsPOS. All rights reserved</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </form>
           </div>
