@@ -25,7 +25,7 @@ const SlipPrinterForm = ({ branchList,
 
         const payload = {
             DebtorID: form.DebtorID.value ? parseInt(form.DebtorID.value) : 0,
-            CostCenterID: form.CostCenterID.value ? parseInt(form.CostCenterID.value) : 0,
+            CostCenterID: form.CostCenterID.value ? parseInt(form.CostCenterID.value) : null,
             Name: form.Name.value.trim(),
             Model: form.Model.value.trim(),
             IpAddress: form.IpAddress.value.trim(),

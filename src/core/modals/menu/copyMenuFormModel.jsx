@@ -27,7 +27,7 @@ const CopyMenuForm = ({
         const menuData = {
             SourceMenuID: data.MenuID,
             TargetDebtorID: parseFloat(form.TargetDebtorID.value) || 0,
-            TargetCostCenterID: parseFloat(form.TargetCostCenterID.value) || 0,
+            TargetCostCenterID: parseFloat(form.TargetCostCenterID.value) || null,
             DefaultSlipPrinterID: 1,
             Override: true
         };
@@ -68,7 +68,7 @@ const CopyMenuForm = ({
                         <div className="col-lg-12">
                             <div className="input-blocks">
                                 <label>Cost Center</label>
-                                <select name="TargetCostCenterID" required className="form-select" defaultValue={data?.TargetCostCenterID || ''}>
+                                <select name="TargetCostCenterID" className="form-select" defaultValue={data?.TargetCostCenterID || ''}>
                                     <option value="">Select Cost Center..</option>
                                     {costCenterList?.map((item, idx) => (
                                         <option key={idx} value={item.CostCenterID}>

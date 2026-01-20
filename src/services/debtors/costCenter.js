@@ -20,7 +20,11 @@ export const getAllCostCenter = async () => {
 
 export const newCostCenter = async (data) => {
     try {
-        const response = await api.post('/Debtor/add/cost/center', data); // Use POST
+        const response = await api.post('/Debtor/add/cost/center', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         console.log("response", response.data);
         return response.data;
     } catch (error) {
@@ -31,7 +35,11 @@ export const newCostCenter = async (data) => {
 
 export const updateCostCenter = async (data) => {
     try {
-        const response = await api.post('/Debtor/update/cost/center', data); // Use POST
+        const response = await api.post('/Debtor/update/cost/center', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         console.log("response", response.data);
         return response.data;
     } catch (error) {

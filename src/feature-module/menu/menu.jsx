@@ -37,7 +37,7 @@ const MenuPage = () => {
             setSelectedDebtor(debtorId == null ? 1 : debtorId);
             const data = await getAllMenu(parseInt(debtorId == null ? 5 : debtorId));
             console.log("debtorId ", debtorId);
-console.log(data);
+            console.log(data);
 
             setListData(data);
         } catch (err) {
@@ -82,16 +82,18 @@ console.log(data);
     const handleClose = () => setModelShow(false);
     const handleAddProduct = async (data) => {
         try {
-            if (data.POS_MenuID) {
-                await updateMenu(data);
-            }
-            else {
+            const id = data?.MenuID ?? data?.POS_MenuID;
+
+            if (id) {
+                await updateMenu({ ...data, MenuID: id }); // ensure MenuID is present
+            } else {
                 await newMenu(data);
             }
+
             await fetchRecords();
             setModelShow(false);
         } catch (err) {
-            console.error("Error creating user:", err.message);
+            console.error("Error saving menu:", err);
         }
     };
 

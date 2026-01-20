@@ -50,7 +50,11 @@ export const newMenu = async (data) => {
 
 export const updateMenu = async (data) => {
     try {
-        const response = await api.post('/Menu/update/menu', data); // Use POST
+        const response = await api.post('/Menu/update/menu', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {

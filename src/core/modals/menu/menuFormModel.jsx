@@ -20,18 +20,23 @@ const MenuForm = ({
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = e.target;
+
         const menuData = {
             IsActive: form.IsActive.checked,
             MenuName: form.MenuName.value.trim(),
-            ImageFile: form.ImageFile.files[0] || null
+            ImageFile: form.ImageFile.files[0] || null,
         };
-        if (data?.POS_MenuID) {
-            menuData.POS_MenuID = data.POS_MenuID;
+
+        // ✅ keep the ID when editing
+        const id = data?.MenuID ?? data?.POS_MenuID;
+        if (id) {
+            menuData.MenuID = id;        // prefer MenuID (matches your list)
+            menuData.POS_MenuID = id;    // optional: only keep if your API expects this name
         }
-        if (onSubmit) {
-            onSubmit(menuData);
-        }
+
+        onSubmit?.(menuData);
     };
+
 
 
     return (

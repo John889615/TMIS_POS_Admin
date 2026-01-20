@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { getAllProductCategory, newProductCategory, updateProductCategory } from "../../services/product/productCategory";
+import {
+    getAllProductCategory,
+    newProductCategory,
+    updateProductCategory
+} from "../../services/product/productCategory";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {
-    PlusCircle,
-} from "react-feather";
+import { PlusCircle } from "react-feather";
 import ProductCategoryForm from "../../core/modals/products/productCategoryFormModel";
-
-
 
 const ProductCategory = () => {
     const [listData, setListData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [showModel, setModelShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+
+    // Pagination (SAME AS PRODUCTS PAGE)
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 10;
+    const maxPageButtons = 5;
 
     useEffect(() => {
         fetchRecords();
@@ -22,9 +27,9 @@ const ProductCategory = () => {
     const fetchRecords = async () => {
         try {
             const data = await getAllProductCategory();
-            setListData(data);
+            setListData(data || []);
         } catch (err) {
-            console.error("Failed to load addresses:", err.message);
+            console.error("Failed to load categories:", err.message);
         }
     };
 
@@ -36,25 +41,44 @@ const ProductCategory = () => {
         )
     );
 
+    // Pagination calculations
+    const indexOfLastRecord = currentPage * recordsPerPage;
+    const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+    const currentData = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    // 5-button window logic (IDENTICAL TO PRODUCTS)
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+    if (endPage - startPage + 1 < maxPageButtons) {
+        startPage = Math.max(1, endPage - maxPageButtons + 1);
+    }
+
     const handleShow = () => {
         setSelectedData(null);
-        setModelShow(true)
+        setModelShow(true);
     };
 
     const handleClose = () => setModelShow(false);
+
     const handleAddCategory = async (data) => {
-        console.log("Data : ", data);
         try {
             if (data.POS_ProductCategoryID) {
                 await updateProductCategory(data);
-            }
-            else {
+            } else {
                 await newProductCategory(data);
             }
             await fetchRecords();
             setModelShow(false);
         } catch (err) {
-            console.error("Error creating user:", err.message);
+            console.error("Error saving category:", err.message);
         }
     };
 
@@ -80,6 +104,7 @@ const ProductCategory = () => {
                         </Button>
                     </div>
                 </div>
+
                 <div className="card table-list-card">
                     <div className="card-body">
                         <div className="table-top">
@@ -90,7 +115,10 @@ const ProductCategory = () => {
                                         placeholder="Search"
                                         className="form-control"
                                         value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        onChange={(e) => {
+                                            setSearchTerm(e.target.value);
+                                            setCurrentPage(1);
+                                        }}
                                     />
                                     <Link to className="btn btn-searchset">
                                         <i data-feather="search" className="feather-search" />
@@ -98,6 +126,7 @@ const ProductCategory = () => {
                                 </div>
                             </div>
                         </div>
+
                         <div className="table-responsive">
                             <table className="table table-bordered table-striped">
                                 <thead>
@@ -109,16 +138,18 @@ const ProductCategory = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredData.length > 0 ? (
-                                        filteredData.map((item, index) => (
+                                    {currentData.length > 0 ? (
+                                        currentData.map((item, index) => (
                                             <tr key={index}>
                                                 <td>{item.CategoryName || "N/A"}</td>
                                                 <td>{item.CategoryMaster || "N/A"}</td>
                                                 <td>{item.IsMaster ? "Yes" : "No"}</td>
                                                 <td>
-                                                    <button type='button'
+                                                    <button
+                                                        type="button"
                                                         onClick={() => handleEditCategory(item)}
-                                                        className="btn btn-sm btn-primary me-2">
+                                                        className="btn btn-sm btn-primary me-2"
+                                                    >
                                                         <i className="feather-edit"></i>
                                                     </button>
                                                 </td>
@@ -126,18 +157,65 @@ const ProductCategory = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="3" className="text-center">
+                                            <td colSpan="4" className="text-center">
                                                 No records found
                                             </td>
                                         </tr>
                                     )}
                                 </tbody>
                             </table>
+
+                            {totalPages > 1 && (
+                                <div className="d-flex justify-content-between align-items-center mt-3">
+                                    <span>
+                                        Page {currentPage} of {totalPages}
+                                    </span>
+
+                                    {/* 5 PAGE BUTTONS */}
+                                    <div>
+                                        {Array.from(
+                                            { length: endPage - startPage + 1 },
+                                            (_, i) => startPage + i
+                                        ).map((page) => (
+                                            <Button
+                                                key={page}
+                                                variant={currentPage === page ? "primary" : "light"}
+                                                size="sm"
+                                                className="mx-1"
+                                                onClick={() => goToPage(page)}
+                                            >
+                                                {page}
+                                            </Button>
+                                        ))}
+                                    </div>
+
+                                    <div>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            disabled={currentPage === 1}
+                                            onClick={() => setCurrentPage(currentPage - 1)}
+                                        >
+                                            Previous
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            className="ms-2"
+                                            disabled={currentPage === totalPages}
+                                            onClick={() => setCurrentPage(currentPage + 1)}
+                                        >
+                                            Next
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
-            {showModel &&
+
+            {showModel && (
                 <ProductCategoryForm
                     onSubmit={handleAddCategory}
                     showModel={showModel}
@@ -145,10 +223,9 @@ const ProductCategory = () => {
                     data={selectedData}
                     categoryList={listData}
                 />
-            }
+            )}
         </div>
     );
 };
-
 
 export default ProductCategory;

@@ -19,6 +19,7 @@ const ProductPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 10;
+    const maxPageButtons = 5;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -48,15 +49,21 @@ const ProductPage = () => {
         )
     );
 
+    const indexOfLastRecord = currentPage * recordsPerPage;
+    const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+    const currentData = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
     const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-    const startIndex = (currentPage - 1) * recordsPerPage;
-    const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
-
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
     };
+
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    if (endPage - startPage + 1 < maxPageButtons) {
+        startPage = Math.max(1, endPage - maxPageButtons + 1);
+    }
 
     const handleShow = () => {
         setSelectedData(null);
@@ -72,8 +79,8 @@ const ProductPage = () => {
                 await updateProduct(data);
             }
             else {
-               var response =  await newProduct(data);
-               debugger;
+                var response = await newProduct(data);
+                debugger;
             }
             await fetchRecords();
             setModelShow(false);
@@ -195,16 +202,20 @@ const ProductPage = () => {
                                 <span>
                                     Page {currentPage} of {totalPages}
                                 </span>
+                                {/* Page buttons (max 5) */}
                                 <div>
-                                    {Array.from({ length: totalPages }, (_, i) => (
+                                    {Array.from(
+                                        { length: endPage - startPage + 1 },
+                                        (_, i) => startPage + i
+                                    ).map((page) => (
                                         <Button
-                                            key={i}
-                                            variant={currentPage === i + 1 ? "primary" : "light"}
+                                            key={page}
+                                            variant={currentPage === page ? "primary" : "light"}
                                             size="sm"
                                             className="mx-1"
-                                            onClick={() => goToPage(i + 1)}
+                                            onClick={() => goToPage(page)}
                                         >
-                                            {i + 1}
+                                            {page}
                                         </Button>
                                     ))}
                                 </div>

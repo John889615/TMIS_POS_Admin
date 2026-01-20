@@ -29,6 +29,7 @@ const CostCenterForm = ({ costTypeList,
             FK_CostCenterTypeID: parseInt(form.FK_CostCenterTypeID.value) || 0,
             FK_StatusID: parseInt(form.FK_StatusID.value) || 0,
             FK_DebtorID: parseInt(form.FK_DebtorID.value) || 0,
+            ImageFile: form.ImageFile.files[0] || null,
         };
 
         // If updating, include the POS_CostCenterID
@@ -98,6 +99,17 @@ const CostCenterForm = ({ costTypeList,
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+                        <div className="col-lg-12">
+                            <div className="input-blocks">
+                                <label>Menu Image</label>
+                                <input
+                                    name="ImageFile"
+                                    type="file"
+                                    accept="image/*"
+                                    className="form-control"
+                                />
                             </div>
                         </div>
                     </div>

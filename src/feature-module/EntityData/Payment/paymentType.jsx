@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getAllPaymentType, newPaymentType, updatePaymentType, getAllPaymentTypeIcon } from "../../../services/entityData/paymentType";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {
-    PlusCircle,
-} from "react-feather";
+import { PlusCircle, CheckCircle, XCircle } from "react-feather";
 import PaymentTypeForm from "../../../core/modals/entityData/payment/paymentTypeModel";
 
 
@@ -131,7 +129,13 @@ const PaymentTypes = () => {
                                         currentRecords.map((item, index) => (
                                             <tr key={index}>
                                                 <td>{item.Name}</td>
-                                                <td>{item.IsActive ? "Yes" : "No"}</td>
+                                                <td className="text-center">
+                                                    {item.IsActive ? (
+                                                        <CheckCircle size={18} className="text-success" />
+                                                    ) : (
+                                                        <XCircle size={18} className="text-danger" />
+                                                    )}
+                                                </td>
                                                 <td>
                                                     <button
                                                         onClick={() => handleEditType(item)}
