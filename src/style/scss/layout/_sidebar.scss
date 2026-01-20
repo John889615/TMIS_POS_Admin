@@ -38,7 +38,7 @@
                         color: $white;
                     }
                     svg {
-                        color: #FE9F43
+                        color: #1993ac
                     }
                 }
                 svg {
@@ -66,21 +66,21 @@
                     }
                     &:hover{
                         background: rgba(254, 159, 67, 0.08);
-                        color: #FE9F43;
+                        color: #1993ac;
                         border-radius: 5px;
                         img {
                             filter: invert(72%) sepia(76%) saturate(1430%) hue-rotate(327deg) brightness(103%) contrast(101%);
                         }
                         span{
-                            color: #FE9F43;
+                            color: #1993ac;
                         }
                         svg{
-                            color: #FE9F43;
+                            color: #1993ac;
                         }
                     }
                     &.active{
                         background: rgba(254, 159, 67, 0.08);
-                        color: #FE9F43;
+                        color: #1993ac;
                         border-radius: 5px;
                         svg{
                             color: $white;
@@ -89,12 +89,12 @@
                             filter: brightness(0) saturate(100%) invert(75%) sepia(10%) saturate(5676%) hue-rotate(326deg) brightness(105%) contrast(112%);
                         }
                         span{
-                            color: #FE9F43;
+                            color: #1993ac;
                         }
                         .menu-arrow{
-                            background: #FFEDDC;
+                            background: #7bd1e2;
                             &::before{
-                                border-color: #FE9F43;
+                                border-color: #1993ac;
                             }
                         }
                     }
@@ -112,7 +112,7 @@
                             filter: invert(72%) sepia(76%) saturate(1430%) hue-rotate(327deg) brightness(103%) contrast(101%);
                         }
                         span{
-                            color: #FE9F43;
+                            color: #1993ac;
                         }
                     }
                 }
@@ -132,7 +132,7 @@
                                &.active{
                                    color: $secondary;
                                    &:after{
-                                    background: #FE9F43;
+                                    background: #1993ac;
                                     border: 2px solid #FDB;
                                    }
                                }
@@ -148,7 +148,7 @@
                                &:hover{
                                    color:$primary;
                                    &:after{
-                                    background: #FE9F43;
+                                    background: #1993ac;
                                     border: 2px solid #FDB;
                                    }
                                }
@@ -188,14 +188,14 @@
                                        }
                                    }
                                    &:after{
-                                    background: #FE9F43;
+                                    background: #1993ac;
                                     border: 2px solid #FDB;
                                    }
                                }
                                &:hover{
                                    color:$primary;
                                    &:after{
-                                    background: #FE9F43;
+                                    background: #1993ac;
                                     border: 2px solid #FDB;
                                    }
                                    span {
@@ -209,7 +209,7 @@
                         &.active a{
                             background: rgba(254, 159, 67, 0.08);
                             border-radius: 5px;
-                            color: #FE9F43;
+                            color: #1993ac;
                             span {
                                 color: $primary;
                             }
@@ -240,25 +240,25 @@
             li {
                 &.active{
                     a{
-                        color: #FE9F43;
+                        color: #1993ac;
                     }
                     svg {
-                        color: #FE9F43
+                        color: #1993ac
                     }
                 }
                 .submenu > {
                     a {
                         &.active{
                             background: rgba(254, 159, 67, 0.08);
-                            color: #FE9F43;
+                            color: #1993ac;
                             border-radius: 5px;
                             span{
-                                color: #FE9F43;
+                                color: #1993ac;
                             }
                             .menu-arrow{
-                                background: #FFEDDC;
+                                background: #7bd1e2;
                                 &::before{
-                                    border-color: #FE9F43;
+                                    border-color: #1993ac;
                                 }
                             }
                         }
@@ -321,7 +321,7 @@
                             &:hover{
                                 color:$primary;
                                 &:after{
-                                background: #FE9F43;
+                                background: #1993ac;
                                 border: 2px solid #FDB;
                                 }
                             }
@@ -374,7 +374,7 @@
         &.subdrop{
             .menu-arrow {
                 @include transform(rotate(90deg));                            
-                background: #FFEDDC;
+                background: #7bd1e2;
             }
         }
     }
