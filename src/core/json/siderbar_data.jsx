@@ -20,31 +20,31 @@ export const SidebarData = [
           { label: "Sales Dashboard", link: "/sales-dashboard" },
         ],
       },
-      {
-        label: "Application",
-        icon: <Icon.Smartphone />,
-        submenu: true,
-        showSubRoute: false,
-        submenuItems: [
-          { label: "Chat", link: "/chat", showSubRoute: false },
-          {
-            label: "Call",
-            submenu: true,
-            submenuItems: [
-              { label: "Video Call", link: "/video-call" },
-              { label: "Audio Call", link: "/audio-call" },
-              { label: "Call History", link: "/call-history" },
-            ],
-          },
-          { label: "Calendar", link: "/calendar", showSubRoute: false },
-          { label: "Email", link: "/email", showSubRoute: false },
-          { label: "To Do", link: "/todo", showSubRoute: false },
-          { label: "Notes", link: "/notes", showSubRoute: false },
-          { label: "File Manager", link: "/file-manager", showSubRoute: false },
-          { label: "Social Feed", link: "/social-feed", showSubRoute: false },
-          { label: "Kanban", link: "/kanban", showSubRoute: false },
-        ],
-      },
+      // {
+      //   label: "Application",
+      //   icon: <Icon.Smartphone />,
+      //   submenu: true,
+      //   showSubRoute: false,
+      //   submenuItems: [
+      //     { label: "Chat", link: "/chat", showSubRoute: false },
+      //     {
+      //       label: "Call",
+      //       submenu: true,
+      //       submenuItems: [
+      //         { label: "Video Call", link: "/video-call" },
+      //         { label: "Audio Call", link: "/audio-call" },
+      //         { label: "Call History", link: "/call-history" },
+      //       ],
+      //     },
+      //     { label: "Calendar", link: "/calendar", showSubRoute: false },
+      //     { label: "Email", link: "/email", showSubRoute: false },
+      //     { label: "To Do", link: "/todo", showSubRoute: false },
+      //     { label: "Notes", link: "/notes", showSubRoute: false },
+      //     { label: "File Manager", link: "/file-manager", showSubRoute: false },
+      //     { label: "Social Feed", link: "/social-feed", showSubRoute: false },
+      //     { label: "Kanban", link: "/kanban", showSubRoute: false },
+      //   ],
+      // },
     ],
   },
 
@@ -488,470 +488,470 @@ export const SidebarData = [
     ],
   },
 
-  {
-    label: "Inventory",
-    submenuOpen: true,
-    showSubRoute: false,
-    submenuHdr: "Inventory",
-    submenuItems: [
-      {
-        label: "Products",
-        link: "/product-list",
-        icon: <Icon.Box />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Create Product",
-        link: "/add-product",
-        icon: <Icon.PlusSquare />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Expired Products",
-        link: "/expired-products",
-        icon: <Icon.Codesandbox />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Low Stocks",
-        link: "/low-stocks",
-        icon: <Icon.TrendingDown />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Category",
-        link: "/category-list",
-        icon: <Icon.Codepen />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Sub Category",
-        link: "/sub-categories",
-        icon: <Icon.Speaker />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Brands",
-        link: "/brand-list",
-        icon: <Icon.Tag />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Units",
-        link: "/units",
-        icon: <Icon.Speaker />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Variant Attributes",
-        link: "/variant-attributes",
-        icon: <Icon.Layers />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Warranties",
-        link: "/warranty",
-        icon: <Icon.Bookmark />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Print Barcode",
-        link: "/barcode",
-        icon: <Icon.AlignJustify />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Print QR Code",
-        link: "/qrcode",
-        icon: <Icon.Maximize />,
-        showSubRoute: false,
-        submenu: false,
-      },
-    ],
-  },
+  // {
+  //   label: "Inventory",
+  //   submenuOpen: true,
+  //   showSubRoute: false,
+  //   submenuHdr: "Inventory",
+  //   submenuItems: [
+  //     {
+  //       label: "Products",
+  //       link: "/product-list",
+  //       icon: <Icon.Box />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Create Product",
+  //       link: "/add-product",
+  //       icon: <Icon.PlusSquare />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Expired Products",
+  //       link: "/expired-products",
+  //       icon: <Icon.Codesandbox />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Low Stocks",
+  //       link: "/low-stocks",
+  //       icon: <Icon.TrendingDown />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Category",
+  //       link: "/category-list",
+  //       icon: <Icon.Codepen />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Sub Category",
+  //       link: "/sub-categories",
+  //       icon: <Icon.Speaker />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Brands",
+  //       link: "/brand-list",
+  //       icon: <Icon.Tag />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Units",
+  //       link: "/units",
+  //       icon: <Icon.Speaker />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Variant Attributes",
+  //       link: "/variant-attributes",
+  //       icon: <Icon.Layers />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Warranties",
+  //       link: "/warranty",
+  //       icon: <Icon.Bookmark />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Print Barcode",
+  //       link: "/barcode",
+  //       icon: <Icon.AlignJustify />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Print QR Code",
+  //       link: "/qrcode",
+  //       icon: <Icon.Maximize />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //   ],
+  // },
 
-  {
-    label: "Finance & Accounts",
-    submenuOpen: true,
-    showSubRoute: false,
-    submenuHdr: "Finance & Accounts",
-    submenuItems: [
-      {
-        label: "Expenses",
-        submenu: true,
-        showSubRoute: false,
-        icon: <Icon.FileText />,
-        submenuItems: [
-          { label: "Expenses", link: "/expense-list", showSubRoute: false },
-          {
-            label: "Expense Category",
-            link: "/expense-category",
-            showSubRoute: false,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   label: "Finance & Accounts",
+  //   submenuOpen: true,
+  //   showSubRoute: false,
+  //   submenuHdr: "Finance & Accounts",
+  //   submenuItems: [
+  //     {
+  //       label: "Expenses",
+  //       submenu: true,
+  //       showSubRoute: false,
+  //       icon: <Icon.FileText />,
+  //       submenuItems: [
+  //         { label: "Expenses", link: "/expense-list", showSubRoute: false },
+  //         {
+  //           label: "Expense Category",
+  //           link: "/expense-category",
+  //           showSubRoute: false,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 
-  {
-    label: "People",
-    submenuOpen: true,
-    showSubRoute: false,
-    submenuHdr: "People",
+  // {
+  //   label: "People",
+  //   submenuOpen: true,
+  //   showSubRoute: false,
+  //   submenuHdr: "People",
 
-    submenuItems: [
-      {
-        label: "Customers",
-        link: "/customers",
-        icon: <Icon.User />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Suppliers",
-        link: "/suppliers",
-        icon: <Icon.Users />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Stores",
-        link: "/store-list",
-        icon: <Icon.Home />,
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Warehouses",
-        link: "/warehouse",
-        icon: <Icon.Archive />,
-        showSubRoute: false,
-        submenu: false,
-      },
-    ],
-  },
+  //   submenuItems: [
+  //     {
+  //       label: "Customers",
+  //       link: "/customers",
+  //       icon: <Icon.User />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Suppliers",
+  //       link: "/suppliers",
+  //       icon: <Icon.Users />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Stores",
+  //       link: "/store-list",
+  //       icon: <Icon.Home />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //     {
+  //       label: "Warehouses",
+  //       link: "/warehouse",
+  //       icon: <Icon.Archive />,
+  //       showSubRoute: false,
+  //       submenu: false,
+  //     },
+  //   ],
+  // },
 
-  {
-    label: "HRM",
-    submenuOpen: true,
-    showSubRoute: false,
-    submenuHdr: "HRM",
-    submenuItems: [
-      {
-        label: "Employees",
-        link: "/employees-grid",
-        icon: <Icon.Users />,
-        showSubRoute: false,
-      },
-      {
-        label: "Departments",
-        link: "/department-grid",
-        icon: <Icon.User />,
-        showSubRoute: false,
-      },
-      {
-        label: "Designations",
-        link: "/designation",
-        icon: <Icon.UserCheck />,
-        showSubRoute: false,
-      },
-      {
-        label: "Shifts",
-        link: "/shift",
-        icon: <Icon.Shuffle />,
-        showSubRoute: false,
-      },
+  // {
+  //   label: "HRM",
+  //   submenuOpen: true,
+  //   showSubRoute: false,
+  //   submenuHdr: "HRM",
+  //   submenuItems: [
+  //     {
+  //       label: "Employees",
+  //       link: "/employees-grid",
+  //       icon: <Icon.Users />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Departments",
+  //       link: "/department-grid",
+  //       icon: <Icon.User />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Designations",
+  //       link: "/designation",
+  //       icon: <Icon.UserCheck />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Shifts",
+  //       link: "/shift",
+  //       icon: <Icon.Shuffle />,
+  //       showSubRoute: false,
+  //     },
 
-      {
-        label: "Attendance",
-        link: "#",
-        icon: <Icon.Clock />,
-        showSubRoute: false,
-        submenu: true,
+  //     {
+  //       label: "Attendance",
+  //       link: "#",
+  //       icon: <Icon.Clock />,
+  //       showSubRoute: false,
+  //       submenu: true,
 
-        submenuItems: [
-          { label: "Employee", link: "/attendance-employee" },
-          { label: "Admin", link: "/attendance-admin" },
-        ],
-      },
-      {
-        label: "Leaves",
-        link: "#",
-        icon: <Icon.Calendar />,
-        showSubRoute: false,
-        submenu: true,
-        submenuItems: [
-          { label: "Employee Leaves", link: "/leaves-employee" },
-          { label: "Admin Leaves", link: "/leaves-admin" },
-          { label: "Leave Types", link: "/leave-types" },
-        ],
-      },
-      {
-        label: "Holidays",
-        link: "/holidays",
-        icon: <Icon.CreditCard />,
-        showSubRoute: false,
-      },
+  //       submenuItems: [
+  //         { label: "Employee", link: "/attendance-employee" },
+  //         { label: "Admin", link: "/attendance-admin" },
+  //       ],
+  //     },
+  //     {
+  //       label: "Leaves",
+  //       link: "#",
+  //       icon: <Icon.Calendar />,
+  //       showSubRoute: false,
+  //       submenu: true,
+  //       submenuItems: [
+  //         { label: "Employee Leaves", link: "/leaves-employee" },
+  //         { label: "Admin Leaves", link: "/leaves-admin" },
+  //         { label: "Leave Types", link: "/leave-types" },
+  //       ],
+  //     },
+  //     {
+  //       label: "Holidays",
+  //       link: "/holidays",
+  //       icon: <Icon.CreditCard />,
+  //       showSubRoute: false,
+  //     },
 
-      {
-        label: "Payroll",
-        link: "#",
-        icon: <Icon.DollarSign />,
-        showSubRoute: false,
-        submenu: true,
-        submenuItems: [
-          { label: "Employee Salary", link: "/payroll-list" },
-          { label: "Payslip", link: "/payslip" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "Reports",
-    submenuOpen: true,
-    showSubRoute: false,
-    submenuHdr: "Reports",
-    submenuItems: [
-      {
-        label: "Sales Report",
-        link: "/sales-report",
-        icon: <Icon.BarChart2 />,
-        showSubRoute: false,
-      },
-      {
-        label: "Purchase Report",
-        link: "/purchase-report",
-        icon: <Icon.PieChart />,
-        showSubRoute: false,
-      },
-      {
-        label: "Inventory Report",
-        link: "/inventory-report",
-        icon: <Icon.Inbox />,
-        showSubRoute: false,
-      },
-      {
-        label: "Invoice Report",
-        link: "/invoice-report",
-        icon: <Icon.File />,
-        showSubRoute: false,
-      },
-      {
-        label: "Supplier Report",
-        link: "/supplier-report",
-        icon: <Icon.UserCheck />,
-        showSubRoute: false,
-      },
-      {
-        label: "Customer Report",
-        link: "/customer-report",
-        icon: <Icon.User />,
-        showSubRoute: false,
-      },
-      {
-        label: "Expense Report",
-        link: "/expense-report",
-        icon: <Icon.FileText />,
-        showSubRoute: false,
-      },
-      {
-        label: "Income Report",
-        link: "/income-report",
-        icon: <Icon.BarChart />,
-        showSubRoute: false,
-      },
-      {
-        label: "Tax Report",
-        link: "/tax-report",
-        icon: <Icon.Database />,
-        showSubRoute: false,
-      },
-      {
-        label: "Profit & Loss",
-        link: "/profit-loss-report",
-        icon: <Icon.TrendingDown />,
-        showSubRoute: false,
-      },
-    ],
-  },
+  //     {
+  //       label: "Payroll",
+  //       link: "#",
+  //       icon: <Icon.DollarSign />,
+  //       showSubRoute: false,
+  //       submenu: true,
+  //       submenuItems: [
+  //         { label: "Employee Salary", link: "/payroll-list" },
+  //         { label: "Payslip", link: "/payslip" },
+  //       ],
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: "Reports",
+  //   submenuOpen: true,
+  //   showSubRoute: false,
+  //   submenuHdr: "Reports",
+  //   submenuItems: [
+  //     {
+  //       label: "Sales Report",
+  //       link: "/sales-report",
+  //       icon: <Icon.BarChart2 />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Purchase Report",
+  //       link: "/purchase-report",
+  //       icon: <Icon.PieChart />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Inventory Report",
+  //       link: "/inventory-report",
+  //       icon: <Icon.Inbox />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Invoice Report",
+  //       link: "/invoice-report",
+  //       icon: <Icon.File />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Supplier Report",
+  //       link: "/supplier-report",
+  //       icon: <Icon.UserCheck />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Customer Report",
+  //       link: "/customer-report",
+  //       icon: <Icon.User />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Expense Report",
+  //       link: "/expense-report",
+  //       icon: <Icon.FileText />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Income Report",
+  //       link: "/income-report",
+  //       icon: <Icon.BarChart />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Tax Report",
+  //       link: "/tax-report",
+  //       icon: <Icon.Database />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Profit & Loss",
+  //       link: "/profit-loss-report",
+  //       icon: <Icon.TrendingDown />,
+  //       showSubRoute: false,
+  //     },
+  //   ],
+  // },
 
 
-  {
-    label: "Pages",
-    submenuOpen: true,
-    showSubRoute: false,
-    submenuHdr: "Pages",
-    submenuItems: [
-      {
-        label: "Profile",
-        link: "/profile",
-        icon: <Icon.User />,
-        showSubRoute: false,
-      },
-      {
-        label: "Authentication",
-        submenu: true,
-        showSubRoute: false,
-        icon: <Icon.Shield />,
-        submenuItems: [
-          {
-            label: "Login",
-            submenu: true,
-            showSubRoute: false,
-            submenuItems: [
-              { label: "Cover", link: "/signin", showSubRoute: false },
-              { label: "Illustration", link: "/signin-2", showSubRoute: false },
-              { label: "Basic", link: "/signin-3", showSubRoute: false },
-            ],
-          },
-          {
-            label: "Register",
-            submenu: true,
-            showSubRoute: false,
-            submenuItems: [
-              { label: "Cover", link: "/register", showSubRoute: false },
-              {
-                label: "Illustration",
-                link: "/register-2",
-                showSubRoute: false,
-              },
-              { label: "Basic", link: "/register-3", showSubRoute: false },
-            ],
-          },
-          {
-            label: "Forgot Password",
-            submenu: true,
-            showSubRoute: false,
-            submenuItems: [
-              { label: "Cover", link: "/forgot-password", showSubRoute: false },
-              {
-                label: "Illustration",
-                link: "/forgot-password-2",
-                showSubRoute: false,
-              },
-              {
-                label: "Basic",
-                link: "/forgot-password-3",
-                showSubRoute: false,
-              },
-            ],
-          },
-          {
-            label: "Reset Password",
-            submenu: true,
-            showSubRoute: false,
-            submenuItems: [
-              { label: "Cover", link: "/reset-password", showSubRoute: false },
-              {
-                label: "Illustration",
-                link: "/reset-password-2",
-                showSubRoute: false,
-              },
-              {
-                label: "Basic",
-                link: "/reset-password-3",
-                showSubRoute: false,
-              },
-            ],
-          },
-          {
-            label: "Email Verification",
-            submenu: true,
-            showSubRoute: false,
-            submenuItems: [
-              {
-                label: "Cover",
-                link: "/email-verification",
-                showSubRoute: false,
-              },
-              {
-                label: "Illustration",
-                link: "/email-verification-2",
-                showSubRoute: false,
-              },
-              {
-                label: "Basic",
-                link: "/email-verification-3",
-                showSubRoute: false,
-              },
-            ],
-          },
-          {
-            label: "2 Step Verification",
-            submenu: true,
-            showSubRoute: false,
-            submenuItems: [
-              {
-                label: "Cover",
-                link: "/two-step-verification",
-                showSubRoute: false,
-              },
-              {
-                label: "Illustration",
-                link: "/two-step-verification-2",
-                showSubRoute: false,
-              },
-              {
-                label: "Basic",
-                link: "/two-step-verification-3",
-                showSubRoute: false,
-              },
-            ],
-          },
-          { label: "Lock Screen", link: "/lock-screen", showSubRoute: false },
-        ],
-      },
-      {
-        label: "Error Pages",
-        submenu: true,
-        showSubRoute: false,
-        icon: <Icon.FileMinus />,
-        submenuItems: [
-          { label: "404 Error", link: "/error-404", showSubRoute: false },
-          { label: "500 Error", link: "/error-500", showSubRoute: false },
-        ],
-      },
-      // {
-      //   label: "Places",
-      //   submenu: true,
-      //   showSubRoute: false,
-      //   icon: <Icon.Map />,
-      //   submenuItems: [
-      //     { label: "Countries", link: "countries",showSubRoute: false },
-      //     { label: "States", link: "states",showSubRoute: false }
-      //   ]
-      // },
-      {
-        label: "Blank Page",
-        link: "/blank-page",
-        icon: <Icon.File />,
-        showSubRoute: false,
-      },
-      {
-        label: "Coming Soon",
-        link: "/coming-soon",
-        icon: <Icon.Send />,
-        showSubRoute: false,
-      },
-      {
-        label: "Under Maintenance",
-        link: "/under-maintenance",
-        icon: <Icon.AlertTriangle />,
-        showSubRoute: false,
-      },
-    ],
-  },
+  // {
+  //   label: "Pages",
+  //   submenuOpen: true,
+  //   showSubRoute: false,
+  //   submenuHdr: "Pages",
+  //   submenuItems: [
+  //     {
+  //       label: "Profile",
+  //       link: "/profile",
+  //       icon: <Icon.User />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Authentication",
+  //       submenu: true,
+  //       showSubRoute: false,
+  //       icon: <Icon.Shield />,
+  //       submenuItems: [
+  //         {
+  //           label: "Login",
+  //           submenu: true,
+  //           showSubRoute: false,
+  //           submenuItems: [
+  //             { label: "Cover", link: "/signin", showSubRoute: false },
+  //             { label: "Illustration", link: "/signin-2", showSubRoute: false },
+  //             { label: "Basic", link: "/signin-3", showSubRoute: false },
+  //           ],
+  //         },
+  //         {
+  //           label: "Register",
+  //           submenu: true,
+  //           showSubRoute: false,
+  //           submenuItems: [
+  //             { label: "Cover", link: "/register", showSubRoute: false },
+  //             {
+  //               label: "Illustration",
+  //               link: "/register-2",
+  //               showSubRoute: false,
+  //             },
+  //             { label: "Basic", link: "/register-3", showSubRoute: false },
+  //           ],
+  //         },
+  //         {
+  //           label: "Forgot Password",
+  //           submenu: true,
+  //           showSubRoute: false,
+  //           submenuItems: [
+  //             { label: "Cover", link: "/forgot-password", showSubRoute: false },
+  //             {
+  //               label: "Illustration",
+  //               link: "/forgot-password-2",
+  //               showSubRoute: false,
+  //             },
+  //             {
+  //               label: "Basic",
+  //               link: "/forgot-password-3",
+  //               showSubRoute: false,
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           label: "Reset Password",
+  //           submenu: true,
+  //           showSubRoute: false,
+  //           submenuItems: [
+  //             { label: "Cover", link: "/reset-password", showSubRoute: false },
+  //             {
+  //               label: "Illustration",
+  //               link: "/reset-password-2",
+  //               showSubRoute: false,
+  //             },
+  //             {
+  //               label: "Basic",
+  //               link: "/reset-password-3",
+  //               showSubRoute: false,
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           label: "Email Verification",
+  //           submenu: true,
+  //           showSubRoute: false,
+  //           submenuItems: [
+  //             {
+  //               label: "Cover",
+  //               link: "/email-verification",
+  //               showSubRoute: false,
+  //             },
+  //             {
+  //               label: "Illustration",
+  //               link: "/email-verification-2",
+  //               showSubRoute: false,
+  //             },
+  //             {
+  //               label: "Basic",
+  //               link: "/email-verification-3",
+  //               showSubRoute: false,
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           label: "2 Step Verification",
+  //           submenu: true,
+  //           showSubRoute: false,
+  //           submenuItems: [
+  //             {
+  //               label: "Cover",
+  //               link: "/two-step-verification",
+  //               showSubRoute: false,
+  //             },
+  //             {
+  //               label: "Illustration",
+  //               link: "/two-step-verification-2",
+  //               showSubRoute: false,
+  //             },
+  //             {
+  //               label: "Basic",
+  //               link: "/two-step-verification-3",
+  //               showSubRoute: false,
+  //             },
+  //           ],
+  //         },
+  //         { label: "Lock Screen", link: "/lock-screen", showSubRoute: false },
+  //       ],
+  //     },
+  //     {
+  //       label: "Error Pages",
+  //       submenu: true,
+  //       showSubRoute: false,
+  //       icon: <Icon.FileMinus />,
+  //       submenuItems: [
+  //         { label: "404 Error", link: "/error-404", showSubRoute: false },
+  //         { label: "500 Error", link: "/error-500", showSubRoute: false },
+  //       ],
+  //     },
+  //     // {
+  //     //   label: "Places",
+  //     //   submenu: true,
+  //     //   showSubRoute: false,
+  //     //   icon: <Icon.Map />,
+  //     //   submenuItems: [
+  //     //     { label: "Countries", link: "countries",showSubRoute: false },
+  //     //     { label: "States", link: "states",showSubRoute: false }
+  //     //   ]
+  //     // },
+  //     {
+  //       label: "Blank Page",
+  //       link: "/blank-page",
+  //       icon: <Icon.File />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Coming Soon",
+  //       link: "/coming-soon",
+  //       icon: <Icon.Send />,
+  //       showSubRoute: false,
+  //     },
+  //     {
+  //       label: "Under Maintenance",
+  //       link: "/under-maintenance",
+  //       icon: <Icon.AlertTriangle />,
+  //       showSubRoute: false,
+  //     },
+  //   ],
+  // },
 
   {
     label: "Settings",
