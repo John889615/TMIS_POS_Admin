@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   getAllProducts,
   syncAllProducts,
@@ -13,6 +13,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { PlusCircle } from "react-feather";
 import ProductForm from "../../core/modals/products/productFormModel";
 
+const withTimeout = (promise, ms, timeoutMessage = "Request timed out") => {
+  let timeoutId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(timeoutMessage)), ms);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    clearTimeout(timeoutId);
+  });
+};
+
 const ProductPage = () => {
   const [listData, setListData] = useState([]);
   const [CategoryListData, setCategoryListData] = useState([]);
@@ -23,8 +34,10 @@ const ProductPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ✅ NEW: Sync loading state
+  // ✅ Separate "sync" status vs "load" status
   const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState({ type: "idle", message: "" }); // idle|working|success|error
+  const [loadStatus, setLoadStatus] = useState({ type: "idle", message: "" }); // idle|working|error
 
   const recordsPerPage = 10;
   const maxPageButtons = 5;
@@ -34,47 +47,110 @@ const ProductPage = () => {
     fetchRecords();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const fetchRecords = async () => {
-    try {
-      const data = await getAllProducts();
-      setListData(data);
+    setLoadStatus({ type: "working", message: "" });
 
-      const type = await getAllProductCategory();
-      setCategoryListData(type);
+    const results = await Promise.allSettled([
+      getAllProducts(),
+      getAllProductCategory(),
+      getAllProductTypes(),
+      getAllUnits(),
+    ]);
 
-      const category = await getAllProductTypes();
-      setTypeListData(category);
+    const [productsRes, catRes, typeRes, unitsRes] = results;
 
-      const unit = await getAllUnits();
-      setUnitListData(unit);
-    } catch (err) {
-      console.error("Failed to load products:", err.message);
+    const failures = [];
+    const getMsg = (r) =>
+      r?.reason?.message || r?.reason?.toString?.() || "Unknown error";
+
+    // ✅ IMPORTANT:
+    // If getAllProducts returns boolean true by mistake, this will catch it
+    // and show a clear message instead of random "failed users"
+    if (productsRes.status === "fulfilled") {
+      if (Array.isArray(productsRes.value)) {
+        setListData(productsRes.value);
+      } else {
+        failures.push(
+          `Products: Expected a list but got (${typeof productsRes.value}). Check your getAllProducts endpoint.`
+        );
+      }
+    } else {
+      failures.push(`Products: ${getMsg(productsRes)}`);
+    }
+
+    if (catRes.status === "fulfilled") setCategoryListData(catRes.value);
+    else failures.push(`Categories: ${getMsg(catRes)}`);
+
+    if (typeRes.status === "fulfilled") setTypeListData(typeRes.value);
+    else failures.push(`Types: ${getMsg(typeRes)}`);
+
+    if (unitsRes.status === "fulfilled") setUnitListData(unitsRes.value);
+    else failures.push(`Units: ${getMsg(unitsRes)}`);
+
+    if (failures.length) {
+      console.error("FetchRecords partial failures:", failures);
+      setLoadStatus({
+        type: "error",
+        message: `Some data failed to load: ${failures.join(" | ")}`,
+      });
+    } else {
+      setLoadStatus({ type: "idle", message: "" });
     }
   };
 
-  // ✅ NEW: Sync handler
+  // ✅ Sync handler: true => SUCCESS, false/anything else => FAIL
   const handleSyncProducts = async () => {
+    const SYNC_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+
     try {
       setSyncing(true);
-      console.log("Syncing products...");
-      await syncAllProducts();
+      setSyncStatus({ type: "working", message: "Syncing products…" });
+
+      const ok = await withTimeout(
+        syncAllProducts(),
+        SYNC_TIMEOUT_MS,
+        "Sync is taking longer than expected. Please try again later."
+      );
+
+      // ✅ This is the key fix
+      if (ok !== true) {
+        throw new Error("Sync did not complete (API did not return true).");
+      }
+
+      // Refresh the list after successful sync
       await fetchRecords();
-      alert("Products synced successfully!");
+
+      setSyncStatus({
+        type: "success",
+        message: "Products synced successfully.",
+      });
+
+      // Clear success after a bit
+      setTimeout(() => setSyncStatus({ type: "idle", message: "" }), 4000);
     } catch (err) {
-      console.error("Sync failed:", err.message);
-      alert("Sync failed, please try again.");
+      console.error("Sync failed:", err?.message || err);
+      setSyncStatus({
+        type: "error",
+        message: err?.message || "Sync failed. Please try again.",
+      });
     } finally {
       setSyncing(false);
     }
   };
 
-  const filteredData = listData.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  const filteredData = useMemo(() => {
+    const term = searchTerm.toLowerCase();
+    return listData.filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          typeof value === "string" && value.toLowerCase().includes(term)
+      )
+    );
+  }, [listData, searchTerm]);
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -82,9 +158,7 @@ const ProductPage = () => {
   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
 
   const goToPage = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
@@ -101,18 +175,14 @@ const ProductPage = () => {
   const handleClose = () => setModelShow(false);
 
   const handleAddProduct = async (data) => {
-    console.log("Data : ", data);
-    debugger;
     try {
-      if (data.POS_ProductID) {
-        await updateProduct(data);
-      } else {
-        await newProduct(data);
-      }
+      if (data.POS_ProductID) await updateProduct(data);
+      else await newProduct(data);
+
       await fetchRecords();
       setModelShow(false);
     } catch (err) {
-      console.error("Error saving product:", err.message);
+      console.error("Error saving product:", err?.message || err);
     }
   };
 
@@ -127,6 +197,30 @@ const ProductPage = () => {
     navigate(`/${value}/${item.POS_ProductID}`);
   };
 
+  const Pill = ({ type, message }) => {
+    if (!message) return null;
+
+    const base = "px-3 py-2 rounded d-inline-flex align-items-center gap-2";
+    const map = {
+      working: "bg-light text-dark border",
+      success: "bg-success text-white",
+      error: "bg-danger text-white",
+    };
+
+    return (
+      <div className={`${base} ${map[type] || "bg-light"}`}>
+        {type === "working" && (
+          <span
+            className="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          />
+        )}
+        <span style={{ fontSize: 13 }}>{message}</span>
+      </div>
+    );
+  };
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -138,8 +232,14 @@ const ProductPage = () => {
             </div>
           </div>
 
-          {/* ✅ UPDATED: Sync + Add buttons */}
-          <div className="page-btn d-flex gap-2">
+          <div className="page-btn d-flex gap-2 align-items-center">
+            {/* ✅ show SYNC status first; only show load errors if sync is idle */}
+            {syncStatus.type !== "idle" ? (
+              <Pill type={syncStatus.type} message={syncStatus.message} />
+            ) : (
+              <Pill type={loadStatus.type} message={loadStatus.message} />
+            )}
+
             <Button
               variant="none"
               className="btn btn-secondary"
@@ -155,7 +255,7 @@ const ProductPage = () => {
               variant="none"
               className="btn btn-added"
               onClick={handleShow}
-              disabled={syncing} // optional: lock add while syncing
+              disabled={syncing}
             >
               <PlusCircle className="me-2" />
               Add New Product
@@ -174,6 +274,7 @@ const ProductPage = () => {
                     className="form-control"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    disabled={syncing}
                   />
                   <Link to className="btn btn-searchset">
                     <i data-feather="search" className="feather-search" />
@@ -218,6 +319,7 @@ const ProductPage = () => {
                             type="button"
                             onClick={() => handleEditProduct(item)}
                             className="btn btn-sm btn-primary me-2"
+                            disabled={syncing}
                           >
                             <i className="feather-edit"></i>
                           </button>
@@ -227,6 +329,7 @@ const ProductPage = () => {
                             style={{ width: "140px" }}
                             onChange={(e) => handleRedirect(e, item)}
                             defaultValue=""
+                            disabled={syncing}
                           >
                             <option value="" disabled>
                               Select Action
@@ -272,6 +375,7 @@ const ProductPage = () => {
                         size="sm"
                         className="mx-1"
                         onClick={() => goToPage(page)}
+                        disabled={syncing}
                       >
                         {page}
                       </Button>
@@ -282,7 +386,7 @@ const ProductPage = () => {
                     <Button
                       variant="secondary"
                       size="sm"
-                      disabled={currentPage === 1}
+                      disabled={currentPage === 1 || syncing}
                       onClick={() => setCurrentPage(currentPage - 1)}
                     >
                       Previous
@@ -291,7 +395,7 @@ const ProductPage = () => {
                       variant="secondary"
                       size="sm"
                       className="ms-2"
-                      disabled={currentPage === totalPages}
+                      disabled={currentPage === totalPages || syncing}
                       onClick={() => setCurrentPage(currentPage + 1)}
                     >
                       Next

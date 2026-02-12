@@ -256,5 +256,6 @@ export const all_routes = {
   debtorProductPrice: "/debtor-product-price/:id",
   stockCostCenterproduct: "cost-center-product",
   priceCode: "/price-code",
+  BcSyncPage: "/BcSyncPage",
   //purchaseOrderTree: "/purchase-order-tree/:id",
 };

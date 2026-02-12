@@ -4,6 +4,20 @@ import * as Icon from "react-feather";
 
 export const SidebarData = [
   {
+    label: "Sync",
+    submenuOpen: true,
+    showSubRoute: false,
+    submenuHdr: "Sync",
+    submenuItems: [
+      {
+        label: "BC Sync",
+        link: "/BcSyncPage",
+        icon: <Icon.Tag />,
+        showSubRoute: false,
+      },
+    ],
+  },
+  {
     label: "Main",
     submenuOpen: true,
     showSubRoute: false,
