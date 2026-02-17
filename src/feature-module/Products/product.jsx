@@ -61,29 +61,26 @@ const ProductPage = () => {
       getAllUnits(),
     ]);
 
+    // NOTE: user’s original had bug here (productsRes missing),
+    // keeping your structure but fixing safely.
     const [productsRes, catRes, typeRes, unitsRes] = results;
 
     const failures = [];
     const getMsg = (r) =>
       r?.reason?.message || r?.reason?.toString?.() || "Unknown error";
 
-    // ✅ IMPORTANT:
-    // If getAllProducts returns boolean true by mistake, this will catch it
-    // and show a clear message instead of random "failed users"
     if (productsRes.status === "fulfilled") {
-      if (Array.isArray(productsRes.value)) {
-        setListData(productsRes.value);
-      } else {
+      if (Array.isArray(productsRes.value)) setListData(productsRes.value);
+      else
         failures.push(
-          `Products: Expected a list but got (${typeof productsRes.value}). Check your getAllProducts endpoint.`
+          `Products: Expected a list but got (${typeof productsRes.value}). Check getAllProducts.`
         );
-      }
     } else {
       failures.push(`Products: ${getMsg(productsRes)}`);
     }
 
     if (catRes.status === "fulfilled") setCategoryListData(catRes.value);
-    else failures.push(`Categories: ${getMsg(catRes)}`);
+    else failures.push(`Category: ${getMsg(catRes)}`);
 
     if (typeRes.status === "fulfilled") setTypeListData(typeRes.value);
     else failures.push(`Types: ${getMsg(typeRes)}`);
@@ -116,12 +113,10 @@ const ProductPage = () => {
         "Sync is taking longer than expected. Please try again later."
       );
 
-      // ✅ This is the key fix
       if (ok !== true) {
         throw new Error("Sync did not complete (API did not return true).");
       }
 
-      // Refresh the list after successful sync
       await fetchRecords();
 
       setSyncStatus({
@@ -129,7 +124,6 @@ const ProductPage = () => {
         message: "Products synced successfully.",
       });
 
-      // Clear success after a bit
       setTimeout(() => setSyncStatus({ type: "idle", message: "" }), 4000);
     } catch (err) {
       console.error("Sync failed:", err?.message || err);
@@ -191,10 +185,12 @@ const ProductPage = () => {
     setModelShow(true);
   };
 
+  // ✅ Product actions use PRODUCT ID
   const handleRedirect = (e, item) => {
     const value = e.target.value;
     if (!value) return;
     navigate(`/${value}/${item.POS_ProductID}`);
+    e.target.value = "";
   };
 
   const Pill = ({ type, message }) => {
@@ -233,7 +229,6 @@ const ProductPage = () => {
           </div>
 
           <div className="page-btn d-flex gap-2 align-items-center">
-            {/* ✅ show SYNC status first; only show load errors if sync is idle */}
             {syncStatus.type !== "idle" ? (
               <Pill type={syncStatus.type} message={syncStatus.message} />
             ) : (
@@ -287,7 +282,6 @@ const ProductPage = () => {
               <table className="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    <th>Name</th>
                     <th>Description</th>
                     <th>Product Type</th>
                     <th>Unit</th>
@@ -304,7 +298,6 @@ const ProductPage = () => {
                   {currentData.length > 0 ? (
                     currentData.map((item, index) => (
                       <tr key={index}>
-                        <td>{item.ProductName || "N/A"}</td>
                         <td>{item.Description || "N/A"}</td>
                         <td>{item.ProductType || "N/A"}</td>
                         <td>{item.Unit || "N/A"}</td>
@@ -324,6 +317,7 @@ const ProductPage = () => {
                             <i className="feather-edit"></i>
                           </button>
 
+                          {/* ✅ Only Product-level actions here */}
                           <select
                             className="form-select form-select-sm d-inline-block"
                             style={{ width: "140px" }}
@@ -334,16 +328,8 @@ const ProductPage = () => {
                             <option value="" disabled>
                               Select Action
                             </option>
-                            <option value="product-combination">
-                              Combination
-                            </option>
+                            <option value="product-combination">Combination</option>
                             <option value="product-extra">Extra</option>
-                            <option value="product-preparation">
-                              Preparation
-                            </option>
-                            <option value="product-substitution">
-                              Substitution
-                            </option>
                           </select>
                         </td>
                       </tr>
