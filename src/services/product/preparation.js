@@ -36,3 +36,20 @@ export const updatePreparation = async (data) => {
         return error.response.data;
     }
 };
+
+export const removePreparation = async (productPreparationId) => {
+  try {
+    const payload = { ProductPreparationID: Number(productPreparationId) };
+
+    const response = await api.post(
+      "/invetory/remove/product/preparation",
+      payload
+    );
+
+    return response.data;
+  } catch (error) {
+    // ✅ don’t hide the real error
+    console.error("removePreparation error:", error);
+    throw error;
+  }
+};

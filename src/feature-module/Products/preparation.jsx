@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getAllPreparation, newPreparation, updatePreparation } from "../../services/product/preparation";
+import { getAllPreparation, newPreparation, updatePreparation, removePreparation } from "../../services/product/preparation";
 import { getAllPreparationMethod } from "../../services/product/preparationMethod";
 
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
     PlusCircle,
+    Trash2,
 } from "react-feather";
 import PreparationForm from "../../core/modals/products/preparationFormModel";
 import { useParams } from "react-router-dom";
@@ -66,6 +67,20 @@ const PreparationPage = () => {
         }
     };
 
+    const handleDeletePreparation = async (row) => {
+        const comboId = Number(row?.ProductPreparationID) || 0;
+        if (!comboId) return console.error("Missing ProductPreparationID:", row);
+
+        if (!window.confirm("Delete this preparation?")) return;
+
+        try {
+            await removePreparation(comboId);
+            await fetchRecords();
+        } catch (err) {
+            alert(err?.response?.data?.Message || "Failed to delete Preparation.");
+        }
+    };
+
     const handleEditProduct = (record) => {
         setSelectedData(record);
         setModelShow(true);
@@ -122,12 +137,24 @@ const PreparationPage = () => {
                                             <tr key={index}>
                                                 <td>{item.ProductName || "N/A"}</td>
                                                 <td>{item.PreparationMethod || "N/A"}</td>
-                                                 <td>{item.MethodShortCode || "N/A"}</td>
+                                                <td>{item.MethodShortCode || "N/A"}</td>
                                                 <td>
                                                     <button type='button'
                                                         onClick={() => handleEditProduct(item)}
                                                         className="btn btn-sm btn-primary me-2">
                                                         <i className="feather-edit"></i>
+                                                    </button>
+                                                    {/* ✅ Delete (red dustbin) */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeletePreparation(item)}
+                                                        className="btn btn-sm btn-light me-2"
+                                                        title="Delete"
+                                                        style={{
+                                                            border: "1px solid #f1c0c0",
+                                                        }}
+                                                    >
+                                                        <Trash2 size={16} color="red" />
                                                     </button>
                                                 </td>
                                             </tr>

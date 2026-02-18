@@ -39,6 +39,25 @@ export const newCombination = async (data) => {
 };
 
 
+export const removeCombination = async (productCombinationId) => {
+  try {
+    const payload = { ProductCombinationID: Number(productCombinationId) };
+
+    const response = await api.post(
+      "/invetory/remove/product/combination", // ✅ fix spelling if needed
+      payload
+    );
+
+    return response.data;
+  } catch (error) {
+    // ✅ don’t hide the real error
+    console.error("removeCombination error:", error);
+    throw error;
+  }
+};
+
+
+
 export const updateCombination = async (data) => {
     try {
         debugger;

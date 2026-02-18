@@ -195,7 +195,7 @@ const MenuPage = () => {
                                                 >
                                                     {item.MenuName || "N/A"}
                                                 </td>
-                                                <td>{item.SourceType}</td>
+                                                <td>{item.Location ? item.Location : "Template"}</td>
                                                 <td>{item.IsActive ? "Yes" : "No"}</td>
                                                 <td>
                                                     <button type='button'

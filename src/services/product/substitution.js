@@ -50,3 +50,19 @@ export const updateSubstitution = async (data) => {
         return error.response.data;
     }
 };
+
+export const removeSubstitution = async (productSubstitutionId) => {
+  try {
+    const payload = { ProductSubstitutionID: Number(productSubstitutionId) };
+
+    const response = await api.post(
+      "/invetory/remove/product/substitution", // using your API path as given
+      payload
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("removeSubstitution error:", error?.response?.data || error);
+    throw error;
+  }
+};

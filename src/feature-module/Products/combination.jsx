@@ -4,10 +4,11 @@ import {
   getAllCombinationById,
   newCombination,
   updateCombination,
+  removeCombination,
 } from "../../services/product/combination";
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle } from "react-feather";
+import { PlusCircle, Trash2 } from "react-feather"; // ✅ add Trash2
 import CombinationForm from "../../core/modals/products/combinationFormModel";
 import { useParams } from "react-router-dom";
 
@@ -69,6 +70,22 @@ const CombinationPage = () => {
     setSelectedData(record);
     setModelShow(true);
   };
+
+  // ✅ Delete combination row
+  const handleDeleteCombination = async (row) => {
+  const comboId = Number(row?.ProductCombinationID) || 0;
+  if (!comboId) return console.error("Missing ProductCombinationID:", row);
+
+  if (!window.confirm("Delete this combination?")) return;
+
+  try {
+    await removeCombination(comboId);
+    await fetchRecords();
+  } catch (err) {
+    alert(err?.response?.data?.Message || "Failed to delete combination.");
+  }
+};
+
 
   // ✅ IMPORTANT: Preparation/Substitution must use the COMBINATION PRODUCT ID (child)
   const handleComboRedirect = (e, comboRow) => {
@@ -150,13 +167,28 @@ const CombinationPage = () => {
                         <td>{item.IsOptional ? "Yes" : "No"}</td>
                         <td>{item.IsExtraCharge ? "Yes" : "No"}</td>
                         <td>{item.DisplayOrder || "N/A"}</td>
-                        <td>
+                        <td className="text-nowrap">
+                          {/* Edit */}
                           <button
                             type="button"
                             onClick={() => handleEditProduct(item)}
                             className="btn btn-sm btn-primary me-2"
+                            title="Edit"
                           >
                             <i className="feather-edit"></i>
+                          </button>
+
+                          {/* ✅ Delete (red dustbin) */}
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteCombination(item)}
+                            className="btn btn-sm btn-light me-2"
+                            title="Delete"
+                            style={{
+                              border: "1px solid #f1c0c0",
+                            }}
+                          >
+                            <Trash2 size={16} color="red" />
                           </button>
 
                           {/* ✅ Combo-level actions use FK_ProductItemID (child product) */}

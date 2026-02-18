@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { getAllProducts } from "../../services/product/product";
-import { getAllSubstitutionById, newSubstitution, updateSubstitution } from "../../services/product/substitution";
+import {
+    getAllSubstitutionById, newSubstitution, updateSubstitution,
+    removeSubstitution,
+} from "../../services/product/substitution";
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle } from "react-feather";
+import { PlusCircle, Trash2 } from "react-feather";
 import SubstitutionForm from "../../core/modals/products/substitutionFormModel";
 import { useParams } from "react-router-dom";
 
@@ -61,6 +64,20 @@ const SubstitutionPage = () => {
             setModelShow(false);
         } catch (err) {
             console.error("Error creating user:", err.message);
+        }
+    };
+
+    const handleDeleteSubstitution = async (row) => {
+        const subId = Number(row?.ProductSubstitutionID) || 0;
+        if (!subId) return console.error("Missing ProductSubstitutionID:", row);
+
+        if (!window.confirm("Delete this substitution?")) return;
+
+        try {
+            await removeSubstitution(subId);
+            await fetchRecords();
+        } catch (err) {
+            alert(err?.response?.data?.Message || "Failed to delete Substitution.");
         }
     };
 
@@ -130,6 +147,15 @@ const SubstitutionPage = () => {
                                                         onClick={() => handleEdit(item)}
                                                         className="btn btn-sm btn-primary me-2">
                                                         <i className="feather-edit"></i>
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeleteSubstitution(item)}
+                                                        className="btn btn-sm btn-light me-2"
+                                                        title="Delete"
+                                                        style={{ border: "1px solid #f1c0c0" }}
+                                                    >
+                                                        <Trash2 size={16} color="red" />
                                                     </button>
                                                 </td>
                                             </tr>
