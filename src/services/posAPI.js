@@ -2,8 +2,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  //baseURL: "https://tmis.co.za/pos_bs/api",
-  baseURL: "https://localhost:44392/api",
+  //baseURL: "https://tmis.co.za/tmis_pos/pos_api/api",
+  baseURL: "https://tmis.co.za/pos_bs/api",
+  //baseURL: "https://localhost:44392/api",
+  
   timeout: 50000,
   headers: {
     'Content-Type': 'application/json',

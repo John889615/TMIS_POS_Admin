@@ -46,3 +46,13 @@ export const updateMenuItem = async (data) => {
         return error.response.data;
     }
 };
+
+export const deleteMenuItem = async (id) => {
+    try {
+        const response = await api.post('/Menu/remove/menu/item', { POS_MenuItemID: id }); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};

@@ -4,7 +4,7 @@ import { getMenuTree } from "../../services/menu/menuService";
 import { getAllProducts } from "../../services/product/product";
 import { useParams } from "react-router-dom";
 import { newMenuItemProduct, deleteMenuItemProduct } from "../../services/menu/menuItemProductService";
-import { newMenuItem, updateMenuItem } from "../../services/menu/menuItemService";
+import { newMenuItem, updateMenuItem, deleteMenuItem } from "../../services/menu/menuItemService";
 
 const MenuTreeBuilder = () => {
   const { id } = useParams();
@@ -187,7 +187,10 @@ const MenuTreeBuilder = () => {
             }
           >
             <div style={{ display: "flex", alignItems: "center", fontWeight: 600, justifyContent: "space-between" }}>
+
+              {/* LEFT SIDE */}
               <div style={{ display: "flex", alignItems: "center" }}>
+
                 {(hasChildren || (item.Product && item.Product.length > 0)) && (
                   <button
                     type="button"
@@ -198,7 +201,8 @@ const MenuTreeBuilder = () => {
                         const prevExpanded = prev[parentId];
                         let newExpanded;
                         if (Array.isArray(prevExpanded)) {
-                          if (prevExpanded.includes(item.ItemID)) newExpanded = prevExpanded.filter((id) => id !== item.ItemID);
+                          if (prevExpanded.includes(item.ItemID))
+                            newExpanded = prevExpanded.filter((id) => id !== item.ItemID);
                           else newExpanded = [...prevExpanded, item.ItemID];
                         } else {
                           newExpanded = prevExpanded === item.ItemID ? [] : [item.ItemID];
@@ -206,15 +210,14 @@ const MenuTreeBuilder = () => {
                         return { ...prev, [parentId]: newExpanded };
                       });
                     }}
-                    aria-label={isExpanded ? "Collapse" : "Expand"}
                   >
-                    {isExpanded ? <span>-</span> : <span>+</span>}
+                    {isExpanded ? "-" : "+"}
                   </button>
                 )}
 
                 <span style={{ fontSize: "1.25rem" }}>{item.Item}</span>
 
-                {/* Edit icon button */}
+                {/* ✏️ EDIT */}
                 <button
                   type="button"
                   className="btn btn-sm btn-link text-primary ms-2 p-0"
@@ -228,13 +231,41 @@ const MenuTreeBuilder = () => {
                 >
                   <i className="bi bi-pencil-square"></i>
                 </button>
+
+                {/* 🗑 DELETE */}
+                <button
+                  type="button"
+                  className="btn btn-sm btn-link text-danger ms-2 p-0"
+                  title="Delete Menu Item"
+                  onClick={async () => {
+                    const confirmDelete = window.confirm(
+                      "Delete this menu item?\n\nThis will remove ALL sub-items and linked products."
+                    );
+                    if (!confirmDelete) return;
+
+                    try {
+                      const res = await deleteMenuItem(item.ItemID);
+
+                      if (res?.Success === false) {
+                        alert(res?.Messages?.[0] || "Delete failed.");
+                        return;
+                      }
+
+                      await fetchData(); // 🔥 refresh tree cleanly
+                    } catch (err) {
+                      alert("Error deleting menu item.");
+                    }
+                  }}
+                >
+                  <i className="bi bi-trash"></i>
+                </button>
               </div>
 
+              {/* RIGHT SIDE */}
               <div className="d-flex align-items-center gap-2">
                 <button
                   className="btn btn-sm btn-outline-success"
                   onClick={() => openNewItemModal(item.ItemID)}
-                  title="Add child menu item"
                 >
                   <i className="bi bi-plus-circle me-1"></i>
                   Add Sub Item
@@ -243,7 +274,7 @@ const MenuTreeBuilder = () => {
               </div>
             </div>
 
-            {/* Products for this item - droppable, collapsible */}
+            {/* PRODUCTS */}
             {isExpanded && (
               <DroppableProducts item={item} parentId={parentId}>
                 {(isOver) => (
@@ -259,9 +290,7 @@ const MenuTreeBuilder = () => {
                     >
                       {isOver && activeProduct && (
                         <li className="list-group-item list-group-item-success">
-                          <span style={{ fontWeight: 500 }}>
-                            Drop <span className="text-primary">{activeProduct.ProductName}</span> here
-                          </span>
+                          Drop <b>{activeProduct.ProductName}</b> here
                         </li>
                       )}
 
@@ -277,30 +306,13 @@ const MenuTreeBuilder = () => {
                               background: "#f9f9f9",
                             }}
                           >
-                            <span style={{ fontWeight: 400 }}>{prod.ProductName || prod.Product}</span>
+                            <span>{prod.ProductName || prod.Product}</span>
                             <button
-                              type="button"
-                              className="btn btn-sm btn-link text-danger ms-2 p-0"
-                              title="Delete"
+                              className="btn btn-sm btn-link text-danger p-0"
                               onClick={async () => {
-                                if (window.confirm("Are you sure you want to delete this product?")) {
+                                if (window.confirm("Delete this product?")) {
                                   await deleteMenuItemProduct(prod.POS_MenuItemProductID);
-                                  setMenuData((prev) => {
-                                    function removeProduct(items) {
-                                      return items.map((menuItem) => {
-                                        if (menuItem.ItemID === item.ItemID && menuItem.Product) {
-                                          menuItem.Product = menuItem.Product.filter(
-                                            (p) => p.POS_MenuItemProductID !== prod.POS_MenuItemProductID
-                                          );
-                                        }
-                                        if (menuItem.ChildItem && menuItem.ChildItem.length > 0) {
-                                          menuItem.ChildItem = removeProduct(menuItem.ChildItem);
-                                        }
-                                        return menuItem;
-                                      });
-                                    }
-                                    return { ...prev, MenuItems: removeProduct(prev.MenuItems) };
-                                  });
+                                  await fetchData();
                                 }
                               }}
                             >
@@ -309,7 +321,7 @@ const MenuTreeBuilder = () => {
                           </li>
                         ))
                       ) : (
-                        <li className="text-muted">{isOver ? "Drop product here..." : "No products assigned"}</li>
+                        <li className="text-muted">No products assigned</li>
                       )}
                     </ul>
                   </div>
@@ -317,7 +329,7 @@ const MenuTreeBuilder = () => {
               </DroppableProducts>
             )}
 
-            {/* Child items - collapsible */}
+            {/* CHILDREN */}
             {hasChildren && isExpanded && (
               <div className="ms-3 p-2 shadow-sm mt-1" style={{ borderRadius: "8px", border: "1px solid #dee2e6" }}>
                 {renderMenuTree(item.ChildItem, level + 1, item.ItemID)}
