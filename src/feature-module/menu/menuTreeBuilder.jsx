@@ -5,6 +5,7 @@ import { getAllProducts } from "../../services/product/product";
 import { useParams } from "react-router-dom";
 import { newMenuItemProduct, deleteMenuItemProduct } from "../../services/menu/menuItemProductService";
 import { newMenuItem, updateMenuItem, deleteMenuItem } from "../../services/menu/menuItemService";
+import { getAllSlipPrinter } from "../../services/entityData/slipPrinter";
 
 const MenuTreeBuilder = () => {
   const { id } = useParams();

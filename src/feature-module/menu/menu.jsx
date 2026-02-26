@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getAllMenu, newMenu, updateMenu, copyMenu } from "../../services/menu/menuService";
 import { getAllDebtors } from "../../services/debtors/debtors";
 import { getAllCostCenter } from "../../services/debtors/costCenter";
+import { getAllSlipPrinter } from "../../services/entityData/slipPrinter";
 
 
 import { Button } from "react-bootstrap";
@@ -17,6 +18,7 @@ const MenuPage = () => {
     const [listData, setListData] = useState([]);
     const [debtorList, setDebtorList] = useState([]);
     const [costCenterList, setCostCenterList] = useState([]);
+    const [slipPrinterList, setSlipPrinterList] = useState([]);
     const [showModel, setModelShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [selectedDebtor, setSelectedDebtor] = useState(0);
@@ -51,6 +53,8 @@ const MenuPage = () => {
             setDebtorList(data);
             const cost = await getAllCostCenter();
             setCostCenterList(cost);
+            const printer = await getAllSlipPrinter();
+            setSlipPrinterList(printer);
         } catch (err) {
             console.error("Failed to load:", err.message);
         }
@@ -283,6 +287,7 @@ const MenuPage = () => {
                     data={selectedData}
                     debtorList={debtorList}
                     costCenterList={costCenterList}
+                    slipPrinterList={slipPrinterList}
                 />
             }
         </div>

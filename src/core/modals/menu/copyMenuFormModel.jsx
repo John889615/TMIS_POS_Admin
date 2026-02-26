@@ -11,12 +11,14 @@ const CopyMenuForm = ({
   data,
   debtorList,
   costCenterList,
+  slipPrinterList,
 }) => {
   const formRef = useRef(null);
   const debtorId = useSelector((state) => state.selectedDebtorStore);
 
   const [selectedDebtor, setSelectedDebtor] = useState(null);
   const [selectedCostCenter, setSelectedCostCenter] = useState(null);
+  const [selectedSlipPrinter, setSelectedSlipPrinter] = useState(null);
 
   const debtorOptions = useMemo(
     () =>
@@ -36,10 +38,20 @@ const CopyMenuForm = ({
     [costCenterList]
   );
 
+  const slipPrinterOptions = useMemo(
+    () =>
+      (slipPrinterList || []).map((item) => ({
+        value: item.SlipPrinterID,
+        label: item.Name,
+      })),
+    [costCenterList]
+  );
+
   const resetForm = () => {
     formRef.current?.reset();
     setSelectedDebtor(null);
     setSelectedCostCenter(null);
+    setSelectedSlipPrinter(null);
   };
 
   // When modal opens, set defaults (debtorId takes priority), otherwise reset
@@ -51,14 +63,16 @@ const CopyMenuForm = ({
 
     const initialDebtorId = debtorId || data?.TargetDebtorID || null;
     const initialCostCenterId = data?.TargetCostCenterID || null;
+    const initialSlipPrinterId = data?.SlipPrinterID || null;
 
     const existingDebtor = debtorOptions.find((d) => d.value === initialDebtorId) || null;
-    const existingCostCenter =
-      costCenterOptions.find((c) => c.value === initialCostCenterId) || null;
+    const existingCostCenter = costCenterOptions.find((c) => c.value === initialCostCenterId) || null;
+    const existingSlipPrinter = slipPrinterOptions.find((c) => c.value === initialSlipPrinterId) || null;
 
     setSelectedDebtor(existingDebtor);
     setSelectedCostCenter(existingCostCenter);
-  }, [showModel, data, debtorId, debtorOptions, costCenterOptions]);
+    setSelectedSlipPrinter(existingSlipPrinter);
+  }, [showModel, data, debtorId, debtorOptions, costCenterOptions, slipPrinterOptions]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,7 +83,7 @@ const CopyMenuForm = ({
       SourceMenuID: data.MenuID,
       TargetDebtorID: parseFloat(selectedDebtor.value) || 0,
       TargetCostCenterID: selectedCostCenter ? parseFloat(selectedCostCenter.value) : null,
-      DefaultSlipPrinterID: 1,
+      TargetSlipPrinterID: selectedSlipPrinter ? parseFloat(selectedSlipPrinter.value) : null,
       Override: true,
     };
 
@@ -121,6 +135,20 @@ const CopyMenuForm = ({
                 />
               </div>
             </div>
+
+            <div className="col-lg-12 mt-2">
+              <div className="input-blocks">
+                <label>Slip Printer</label>
+                <Select
+                  options={slipPrinterOptions}
+                  value={selectedSlipPrinter}
+                  onChange={setSelectedSlipPrinter}
+                  placeholder="Search slip printer..."
+                  isClearable
+                  classNamePrefix="react-select"
+                />
+              </div>
+            </div>
           </div>
         </Modal.Body>
 
@@ -150,4 +178,5 @@ CopyMenuForm.propTypes = {
   handleClose: PropTypes.func.isRequired,
   debtorList: PropTypes.array.isRequired,
   costCenterList: PropTypes.array.isRequired,
+  slipPrinterList: PropTypes.array.isRequired,
 };

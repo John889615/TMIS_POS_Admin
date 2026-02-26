@@ -11,7 +11,6 @@ export const getAllMenu = async (debtorId) => {
         }
     } catch (error) {
         if (error.response) {
-            // You can use a toast or console.log here for user-friendly error reporting
         }
         throw new Error('Failed to fetch users. Please try again.');
     }
@@ -27,7 +26,6 @@ export const getMenuWithItem = async () => {
         }
     } catch (error) {
         if (error.response) {
-            // You can use a toast or console.log here for user-friendly error reporting
         }
         throw new Error('Failed to fetch users. Please try again.');
     }
@@ -47,7 +45,6 @@ export const newMenu = async (data) => {
     }
 };
 
-
 export const updateMenu = async (data) => {
     try {
         const response = await api.post('/Menu/update/menu', data, {
@@ -62,7 +59,6 @@ export const updateMenu = async (data) => {
     }
 };
 
-
 export const getMenuTree = async (menuId) => {
     try {
         const response = await api.post('/Menu/list/menu/tree', { MenuID: menuId });
@@ -73,7 +69,6 @@ export const getMenuTree = async (menuId) => {
         }
     } catch (error) {
         if (error.response) {
-            // You can use a toast or console.log here for user-friendly error reporting
         }
         throw new Error('Failed to fetch users. Please try again.');
     }
@@ -89,7 +84,6 @@ export const getCampMenuTree = async (menuId) => {
         }
     } catch (error) {
         if (error.response) {
-            // You can use a toast or console.log here for user-friendly error reporting
         }
         throw new Error('Failed to fetch debtor/menu/tree. Please try again.');
     }
@@ -98,7 +92,18 @@ export const getCampMenuTree = async (menuId) => {
 
 export const copyMenu = async (data) => {
     try {
-        const response = await api.post('/Menu/copy/menu', data); // Use POST
+        const response = await api.post('/Menu/copy/menu', data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
+
+export const addProductPrinter = async (data) => {
+    try {
+        const response = await api.post('/Menu/add/debtor/menu/item/product/printer', data);
         console.log("response", response.data);
         return response.data;
     } catch (error) {
