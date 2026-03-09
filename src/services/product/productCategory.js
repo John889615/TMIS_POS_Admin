@@ -1,5 +1,20 @@
 import api from '../posAPI';
 
+const throwIfFailed = (payload, fallbackMsg) => {
+  if (payload?.Success === false) {
+    const msg =
+      (Array.isArray(payload?.Messages) && payload.Messages.join("\n")) ||
+      (Array.isArray(payload?.Errors) && payload.Errors.join("\n")) ||
+      payload?.ErrorCode ||
+      fallbackMsg ||
+      "Request failed.";
+
+    const err = new Error(msg);
+    err.response = { data: payload };
+    throw err;
+  }
+  return payload;
+};
 
 export const getAllProductCategory = async () => {
     try {
@@ -19,22 +34,23 @@ export const getAllProductCategory = async () => {
 
 
 export const newProductCategory = async (data) => {
-    try {
-        const response = await api.post('/invetory/add/product/category', data); // Use POST
-        console.log("response", response.data);
-        return response.data;
-    } catch (error) {
-        return error.response.data;
-    }
+  try {
+    const response = await api.post("/invetory/add/product/category", data);
+    return throwIfFailed(response?.data, "Category add failed.");
+  } catch (error) {
+    const payload = error?.response?.data;
+    if (payload) return throwIfFailed(payload, "Category add failed.");
+    throw error;
+  }
 };
 
-
 export const updateProductCategory = async (data) => {
-    try {
-        const response = await api.post('/invetory/update/product/category', data); // Use POST
-        console.log("response", response.data);
-        return response.data;
-    } catch (error) {
-        return error.response.data;
-    }
+  try {
+    const response = await api.post("/invetory/update/product/category", data);
+    return throwIfFailed(response?.data, "Category update failed.");
+  } catch (error) {
+    const payload = error?.response?.data;
+    if (payload) return throwIfFailed(payload, "Category update failed.");
+    throw error;
+  }
 };

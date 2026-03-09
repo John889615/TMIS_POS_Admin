@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { DndContext, useDraggable, useDroppable, DragOverlay } from "@dnd-kit/core";
+import Swal from "sweetalert2";
+import {
+  DndContext,
+  useDraggable,
+  useDroppable,
+  DragOverlay,
+} from "@dnd-kit/core";
 import { getMenuTree } from "../../services/menu/menuService";
 import { getAllProducts } from "../../services/product/product";
 import { useParams } from "react-router-dom";
-import { newMenuItemProduct, deleteMenuItemProduct } from "../../services/menu/menuItemProductService";
-import { newMenuItem, updateMenuItem, deleteMenuItem } from "../../services/menu/menuItemService";
-import { getAllSlipPrinter } from "../../services/entityData/slipPrinter";
+import {
+  newMenuItemProduct,
+  deleteMenuItemProduct,
+} from "../../services/menu/menuItemProductService";
+import {
+  newMenuItem,
+  updateMenuItem,
+  deleteMenuItem,
+} from "../../services/menu/menuItemService";
 
 const MenuTreeBuilder = () => {
   const { id } = useParams();
+
   const [menuData, setMenuData] = useState(null);
   const [productList, setProductList] = useState([]);
   const [activeProduct, setActiveProduct] = useState(null);
-  const [expandedItems, setExpandedItems] = useState({}); // { parentId: childId }
+
+  const [expandedItems, setExpandedItems] = useState({}); // { parentId: childId(s) }
   const [parentItemId, setParentItemId] = useState(null);
+
   const [showNewModal, setShowNewModal] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [newItemDesc, setNewItemDesc] = useState("");
@@ -26,16 +41,103 @@ const MenuTreeBuilder = () => {
   const [editItemDesc, setEditItemDesc] = useState("");
   const [editItemImage, setEditItemImage] = useState(null);
 
-  // ✅ NEW: Filter state
+  // Filter state
   const [productFilter, setProductFilter] = useState("");
   const [onlyUnassigned, setOnlyUnassigned] = useState(false);
 
+  // -------------------------------------------------------
+  // Display helper: always prefer Description over ProductName
+  // -------------------------------------------------------
+  const getProductLabel = (p) =>
+    (p?.Description || p?.ProductDescription || p?.ProductName || p?.Product || "")
+      ?.toString()
+      .trim();
+
+  // -----------------------------
+  // SweetAlert helpers
+  // -----------------------------
+  const getApiMessage = (res, fallback) =>
+    res?.Messages?.[0] || res?.Errors?.[0] || fallback || "Something went wrong.";
+
+  const swalError = async (title, resOrMsg) => {
+    const msg =
+      typeof resOrMsg === "string"
+        ? resOrMsg
+        : getApiMessage(resOrMsg, "Something went wrong.");
+    await Swal.fire({
+      icon: "error",
+      title: title || "Error",
+      text: msg,
+      confirmButtonText: "OK",
+      allowOutsideClick: false,
+    });
+  };
+
+  const swalSuccess = async (title, msg) => {
+    await Swal.fire({
+      icon: "success",
+      title: title || "Success",
+      text: msg || "Done.",
+      confirmButtonText: "OK",
+      allowOutsideClick: false,
+    });
+  };
+
+  const swalConfirm = async (title, text, confirmText = "Yes") => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: title,
+      text: text,
+      showCancelButton: true,
+      confirmButtonText: confirmText,
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+      allowOutsideClick: false,
+    });
+    return result.isConfirmed;
+  };
+
+  // -----------------------------
+  // Data loading
+  // -----------------------------
+  useEffect(() => {
+    if (id) {
+      fetchData();
+      fetchProduct();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  async function fetchData() {
+    try {
+      const tree = await getMenuTree(id);
+      setMenuData(tree);
+    } catch (err) {
+      await swalError(
+        "Failed to load menu tree",
+        err?.message || "Could not load menu tree."
+      );
+    }
+  }
+
+  async function fetchProduct() {
+    try {
+      const products = await getAllProducts();
+      setProductList(Array.isArray(products) ? products : []);
+    } catch (err) {
+      await swalError(
+        "Failed to load products",
+        err?.message || "Could not load products."
+      );
+    }
+  }
+
+  // Expand all (existing logic kept)
   useEffect(() => {
     if (menuData && menuData.MenuItems && menuData.MenuItems.length > 0) {
       const expanded = {};
       function expandAll(items, parentId = "root") {
         if (items && items.length > 0) {
-          // If multiple children, open all (store as array)
           expanded[parentId] = items.map((child) => child.ItemID);
           items.forEach((item) => {
             if (item.ChildItem && item.ChildItem.length > 0) {
@@ -49,37 +151,9 @@ const MenuTreeBuilder = () => {
     }
   }, [menuData]);
 
-  useEffect(() => {
-    if (id) {
-      fetchData();
-      fetchProduct();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  async function fetchData() {
-    const tree = await getMenuTree(id);
-    setMenuData(tree);
-  }
-
-  async function fetchProduct() {
-    const products = await getAllProducts();
-    setProductList(products);
-  }
-
-  // Helper to find root parent for a menu item
-  function getRootParentId(menuItems, itemId, parentId = "root") {
-    for (const item of menuItems) {
-      if (item.ItemID === itemId) return parentId;
-      if (item.ChildItem && item.ChildItem.length > 0) {
-        const found = getRootParentId(item.ChildItem, itemId, item.ItemID);
-        if (found) return found;
-      }
-    }
-    return null;
-  }
-
-  // ✅ NEW: collect all assigned product IDs in the menu tree
+  // -----------------------------
+  // Assigned products helpers
+  // -----------------------------
   function collectAssignedProductIds(menuItems) {
     const ids = new Set();
     function walk(items) {
@@ -98,13 +172,14 @@ const MenuTreeBuilder = () => {
     return ids;
   }
 
-  const assignedIds = menuData?.MenuItems ? collectAssignedProductIds(menuData.MenuItems) : new Set();
+  const assignedIds = menuData?.MenuItems
+    ? collectAssignedProductIds(menuData.MenuItems)
+    : new Set();
 
-  // ✅ NEW: filtered products list
   const filteredProducts = (productList || [])
     .filter((p) => {
-      const name = (p.ProductName || p.Product || "").toLowerCase();
-      return name.includes(productFilter.trim().toLowerCase());
+      const label = getProductLabel(p).toLowerCase(); // ✅ filter on Description first
+      return label.includes(productFilter.trim().toLowerCase());
     })
     .filter((p) => {
       if (!onlyUnassigned) return true;
@@ -112,32 +187,39 @@ const MenuTreeBuilder = () => {
       return !assignedIds.has(pid);
     });
 
-  // Only allow drop from right panel (not from menu item to menu item)
+  // -----------------------------
+  // Droppable + draggable
+  // -----------------------------
   function DroppableProducts({ item, parentId, children }) {
     const { setNodeRef, isOver } = useDroppable({
       id: `menu-products-${item.ItemID}`,
       data: { item, parentId },
     });
-    // Only allow drop if dragging from right panel (no fromMenuItemId)
+
     const canDrop = activeProduct && !activeProduct.fromMenuItemId;
+
     return (
-      <div ref={setNodeRef} style={{ background: isOver && canDrop ? "#e3f2fd" : undefined }}>
+      <div
+        ref={setNodeRef}
+        style={{ background: isOver && canDrop ? "#e3f2fd" : undefined }}
+      >
         {children(isOver && canDrop)}
       </div>
     );
   }
 
-  // dnd-kit draggable for product (only allow drag from right panel, not from menu item)
   function DraggableProduct({ product, fromMenuItemId }) {
-    // Only allow drag if not from a menu item (i.e., from right panel)
     if (fromMenuItemId) {
-      // Render as static, not draggable
       return (
         <div
           className="list-group-item"
-          style={{ cursor: "default", opacity: 1, backgroundColor: "rgb(249, 249, 249)" }}
+          style={{
+            cursor: "default",
+            opacity: 1,
+            backgroundColor: "rgb(249, 249, 249)",
+          }}
         >
-          {product.ProductName}
+          {getProductLabel(product)}
         </div>
       );
     }
@@ -147,9 +229,13 @@ const MenuTreeBuilder = () => {
       data: { product },
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (isDragging) setActiveProduct(product);
-      else if (activeProduct && activeProduct.POS_ProductID === product.POS_ProductID) setActiveProduct(null);
+      else if (
+        activeProduct &&
+        activeProduct.POS_ProductID === product.POS_ProductID
+      )
+        setActiveProduct(null);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDragging]);
 
@@ -158,15 +244,19 @@ const MenuTreeBuilder = () => {
         ref={setNodeRef}
         {...attributes}
         {...listeners}
-        className={`list-group-item${isDragging ? " bg-info border border-primary" : ""}`}
+        className={`list-group-item${
+          isDragging ? " bg-info border border-primary" : ""
+        }`}
         style={{ cursor: "grab", opacity: isDragging ? 0.5 : 1 }}
       >
-        {product.ProductName}
+        {getProductLabel(product)}
       </div>
     );
   }
 
-  // Accordion: only one expanded per parent, single toggle per item
+  // -----------------------------
+  // Render tree
+  // -----------------------------
   const renderMenuTree = (items, level = 0, parentId = "root") => (
     <ul className="list-group" style={{ marginLeft: level * 10 }}>
       {items.map((item) => {
@@ -175,23 +265,34 @@ const MenuTreeBuilder = () => {
         const isExpanded = Array.isArray(expandedForParent)
           ? expandedForParent.includes(item.ItemID)
           : expandedForParent === item.ItemID;
+
         const isTopLevel = level === 0;
 
         return (
           <li
             key={item.ItemID}
-            className={`list-group-item${isTopLevel ? " mb-3 border-1" : "shadow-sm"}`}
+            className={`list-group-item${
+              isTopLevel ? " mb-3 border-1" : "shadow-sm"
+            }`}
             style={
               isTopLevel
-                ? { borderRadius: "8px", boxShadow: "0 0.125rem 0.25rem rgba(0,0,0,.075)" }
+                ? {
+                    borderRadius: "8px",
+                    boxShadow: "0 0.125rem 0.25rem rgba(0,0,0,.075)",
+                  }
                 : {}
             }
           >
-            <div style={{ display: "flex", alignItems: "center", fontWeight: 600, justifyContent: "space-between" }}>
-
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontWeight: 600,
+                justifyContent: "space-between",
+              }}
+            >
               {/* LEFT SIDE */}
               <div style={{ display: "flex", alignItems: "center" }}>
-
                 {(hasChildren || (item.Product && item.Product.length > 0)) && (
                   <button
                     type="button"
@@ -203,7 +304,9 @@ const MenuTreeBuilder = () => {
                         let newExpanded;
                         if (Array.isArray(prevExpanded)) {
                           if (prevExpanded.includes(item.ItemID))
-                            newExpanded = prevExpanded.filter((id) => id !== item.ItemID);
+                            newExpanded = prevExpanded.filter(
+                              (id) => id !== item.ItemID
+                            );
                           else newExpanded = [...prevExpanded, item.ItemID];
                         } else {
                           newExpanded = prevExpanded === item.ItemID ? [] : [item.ItemID];
@@ -218,7 +321,7 @@ const MenuTreeBuilder = () => {
 
                 <span style={{ fontSize: "1.25rem" }}>{item.Item}</span>
 
-                {/* ✏️ EDIT */}
+                {/* EDIT */}
                 <button
                   type="button"
                   className="btn btn-sm btn-link text-primary ms-2 p-0"
@@ -227,34 +330,39 @@ const MenuTreeBuilder = () => {
                     setEditItem(item);
                     setEditItemName(item.Item);
                     setEditItemDesc(item.Description || "");
+                    setEditItemImage(null);
                     setShowEditModal(true);
                   }}
                 >
                   <i className="bi bi-pencil-square"></i>
                 </button>
 
-                {/* 🗑 DELETE */}
+                {/* DELETE */}
                 <button
                   type="button"
                   className="btn btn-sm btn-link text-danger ms-2 p-0"
                   title="Delete Menu Item"
                   onClick={async () => {
-                    const confirmDelete = window.confirm(
-                      "Delete this menu item?\n\nThis will remove ALL sub-items and linked products."
+                    const ok = await swalConfirm(
+                      "Delete menu item?",
+                      "This will remove ALL sub-items and linked products.",
+                      "Delete"
                     );
-                    if (!confirmDelete) return;
+                    if (!ok) return;
 
                     try {
                       const res = await deleteMenuItem(item.ItemID);
-
                       if (res?.Success === false) {
-                        alert(res?.Messages?.[0] || "Delete failed.");
+                        await swalError("Delete failed", res);
                         return;
                       }
-
-                      await fetchData(); // 🔥 refresh tree cleanly
+                      await fetchData();
+                      await swalSuccess("Deleted", "Menu item removed.");
                     } catch (err) {
-                      alert("Error deleting menu item.");
+                      await swalError(
+                        "Delete failed",
+                        err?.message || "Error deleting menu item."
+                      );
                     }
                   }}
                 >
@@ -291,7 +399,7 @@ const MenuTreeBuilder = () => {
                     >
                       {isOver && activeProduct && (
                         <li className="list-group-item list-group-item-success">
-                          Drop <b>{activeProduct.ProductName}</b> here
+                          Drop <b>{getProductLabel(activeProduct)}</b> here
                         </li>
                       )}
 
@@ -307,13 +415,37 @@ const MenuTreeBuilder = () => {
                               background: "#f9f9f9",
                             }}
                           >
-                            <span>{prod.ProductName || prod.Product}</span>
+                            {/* ✅ display Description first */}
+                            <span>{getProductLabel(prod)}</span>
+
                             <button
                               className="btn btn-sm btn-link text-danger p-0"
                               onClick={async () => {
-                                if (window.confirm("Delete this product?")) {
-                                  await deleteMenuItemProduct(prod.POS_MenuItemProductID);
+                                const ok = await swalConfirm(
+                                  "Delete product link?",
+                                  "Remove this product from the menu item?",
+                                  "Remove"
+                                );
+                                if (!ok) return;
+
+                                try {
+                                  const res = await deleteMenuItemProduct(
+                                    prod.POS_MenuItemProductID
+                                  );
+                                  if (res?.Success === false) {
+                                    await swalError("Remove failed", res);
+                                    return;
+                                  }
                                   await fetchData();
+                                  await swalSuccess(
+                                    "Removed",
+                                    "Product removed from menu item."
+                                  );
+                                } catch (err) {
+                                  await swalError(
+                                    "Remove failed",
+                                    err?.message || "Error removing product."
+                                  );
                                 }
                               }}
                             >
@@ -332,7 +464,13 @@ const MenuTreeBuilder = () => {
 
             {/* CHILDREN */}
             {hasChildren && isExpanded && (
-              <div className="ms-3 p-2 shadow-sm mt-1" style={{ borderRadius: "8px", border: "1px solid #dee2e6" }}>
+              <div
+                className="ms-3 p-2 shadow-sm mt-1"
+                style={{
+                  borderRadius: "8px",
+                  border: "1px solid #dee2e6",
+                }}
+              >
                 {renderMenuTree(item.ChildItem, level + 1, item.ItemID)}
               </div>
             )}
@@ -342,12 +480,17 @@ const MenuTreeBuilder = () => {
     </ul>
   );
 
-  // Only allow drag from right panel to menu item (not menu item to menu item)
+  // -----------------------------
+  // Drag end logic
+  // -----------------------------
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!active || !over) return;
 
-    if (active.id.startsWith("product-") && over.id.startsWith("menu-products-")) {
+    if (
+      active.id.startsWith("product-") &&
+      over.id.startsWith("menu-products-")
+    ) {
       const match = active.id.match(/^product-(\d+)(?:-from-(\d+))?$/);
       if (!match) return;
 
@@ -356,7 +499,9 @@ const MenuTreeBuilder = () => {
       if (fromMenuItemId) return;
 
       const menuItemId = parseInt(over.id.replace("menu-products-", ""), 10);
-      const draggedProduct = productList.find((p) => p.POS_ProductID === productId);
+      const draggedProduct = productList.find(
+        (p) => p.POS_ProductID === productId
+      );
       if (!draggedProduct) return;
 
       async function addProduct(items) {
@@ -364,18 +509,31 @@ const MenuTreeBuilder = () => {
           items.map(async (item) => {
             if (item.ItemID === menuItemId) {
               const alreadyExists =
-                item.Product && item.Product.some((p) => p.ProductID === productId || p.POS_ProductID === productId);
+                item.Product &&
+                item.Product.some(
+                  (p) => p.ProductID === productId || p.POS_ProductID === productId
+                );
 
               if (!alreadyExists) {
-                await newMenuItemProduct({
+                const res = await newMenuItemProduct({
                   FK_MenuItemID: menuItemId,
-                  FK_ProductID: draggedProduct.ProductID || draggedProduct.POS_ProductID,
+                  FK_ProductID:
+                    draggedProduct.ProductID || draggedProduct.POS_ProductID,
                 });
 
+                if (res?.Success === false) {
+                  await swalError("Could not add product", res);
+                  return item;
+                }
+
+                // ✅ ensure we store Description so assigned list shows it too
                 const newProd = {
-                  POS_MenuItemProductID: Math.random(), // temp ID
-                  ProductID: draggedProduct.ProductID || draggedProduct.POS_ProductID,
-                  Product: draggedProduct.ProductName || draggedProduct.Product,
+                  POS_MenuItemProductID: Math.random(), // temp
+                  ProductID:
+                    draggedProduct.ProductID || draggedProduct.POS_ProductID,
+                  Product: getProductLabel(draggedProduct),
+                  ProductName: draggedProduct.ProductName || draggedProduct.Product, // kept for compatibility
+                  Description: draggedProduct.Description || draggedProduct.ProductDescription || "", // ✅
                 };
 
                 item.Product = item.Product ? [...item.Product, newProd] : [newProd];
@@ -390,8 +548,15 @@ const MenuTreeBuilder = () => {
       }
 
       (async () => {
-        const updatedMenuItems = await addProduct(menuData.MenuItems);
-        setMenuData((prev) => ({ ...prev, MenuItems: updatedMenuItems }));
+        try {
+          const updatedMenuItems = await addProduct(menuData.MenuItems);
+          setMenuData((prev) => ({ ...prev, MenuItems: updatedMenuItems }));
+        } catch (err) {
+          swalError(
+            "Drag/drop failed",
+            err?.message || "Could not add product to item."
+          );
+        }
       })();
     }
   };
@@ -401,12 +566,17 @@ const MenuTreeBuilder = () => {
     setShowNewModal(true);
   };
 
+  // -----------------------------
+  // UI
+  // -----------------------------
   return (
     <div className="page-wrapper">
       <div className="content">
         <div className="page-header">
           <div className="add-item d-flex">
-            <h4 className="mb-1">{menuData ? `${menuData.MenuName} Menu` : "Menu Tree"}</h4>
+            <h4 className="mb-1">
+              {menuData ? `${menuData.MenuName} Menu` : "Menu Tree"}
+            </h4>
           </div>
           <div className="page-btn">
             <button className="btn btn-success mb-3" onClick={() => openNewItemModal()}>
@@ -415,18 +585,27 @@ const MenuTreeBuilder = () => {
           </div>
         </div>
 
+        {/* New Menu Item Modal */}
         {showNewModal && (
-          <div className="modal fade show" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
+          <div
+            className="modal fade show"
+            style={{ display: "block", background: "rgba(0,0,0,0.3)" }}
+          >
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">{parentItemId ? "Add Sub Menu Item" : "Add New Menu Item"}</h5>
+                  <h5 className="modal-title">
+                    {parentItemId ? "Add Sub Menu Item" : "Add New Menu Item"}
+                  </h5>
                   <button
                     type="button"
                     className="btn-close"
                     onClick={() => {
                       setShowNewModal(false);
                       setParentItemId(null);
+                      setNewItemName("");
+                      setNewItemDesc("");
+                      setNewItemImage(null);
                     }}
                   ></button>
                 </div>
@@ -447,18 +626,22 @@ const MenuTreeBuilder = () => {
 
                     try {
                       const res = await newMenuItem(payload);
-                      if (res.Success) {
+                      if (res?.Success) {
                         await fetchData();
                         setShowNewModal(false);
                         setNewItemName("");
                         setNewItemDesc("");
                         setNewItemImage(null);
                         setParentItemId(null);
+                        await swalSuccess("Added", "Menu item created.");
                       } else {
-                        alert(res.Messages?.[0] || "Something went wrong.");
+                        await swalError("Could not add item", res);
                       }
                     } catch (err) {
-                      alert("Error adding menu item.");
+                      await swalError(
+                        "Could not add item",
+                        err?.message || "Error adding menu item."
+                      );
                     }
                   }}
                 >
@@ -489,7 +672,7 @@ const MenuTreeBuilder = () => {
                       type="file"
                       accept="image/*"
                       className="form-control"
-                      onChange={(e) => setNewItemImage(e.target.files[0])}
+                      onChange={(e) => setNewItemImage(e.target.files?.[0] || null)}
                     />
                   </div>
 
@@ -500,6 +683,9 @@ const MenuTreeBuilder = () => {
                       onClick={() => {
                         setShowNewModal(false);
                         setParentItemId(null);
+                        setNewItemName("");
+                        setNewItemDesc("");
+                        setNewItemImage(null);
                       }}
                     >
                       Cancel
@@ -516,7 +702,10 @@ const MenuTreeBuilder = () => {
 
         {/* Edit Menu Item Modal */}
         {showEditModal && editItem && (
-          <div className="modal fade show" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
+          <div
+            className="modal fade show"
+            style={{ display: "block", background: "rgba(0,0,0,0.3)" }}
+          >
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -527,6 +716,7 @@ const MenuTreeBuilder = () => {
                     onClick={() => {
                       setShowEditModal(false);
                       setEditItem(null);
+                      setEditItemImage(null);
                     }}
                   ></button>
                 </div>
@@ -548,16 +738,20 @@ const MenuTreeBuilder = () => {
 
                     try {
                       const res = await updateMenuItem(payload);
-                      if (res.Success) {
+                      if (res?.Success) {
                         await fetchData();
                         setShowEditModal(false);
                         setEditItem(null);
                         setEditItemImage(null);
+                        await swalSuccess("Updated", "Menu item updated.");
                       } else {
-                        alert(res.Messages?.[0] || "Something went wrong.");
+                        await swalError("Update failed", res);
                       }
                     } catch (err) {
-                      alert("Error updating menu item.");
+                      await swalError(
+                        "Update failed",
+                        err?.message || "Error updating menu item."
+                      );
                     }
                   }}
                 >
@@ -581,7 +775,7 @@ const MenuTreeBuilder = () => {
                       type="file"
                       accept="image/*"
                       className="form-control"
-                      onChange={(e) => setEditItemImage(e.target.files[0])}
+                      onChange={(e) => setEditItemImage(e.target.files?.[0] || null)}
                     />
                   </div>
 
@@ -592,6 +786,7 @@ const MenuTreeBuilder = () => {
                       onClick={() => {
                         setShowEditModal(false);
                         setEditItem(null);
+                        setEditItemImage(null);
                       }}
                     >
                       Cancel
@@ -606,20 +801,24 @@ const MenuTreeBuilder = () => {
           </div>
         )}
 
+        {/* Main DnD layout */}
         <DndContext onDragEnd={handleDragEnd}>
           <div className="row">
             {/* Left: Menu Tree */}
             <div className="col-md-7" style={{ maxHeight: "70vh", overflowY: "auto" }}>
               <div className="mb-3">
                 <h5 className="mb-3">Menu Items</h5>
-                {menuData && menuData.MenuItems ? renderMenuTree(menuData.MenuItems, 0, "root") : <p>Loading menu...</p>}
+                {menuData && menuData.MenuItems ? (
+                  renderMenuTree(menuData.MenuItems, 0, "root")
+                ) : (
+                  <p>Loading menu...</p>
+                )}
               </div>
             </div>
 
             {/* Right: Products */}
             <div className="col-md-5">
               <div className="card shadow-sm">
-                {/* ✅ UPDATED header with filter */}
                 <div className="card-header bg-white">
                   <h5 className="mb-2">All Products</h5>
 
@@ -664,9 +863,13 @@ const MenuTreeBuilder = () => {
                     {activeProduct ? (
                       <div
                         className="list-group-item bg-primary text-white border border-primary"
-                        style={{ fontWeight: 600, fontSize: "1.1em", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+                        style={{
+                          fontWeight: 600,
+                          fontSize: "1.1em",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                        }}
                       >
-                        Dragging: {activeProduct.ProductName}
+                        Dragging: {getProductLabel(activeProduct)}
                       </div>
                     ) : null}
                   </DragOverlay>

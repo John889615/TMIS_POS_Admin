@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Swal from "sweetalert2";
+
 import { getAllProducts } from "../../services/product/product";
 import {
   getAllCombinationById,
@@ -6,14 +8,15 @@ import {
   updateCombination,
   removeCombination,
 } from "../../services/product/combination";
+
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle, Trash2 } from "react-feather"; // ✅ add Trash2
+import { PlusCircle, Trash2 } from "react-feather";
 import CombinationForm from "../../core/modals/products/combinationFormModel";
 import { useParams } from "react-router-dom";
 
 const CombinationPage = () => {
-  const { id } = useParams(); // ✅ parent PRODUCT id
+  const { id } = useParams(); // parent PRODUCT id
   const [listData, setListData] = useState([]);
   const [productListData, setProductListData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,26 +24,34 @@ const CombinationPage = () => {
   const [selectedData, setSelectedData] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ Parent holds reset function from modal
+  const comboFormResetRef = useRef(null);
+
   useEffect(() => {
     fetchRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const fetchRecords = async () => {
     try {
       if (id) {
-        const data = await getAllCombinationById(id);
-        setListData(Array.isArray(data) ? data : []);
+        const combos = await getAllCombinationById(id);
+        setListData(Array.isArray(combos) ? combos : []);
+      } else {
+        setListData([]);
       }
-      const data = await getAllProducts();
-      setProductListData(Array.isArray(data) ? data : []);
+
+      const products = await getAllProducts();
+      setProductListData(Array.isArray(products) ? products : []);
     } catch (err) {
       console.error("Failed to load combinations:", err?.message || err);
+      setListData([]);
+      setProductListData([]);
     }
   };
 
-  const filteredData = listData.filter((item) =>
-    Object.values(item).some(
+  const filteredData = (listData || []).filter((item) =>
+    Object.values(item || {}).some(
       (value) =>
         typeof value === "string" &&
         value.toLowerCase().includes(searchTerm.toLowerCase())
@@ -52,17 +63,64 @@ const CombinationPage = () => {
     setModelShow(true);
   };
 
-  const handleClose = () => setModelShow(false);
+  const handleClose = () => {
+    setModelShow(false);
+    setSelectedData(null);
+  };
+
+  const showApiError = async (title, response, fallback) => {
+    const msg =
+      response?.Messages?.[0] ||
+      response?.Errors?.[0] ||
+      response?.Message ||
+      fallback ||
+      "Something went wrong.";
+
+    await Swal.fire({
+      icon: "error",
+      title: title || "Error",
+      text: msg,
+      confirmButtonText: "OK",
+      allowOutsideClick: false,
+    });
+  };
 
   const handleAddProduct = async (data) => {
     try {
-      if (data.ProductCombinationID) await updateCombination(data);
-      else await newCombination(data);
+      let response;
 
+      if (data?.ProductCombinationID) response = await updateCombination(data);
+      else response = await newCombination(data);
+
+      // ✅ Your services return an error payload (doesn't throw),
+      // so treat Success === false as error.
+      if (response?.Success === false) {
+        await showApiError("Could not save combination", response, "Combination could not be saved.");
+
+        // ✅ Keep modal open + clear
+        setSelectedData(null);
+        if (comboFormResetRef.current) comboFormResetRef.current();
+        return;
+      }
+
+      // ✅ Success
       await fetchRecords();
       setModelShow(false);
+      setSelectedData(null);
     } catch (err) {
       console.error("Error saving combination:", err?.message || err);
+
+      await Swal.fire({
+        icon: "error",
+        title: "Unexpected error",
+        text: err?.message || "Something went wrong.",
+        confirmButtonText: "OK",
+        allowOutsideClick: false,
+      });
+
+      // ✅ Keep modal open + clear
+      setSelectedData(null);
+      if (comboFormResetRef.current) comboFormResetRef.current();
     }
   };
 
@@ -71,28 +129,55 @@ const CombinationPage = () => {
     setModelShow(true);
   };
 
-  // ✅ Delete combination row
   const handleDeleteCombination = async (row) => {
-  const comboId = Number(row?.ProductCombinationID) || 0;
-  if (!comboId) return console.error("Missing ProductCombinationID:", row);
+    const comboId = Number(row?.ProductCombinationID) || 0;
+    if (!comboId) {
+      await Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: "Missing ProductCombinationID.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
 
-  if (!window.confirm("Delete this combination?")) return;
+    const confirm = await Swal.fire({
+      icon: "warning",
+      title: "Delete this combination?",
+      text: "This action cannot be undone.",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "Cancel",
+      allowOutsideClick: false,
+    });
 
-  try {
-    await removeCombination(comboId);
-    await fetchRecords();
-  } catch (err) {
-    alert(err?.response?.data?.Message || "Failed to delete combination.");
-  }
-};
+    if (!confirm.isConfirmed) return;
 
+    try {
+      const response = await removeCombination(comboId);
 
-  // ✅ IMPORTANT: Preparation/Substitution must use the COMBINATION PRODUCT ID (child)
+      if (response?.Success === false) {
+        await showApiError("Delete failed", response, "Failed to delete combination.");
+        return;
+      }
+
+      await fetchRecords();
+    } catch (err) {
+      await Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: err?.response?.data?.Message || err?.message || "Failed to delete combination.",
+        confirmButtonText: "OK",
+        allowOutsideClick: false,
+      });
+    }
+  };
+
+  // Preparation/Substitution must use the COMBINATION PRODUCT ID (child)
   const handleComboRedirect = (e, comboRow) => {
     const value = e.target.value;
     if (!value) return;
 
-    // This MUST be the child product (the one selected in CombinationForm as FK_ProductItemID)
     const comboProductId = Number(comboRow?.FK_ProductItemID) || 0;
 
     if (!comboProductId) {
@@ -136,7 +221,7 @@ const CombinationPage = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <Link to className="btn btn-searchset">
+                  <Link to="#" className="btn btn-searchset">
                     <i data-feather="search" className="feather-search" />
                   </Link>
                 </div>
@@ -166,7 +251,8 @@ const CombinationPage = () => {
                         <td>{item.Quantity}</td>
                         <td>{item.IsOptional ? "Yes" : "No"}</td>
                         <td>{item.IsExtraCharge ? "Yes" : "No"}</td>
-                        <td>{item.DisplayOrder || "N/A"}</td>
+                        <td>{item.DisplayOrder ?? "N/A"}</td>
+
                         <td className="text-nowrap">
                           {/* Edit */}
                           <button
@@ -178,20 +264,18 @@ const CombinationPage = () => {
                             <i className="feather-edit"></i>
                           </button>
 
-                          {/* ✅ Delete (red dustbin) */}
+                          {/* Delete */}
                           <button
                             type="button"
                             onClick={() => handleDeleteCombination(item)}
                             className="btn btn-sm btn-light me-2"
                             title="Delete"
-                            style={{
-                              border: "1px solid #f1c0c0",
-                            }}
+                            style={{ border: "1px solid #f1c0c0" }}
                           >
                             <Trash2 size={16} color="red" />
                           </button>
 
-                          {/* ✅ Combo-level actions use FK_ProductItemID (child product) */}
+                          {/* Actions */}
                           <select
                             className="form-select form-select-sm d-inline-block"
                             style={{ width: "140px" }}
@@ -228,7 +312,8 @@ const CombinationPage = () => {
           handleClose={handleClose}
           data={selectedData}
           productList={productListData}
-          id={id} // parent product id
+          id={id}
+          onRegisterReset={(resetFn) => (comboFormResetRef.current = resetFn)}
         />
       )}
     </div>

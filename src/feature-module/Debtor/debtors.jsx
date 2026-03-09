@@ -15,6 +15,7 @@ import { PlusCircle } from "react-feather";
 import DebtorForm from "../../core/modals/debtors/debtorFormModel";
 import DebtorAddress from "./debtorAddress";
 import DebtorContact from "./debtorContact";
+import DebtorCurrencyModal from "../../core/modals/debtors/debtorCurrencyModal";
 
 const Debtors = () => {
   const [listData, setListData] = useState([]);
@@ -28,10 +29,11 @@ const Debtors = () => {
   const [showModel, setModelShow] = useState(false);
   const [showAddressModel, setAddressModelShow] = useState(false);
   const [showContactModel, setContactModelShow] = useState(false);
+  const [showCurrencyModel, setCurrencyModelShow] = useState(false);
+
   const [selectedDebtor, setSelectedDebtor] = useState(null);
   const [selectedDebtorId, setSelectedDebtorId] = useState(null);
 
-  // Pagination (same as Products page: 5 buttons sliding)
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const maxPageButtons = 5;
@@ -48,13 +50,12 @@ const Debtors = () => {
       const currency = await getAllCurrency();
       setCurrencyList(currency || []);
 
-      // If you actually use these in the DebtorForm, you can uncomment and load them too:
       // const branches = await getAllBranches(); setBranchList(branches || []);
       // const departments = await getAllDepartments(); setDepartmentList(departments || []);
       // const debtorTypes = await getAllDebtorTypes(); setDebtorType(debtorTypes || []);
       // const statuses = await getAllStatus(); setStatusList(statuses || []);
     } catch (err) {
-      console.error("Failed to load addresses:", err.message);
+      console.error("Failed to load debtors:", err.message);
     }
   };
 
@@ -66,10 +67,8 @@ const Debtors = () => {
     )
   );
 
-  // Pagination calculations
   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
 
-  // Keep current page valid if search reduces results
   useEffect(() => {
     if (totalPages > 0 && currentPage > totalPages) setCurrentPage(totalPages);
     if (totalPages === 0) setCurrentPage(1);
@@ -85,7 +84,6 @@ const Debtors = () => {
     }
   };
 
-  // 5-button window logic (IDENTICAL style)
   let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
   let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
   if (endPage - startPage + 1 < maxPageButtons) {
@@ -106,10 +104,11 @@ const Debtors = () => {
       } else {
         await newDebtor(data);
       }
+
       await fetchRecords();
       setModelShow(false);
     } catch (err) {
-      console.error("Error creating user:", err.message);
+      console.error("Error saving debtor:", err.message);
     }
   };
 
@@ -128,8 +127,14 @@ const Debtors = () => {
     setContactModelShow(true);
   };
 
+  const handleManageCurrencies = (debtorId) => {
+    setSelectedDebtorId(debtorId);
+    setCurrencyModelShow(true);
+  };
+
   const handleAddressClose = () => setAddressModelShow(false);
   const handleContactClose = () => setContactModelShow(false);
+  const handleCurrencyClose = () => setCurrencyModelShow(false);
 
   return (
     <div className="page-wrapper">
@@ -137,14 +142,14 @@ const Debtors = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>Locations</h4>
-              <h6>Manage Your Location</h6>
+              <h4>Debtors</h4>
+              <h6>Manage Your Debtors</h6>
             </div>
           </div>
           <div className="page-btn">
             <Button variant="none" className="btn btn-added" onClick={handleShow}>
               <PlusCircle className="me-2" />
-              Add New Location
+              Add New Debtor
             </Button>
           </div>
         </div>
@@ -161,7 +166,7 @@ const Debtors = () => {
                     value={searchTerm}
                     onChange={(e) => {
                       setSearchTerm(e.target.value);
-                      setCurrentPage(1); // nice UX: go back to first page when searching
+                      setCurrentPage(1);
                     }}
                   />
                   <Link to className="btn btn-searchset">
@@ -193,6 +198,7 @@ const Debtors = () => {
                             type="button"
                             onClick={() => handleEditDebtor(item)}
                             className="btn btn-sm btn-primary me-2"
+                            title="Edit Debtor"
                           >
                             <i className="feather-edit"></i>
                           </button>
@@ -209,10 +215,19 @@ const Debtors = () => {
                           <button
                             type="button"
                             onClick={() => handleViewContacts(item.DebtorID)}
-                            className="btn btn-sm btn-warning"
+                            className="btn btn-sm btn-warning me-2"
                             title="View Contacts"
                           >
                             <i className="feather-users"></i>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleManageCurrencies(item.DebtorID)}
+                            className="btn btn-sm btn-secondary"
+                            title="Manage Currencies"
+                          >
+                            <i className="feather-dollar-sign"></i>
                           </button>
                         </td>
                       </tr>
@@ -233,7 +248,6 @@ const Debtors = () => {
                     Page {currentPage} of {totalPages}
                   </span>
 
-                  {/* 5 PAGE BUTTONS */}
                   <div>
                     {Array.from(
                       { length: endPage - startPage + 1 },
@@ -305,6 +319,14 @@ const Debtors = () => {
           showContactModel={showContactModel}
           debtorId={selectedDebtorId}
           handleContactClose={handleContactClose}
+        />
+      )}
+
+      {showCurrencyModel && (
+        <DebtorCurrencyModal
+          showCurrencyModel={showCurrencyModel}
+          debtorId={selectedDebtorId}
+          handleCurrencyClose={handleCurrencyClose}
         />
       )}
     </div>

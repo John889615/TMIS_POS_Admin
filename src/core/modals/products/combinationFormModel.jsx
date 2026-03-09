@@ -10,21 +10,18 @@ const CombinationForm = ({
   data,
   productList,
   id,
+  onRegisterReset,
 }) => {
   const formRef = useRef(null);
-
-  // Controlled react-select value (option object)
   const [selectedProductItem, setSelectedProductItem] = useState(null);
 
-  // Build options once per productList change
   const productOptions = useMemo(() => {
     return (productList || []).map((p) => ({
-      value: Number(p.POS_ProductID), // FORCE numeric ID
-      label: p.ProductName || `Product ${p.POS_ProductID}`,
+      value: Number(p.POS_ProductID),
+      label: p.Description || `Product ${p.POS_ProductID}`,
     }));
   }, [productList]);
 
-  // Better filtering (multi-word)
   const filterOption = (candidate, input) => {
     const text = (input || "").trim().toLowerCase();
     if (!text) return true;
@@ -32,13 +29,27 @@ const CombinationForm = ({
     return text.split(/\s+/).every((w) => label.includes(w));
   };
 
+  // ✅ hard reset function parent can call
+  const resetForm = () => {
+    if (formRef.current) formRef.current.reset();
+    setSelectedProductItem(null);
+  };
+
+  // ✅ register reset with parent
+  useEffect(() => {
+    if (typeof onRegisterReset === "function") {
+      onRegisterReset(resetForm);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRegisterReset]);
+
   useEffect(() => {
     if (!showModel) return;
 
-    // Reset native inputs
+    // reset native inputs each open
     if (formRef.current) formRef.current.reset();
 
-    // When editing, preselect the correct option by matching numeric IDs
+    // When editing, preselect the correct option
     const fk = data?.FK_ProductItemID != null ? Number(data.FK_ProductItemID) : null;
 
     if (fk != null) {
@@ -53,9 +64,8 @@ const CombinationForm = ({
     e.preventDefault();
     const form = e.target;
 
-    const productData = {
-      FK_ProductID: Number(id) || 0, // parent product
-      // IMPORTANT: only ever send the selected option's value (POS_ProductID)
+    const payload = {
+      FK_ProductID: Number(id) || 0,
       FK_ProductItemID: selectedProductItem ? Number(selectedProductItem.value) : 0,
       IsQuantified: form.IsQuantified.checked,
       Quantity: form.Quantity.value ? Number(form.Quantity.value) : 0,
@@ -64,11 +74,9 @@ const CombinationForm = ({
       DisplayOrder: form.DisplayOrder.value ? parseInt(form.DisplayOrder.value, 10) : 0,
     };
 
-    if (data?.ProductCombinationID) {
-      productData.ProductCombinationID = data.ProductCombinationID;
-    }
+    if (data?.ProductCombinationID) payload.ProductCombinationID = data.ProductCombinationID;
 
-    if (onSubmit) onSubmit(productData);
+    onSubmit?.(payload);
   };
 
   return (
@@ -93,10 +101,8 @@ const CombinationForm = ({
                   isSearchable
                   placeholder="Select Product.."
                   filterOption={filterOption}
-                  // Ensures react-select treats options as stable by ID
                   getOptionValue={(opt) => String(opt.value)}
                   getOptionLabel={(opt) => opt.label}
-                  // Fix dropdown inside modal (z-index)
                   menuPortalTarget={document.body}
                   styles={{
                     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
@@ -122,12 +128,7 @@ const CombinationForm = ({
             <div className="col-lg-6">
               <div className="input-blocks">
                 <label>Quantity</label>
-                <input
-                  name="Quantity"
-                  type="number"
-                  className="form-control"
-                  defaultValue={data?.Quantity ?? 0}
-                />
+                <input name="Quantity" type="number" className="form-control" defaultValue={data?.Quantity ?? 0} />
               </div>
             </div>
 
@@ -162,12 +163,7 @@ const CombinationForm = ({
             <div className="col-lg-6">
               <div className="input-blocks">
                 <label>Display Order</label>
-                <input
-                  name="DisplayOrder"
-                  type="number"
-                  className="form-control"
-                  defaultValue={data?.DisplayOrder ?? 0}
-                />
+                <input name="DisplayOrder" type="number" className="form-control" defaultValue={data?.DisplayOrder ?? 0} />
               </div>
             </div>
           </div>
@@ -195,4 +191,5 @@ CombinationForm.propTypes = {
   handleClose: PropTypes.func.isRequired,
   productList: PropTypes.array.isRequired,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onRegisterReset: PropTypes.func,
 };

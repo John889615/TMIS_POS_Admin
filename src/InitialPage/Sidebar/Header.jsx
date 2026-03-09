@@ -1,28 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
 import { Search, Settings, User, XCircle } from "react-feather";
 import { all_routes } from "../../Router/all_routes";
 import { useAuth } from "../../context/AuthContext";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { getAllDebtors } from "../../services/debtors/debtors";
 import getBranding from "../../utils/getBranding";
-
+import Select from "react-select"; // ✅ NEW
 
 const Header = () => {
   const dispatch = useDispatch();
   const route = all_routes;
+
   const [toggle, SetToggle] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
   const { user } = useAuth();
   const debtors = useSelector((state) => state.debtors_data);
+  const selectedDebtorStore = useSelector((state) => state.selectedDebtorStore);
 
   const branding = getBranding();
 
-  const handleStoreChange = (e) => {
-    const selectedId = e.target.value;
-    dispatch({ type: 'SelectedDebtorStore', payload: selectedId });
+  // ✅ React-Select option list
+  const debtorOptions = useMemo(() => {
+    return (debtors || []).map((d) => ({
+      value: d.DebtorID,
+      label: `${d.ShortCode} ${d.Name}`,
+    }));
+  }, [debtors]);
+
+  // ✅ React-Select selected value
+  const selectedDebtorOption = useMemo(() => {
+    if (!selectedDebtorStore) return null;
+    const id = Number(selectedDebtorStore);
+    return debtorOptions.find((x) => Number(x.value) === id) || null;
+  }, [selectedDebtorStore, debtorOptions]);
+
+  const handleStoreChange = (option) => {
+    const selectedId = option?.value ?? "";
+    dispatch({ type: "SelectedDebtorStore", payload: selectedId });
   };
 
   const isElementVisible = (element) => {
@@ -33,9 +51,9 @@ const Header = () => {
     const fetchDebtors = async () => {
       try {
         const data = await getAllDebtors();
-        dispatch({ type: 'Debtors_Data', payload: data });
+        dispatch({ type: "Debtors_Data", payload: data });
       } catch (error) {
-        console.error('Failed to fetch debtors:', error);
+        console.error("Failed to fetch debtors:", error);
       }
     };
 
@@ -49,10 +67,7 @@ const Header = () => {
       const body = document.body;
       const toggleBtn = document.getElementById("toggle_btn");
 
-      if (
-        body.classList.contains("mini-sidebar") &&
-        isElementVisible(toggleBtn)
-      ) {
+      if (body.classList.contains("mini-sidebar") && isElementVisible(toggleBtn)) {
         e.preventDefault();
       }
     };
@@ -68,9 +83,9 @@ const Header = () => {
     const handleFullscreenChange = () => {
       setIsFullscreen(
         document.fullscreenElement ||
-        document.mozFullScreenElement ||
-        document.webkitFullscreenElement ||
-        document.msFullscreenElement
+          document.mozFullScreenElement ||
+          document.webkitFullscreenElement ||
+          document.msFullscreenElement
       );
     };
 
@@ -81,18 +96,12 @@ const Header = () => {
 
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullscreenChange
-      );
+      document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
       document.removeEventListener(
         "webkitfullscreenchange",
         handleFullscreenChange
       );
-      document.removeEventListener(
-        "msfullscreenchange",
-        handleFullscreenChange
-      );
+      document.removeEventListener("msfullscreenchange", handleFullscreenChange);
     };
   }, []);
 
@@ -100,18 +109,22 @@ const Header = () => {
     document.body.classList.toggle("mini-sidebar");
     SetToggle((current) => !current);
   };
+
   const expandMenu = () => {
     document.body.classList.remove("expand-menu");
   };
+
   const expandMenuOpen = () => {
     document.body.classList.add("expand-menu");
   };
+
   const sidebarOverlay = () => {
     document?.querySelector(".main-wrapper")?.classList?.toggle("slide-nav");
     document?.querySelector(".sidebar-overlay")?.classList?.toggle("opened");
     document?.querySelector("html")?.classList?.toggle("menu-opened");
   };
 
+  // keeping your original pattern
   let pathname = location.pathname;
 
   const exclusionArray = [
@@ -152,6 +165,24 @@ const Header = () => {
     }
   };
 
+  // ✅ react-select styles so it looks good inside header
+  const storeSelectStyles = useMemo(
+    () => ({
+      container: (base) => ({ ...base, minWidth: 280 }),
+      control: (base) => ({
+        ...base,
+        minHeight: 34,
+        height: 34,
+        borderRadius: 8,
+      }),
+      valueContainer: (base) => ({ ...base, height: 34, padding: "0 10px" }),
+      input: (base) => ({ ...base, margin: 0, padding: 0 }),
+      indicatorsContainer: (base) => ({ ...base, height: 34 }),
+      menu: (base) => ({ ...base, zIndex: 9999 }),
+    }),
+    []
+  );
+
   return (
     <>
       <div className="header">
@@ -178,8 +209,8 @@ const Header = () => {
                 pathname.includes("tasks") || pathname.includes("pos")
                   ? "none"
                   : pathname.includes("compose")
-                    ? "none"
-                    : "",
+                  ? "none"
+                  : "",
             }}
             onClick={handlesidebar}
           >
@@ -187,18 +218,15 @@ const Header = () => {
           </Link>
         </div>
         {/* /Logo */}
-        <Link
-          id="mobile_btn"
-          className="mobile_btn"
-          to="#"
-          onClick={sidebarOverlay}
-        >
+
+        <Link id="mobile_btn" className="mobile_btn" to="#" onClick={sidebarOverlay}>
           <span className="bar-icon">
             <span />
             <span />
             <span />
           </span>
         </Link>
+
         {/* Header Menu */}
         <ul className="nav user-menu">
           {/* Search */}
@@ -303,32 +331,32 @@ const Header = () => {
           </li>
           {/* /Search */}
 
-          {/* Select Store */}
+          {/* ✅ Location label + React-Select filterable dropdown */}
           <li className="nav-item dropdown has-arrow main-drop select-store-dropdown">
-            <select
-              id="storeSelect"
-              className="form-select"
-              onChange={handleStoreChange} // you can dispatch here if needed
-            >
-              <option value="">-- Select Store --</option>
-              {debtors.map((debtor, index) => (
-                <option key={index} value={debtor.DebtorID}>
-                  {debtor.ShortCode} {debtor.Name}
-                </option>
-              ))}
-            </select>
+            <div className="d-flex align-items-center gap-2" style={{ minWidth: 360 }}>
+              <span
+                className="text-muted fw-semibold"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                Location:
+              </span>
+
+              <Select
+                options={debtorOptions}
+                value={selectedDebtorOption}
+                onChange={handleStoreChange}
+                placeholder="Select location..."
+                isClearable
+                isSearchable // ✅ built-in filter search like your CopyMenuForm
+                classNamePrefix="react-select"
+                styles={storeSelectStyles}
+              />
+            </div>
           </li>
 
           {/* Flag */}
           <li className="nav-item dropdown has-arrow flag-nav nav-item-box">
-            <Link
-              className="nav-link dropdown-toggle"
-              data-bs-toggle="dropdown"
-              to="#"
-              role="button"
-            >
-              {/* <i data-feather="globe" /> */}
-              {/* <FeatherIcon icon="globe" /> */}
+            <Link className="nav-link dropdown-toggle" data-bs-toggle="dropdown" to="#" role="button">
               <ImageWithBasePath
                 src="assets/img/flags/us.png"
                 alt="img"
@@ -337,40 +365,22 @@ const Header = () => {
             </Link>
             <div className="dropdown-menu dropdown-menu-right">
               <Link to="#" className="dropdown-item active">
-                <ImageWithBasePath
-                  src="assets/img/flags/us.png"
-                  alt="img"
-                  height={16}
-                />
+                <ImageWithBasePath src="assets/img/flags/us.png" alt="img" height={16} />
                 English
               </Link>
               <Link to="#" className="dropdown-item">
-                <ImageWithBasePath
-                  src="assets/img/flags/fr.png"
-                  alt="img"
-                  height={16}
-                />{" "}
-                French
+                <ImageWithBasePath src="assets/img/flags/fr.png" alt="img" height={16} /> French
               </Link>
               <Link to="#" className="dropdown-item">
-                <ImageWithBasePath
-                  src="assets/img/flags/es.png"
-                  alt="img"
-                  height={16}
-                />{" "}
-                Spanish
+                <ImageWithBasePath src="assets/img/flags/es.png" alt="img" height={16} /> Spanish
               </Link>
               <Link to="#" className="dropdown-item">
-                <ImageWithBasePath
-                  src="assets/img/flags/de.png"
-                  alt="img"
-                  height={16}
-                />{" "}
-                German
+                <ImageWithBasePath src="assets/img/flags/de.png" alt="img" height={16} /> German
               </Link>
             </div>
           </li>
           {/* /Flag */}
+
           <li className="nav-item nav-item-box">
             <Link
               to="#"
@@ -378,25 +388,20 @@ const Header = () => {
               onClick={() => toggleFullscreen()}
               className={isFullscreen ? "Exit Fullscreen" : "Go Fullscreen"}
             >
-              {/* <i data-feather="maximize" /> */}
               <FeatherIcon icon="maximize" />
             </Link>
           </li>
+
           <li className="nav-item nav-item-box">
             <Link to="/email">
-              {/* <i data-feather="mail" /> */}
               <FeatherIcon icon="mail" />
               <span className="badge rounded-pill">1</span>
             </Link>
           </li>
+
           {/* Notifications */}
           <li className="nav-item dropdown nav-item-box">
-            <Link
-              to="#"
-              className="dropdown-toggle nav-link"
-              data-bs-toggle="dropdown"
-            >
-              {/* <i data-feather="bell" /> */}
+            <Link to="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
               <FeatherIcon icon="bell" />
               <span className="badge rounded-pill">2</span>
             </Link>
@@ -421,21 +426,17 @@ const Header = () => {
                         </span>
                         <div className="media-body flex-grow-1">
                           <p className="noti-details">
-                            <span className="noti-title">John Doe</span> added
-                            new task{" "}
-                            <span className="noti-title">
-                              Patient appointment booking
-                            </span>
+                            <span className="noti-title">John Doe</span> added new task{" "}
+                            <span className="noti-title">Patient appointment booking</span>
                           </p>
                           <p className="noti-time">
-                            <span className="notification-time">
-                              4 mins ago
-                            </span>
+                            <span className="notification-time">4 mins ago</span>
                           </p>
                         </div>
                       </div>
                     </Link>
                   </li>
+
                   <li className="notification-message">
                     <Link to="/activities">
                       <div className="media d-flex">
@@ -447,21 +448,17 @@ const Header = () => {
                         </span>
                         <div className="media-body flex-grow-1">
                           <p className="noti-details">
-                            <span className="noti-title">Tarah Shropshire</span>{" "}
-                            changed the task name{" "}
-                            <span className="noti-title">
-                              Appointment booking with payment gateway
-                            </span>
+                            <span className="noti-title">Tarah Shropshire</span> changed the task name{" "}
+                            <span className="noti-title">Appointment booking with payment gateway</span>
                           </p>
                           <p className="noti-time">
-                            <span className="notification-time">
-                              6 mins ago
-                            </span>
+                            <span className="notification-time">6 mins ago</span>
                           </p>
                         </div>
                       </div>
                     </Link>
                   </li>
+
                   <li className="notification-message">
                     <Link to="/activities">
                       <div className="media d-flex">
@@ -473,24 +470,19 @@ const Header = () => {
                         </span>
                         <div className="media-body flex-grow-1">
                           <p className="noti-details">
-                            <span className="noti-title">Misty Tison</span>{" "}
-                            added{" "}
-                            <span className="noti-title">Domenic Houston</span>{" "}
-                            and <span className="noti-title">Claire Mapes</span>{" "}
-                            to project{" "}
-                            <span className="noti-title">
-                              Doctor available module
-                            </span>
+                            <span className="noti-title">Misty Tison</span> added{" "}
+                            <span className="noti-title">Domenic Houston</span> and{" "}
+                            <span className="noti-title">Claire Mapes</span> to project{" "}
+                            <span className="noti-title">Doctor available module</span>
                           </p>
                           <p className="noti-time">
-                            <span className="notification-time">
-                              8 mins ago
-                            </span>
+                            <span className="notification-time">8 mins ago</span>
                           </p>
                         </div>
                       </div>
                     </Link>
                   </li>
+
                   <li className="notification-message">
                     <Link to="/activities">
                       <div className="media d-flex">
@@ -502,21 +494,17 @@ const Header = () => {
                         </span>
                         <div className="media-body flex-grow-1">
                           <p className="noti-details">
-                            <span className="noti-title">Rolland Webber</span>{" "}
-                            completed task{" "}
-                            <span className="noti-title">
-                              Patient and Doctor video conferencing
-                            </span>
+                            <span className="noti-title">Rolland Webber</span> completed task{" "}
+                            <span className="noti-title">Patient and Doctor video conferencing</span>
                           </p>
                           <p className="noti-time">
-                            <span className="notification-time">
-                              12 mins ago
-                            </span>
+                            <span className="notification-time">12 mins ago</span>
                           </p>
                         </div>
                       </div>
                     </Link>
                   </li>
+
                   <li className="notification-message">
                     <Link to="/activities">
                       <div className="media d-flex">
@@ -528,16 +516,11 @@ const Header = () => {
                         </span>
                         <div className="media-body flex-grow-1">
                           <p className="noti-details">
-                            <span className="noti-title">Bernardo Galaviz</span>{" "}
-                            added new task{" "}
-                            <span className="noti-title">
-                              Private chat module
-                            </span>
+                            <span className="noti-title">Bernardo Galaviz</span> added new task{" "}
+                            <span className="noti-title">Private chat module</span>
                           </p>
                           <p className="noti-time">
-                            <span className="notification-time">
-                              2 days ago
-                            </span>
+                            <span className="notification-time">2 days ago</span>
                           </p>
                         </div>
                       </div>
@@ -551,18 +534,15 @@ const Header = () => {
             </div>
           </li>
           {/* /Notifications */}
+
           <li className="nav-item nav-item-box">
             <Link to="/general-settings">
-              {/* <i data-feather="settings" /> */}
               <FeatherIcon icon="settings" />
             </Link>
           </li>
+
           <li className="nav-item dropdown has-arrow main-drop">
-            <Link
-              to="#"
-              className="dropdown-toggle nav-link userset"
-              data-bs-toggle="dropdown"
-            >
+            <Link to="#" className="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
               <span className="user-info">
                 <span className="user-letter">
                   <ImageWithBasePath
@@ -577,14 +557,12 @@ const Header = () => {
                 </span>
               </span>
             </Link>
+
             <div className="dropdown-menu menu-drop-user">
               <div className="profilename">
                 <div className="profileset">
                   <span className="user-img">
-                    <ImageWithBasePath
-                      src="assets/img/profiles/avator1.jpg"
-                      alt="img"
-                    />
+                    <ImageWithBasePath src="assets/img/profiles/avator1.jpg" alt="img" />
                     <span className="status online" />
                   </span>
                   <div className="profilesets">
@@ -593,6 +571,7 @@ const Header = () => {
                   </div>
                 </div>
                 <hr className="m-0" />
+
                 <Link className="dropdown-item" to={route.profile}>
                   <User className="me-2" /> My Profile
                 </Link>
@@ -600,7 +579,9 @@ const Header = () => {
                   <Settings className="me-2" />
                   Settings
                 </Link>
+
                 <hr className="m-0" />
+
                 <Link className="dropdown-item logout pb-0" to="/signin">
                   <ImageWithBasePath
                     src="assets/img/icons/log-out.svg"
@@ -614,6 +595,7 @@ const Header = () => {
           </li>
         </ul>
         {/* /Header Menu */}
+
         {/* Mobile Menu */}
         <div className="dropdown mobile-user-menu">
           <Link

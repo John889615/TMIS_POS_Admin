@@ -1,4 +1,11 @@
+// ProductPage.jsx (FULL FILE) ✅
+// - Adds Image column (thumbnail from item.ImageUrl)
+// - Click thumbnail => opens reusable ImagePreviewModal (separate component)
+// - ImagePreviewModal is generic and can be reused anywhere
+// - ✅ SweetAlert2 on API error when saving product
+
 import React, { useState, useEffect, useMemo } from "react";
+import Swal from "sweetalert2";
 import {
   getAllProducts,
   syncAllProducts,
@@ -13,6 +20,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { PlusCircle } from "react-feather";
 import ProductForm from "../../core/modals/products/productFormModel";
 
+// ✅ reusable modal (create this file below and adjust import path as you like)
+import ImagePreviewModal from "../../core/modals/common/ImagePreviewModal";
+
 const withTimeout = (promise, ms, timeoutMessage = "Request timed out") => {
   let timeoutId;
   const timeoutPromise = new Promise((_, reject) => {
@@ -22,6 +32,36 @@ const withTimeout = (promise, ms, timeoutMessage = "Request timed out") => {
   return Promise.race([promise, timeoutPromise]).finally(() => {
     clearTimeout(timeoutId);
   });
+};
+
+// ✅ Extract best error message from axios/fetch/backend objects
+const getApiErrorMessage = (err) => {
+  const data = err?.response?.data;
+
+  // ✅ Your API format
+  if (data) {
+    if (Array.isArray(data.Messages) && data.Messages.length)
+      return data.Messages.join("\n");
+
+    if (Array.isArray(data.Errors) && data.Errors.length)
+      return data.Errors.join("\n");
+
+    if (typeof data.ErrorCode === "string" && data.ErrorCode.trim())
+      return data.ErrorCode;
+
+    if (typeof data === "string" && data.trim()) return data;
+  }
+
+  // Axios common
+  const axiosMsg =
+    err?.response?.data?.message ||
+    err?.response?.data?.Message ||
+    err?.response?.data?.error ||
+    err?.response?.data?.title;
+
+  if (typeof axiosMsg === "string" && axiosMsg.trim()) return axiosMsg;
+
+  return err?.message || err?.toString?.() || "Unknown error occurred.";
 };
 
 const ProductPage = () => {
@@ -38,6 +78,11 @@ const ProductPage = () => {
   const [syncing, setSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState({ type: "idle", message: "" }); // idle|working|success|error
   const [loadStatus, setLoadStatus] = useState({ type: "idle", message: "" }); // idle|working|error
+
+  // ✅ Image preview modal state (generic)
+  const [imgModalOpen, setImgModalOpen] = useState(false);
+  const [imgModalSrc, setImgModalSrc] = useState("");
+  const [imgModalTitle, setImgModalTitle] = useState("");
 
   const recordsPerPage = 10;
   const maxPageButtons = 5;
@@ -61,8 +106,6 @@ const ProductPage = () => {
       getAllUnits(),
     ]);
 
-    // NOTE: user’s original had bug here (productsRes missing),
-    // keeping your structure but fixing safely.
     const [productsRes, catRes, typeRes, unitsRes] = results;
 
     const failures = [];
@@ -140,8 +183,7 @@ const ProductPage = () => {
     const term = searchTerm.toLowerCase();
     return listData.filter((item) =>
       Object.values(item).some(
-        (value) =>
-          typeof value === "string" && value.toLowerCase().includes(term)
+        (value) => typeof value === "string" && value.toLowerCase().includes(term)
       )
     );
   }, [listData, searchTerm]);
@@ -168,6 +210,7 @@ const ProductPage = () => {
 
   const handleClose = () => setModelShow(false);
 
+  // ✅ SweetAlert on API error when adding/updating product
   const handleAddProduct = async (data) => {
     try {
       if (data.POS_ProductID) await updateProduct(data);
@@ -176,7 +219,15 @@ const ProductPage = () => {
       await fetchRecords();
       setModelShow(false);
     } catch (err) {
-      console.error("Error saving product:", err?.message || err);
+      const msg = getApiErrorMessage(err);
+      console.error("Error saving product:", msg, err);
+
+      Swal.fire({
+        icon: "error",
+        title: "Could not save product",
+        text: msg,
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -191,6 +242,61 @@ const ProductPage = () => {
     if (!value) return;
     navigate(`/${value}/${item.POS_ProductID}`);
     e.target.value = "";
+  };
+
+  // ✅ generic image modal open/close
+  const openImage = (src, title) => {
+    if (!src) return;
+    setImgModalSrc(src);
+    setImgModalTitle(title || "Image Preview");
+    setImgModalOpen(true);
+  };
+
+  const closeImage = () => {
+    setImgModalOpen(false);
+    setImgModalSrc("");
+    setImgModalTitle("");
+  };
+
+  // ✅ Thumbnail renderer (handles missing url)
+  const Thumb = ({ src, alt, onClick }) => {
+    if (!src)
+      return (
+        <div className="text-muted text-center" style={{ width: "70px" }}>
+          No image
+        </div>
+      );
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={src}
+          alt={alt}
+          onClick={onClick}
+          style={{
+            width: 70,
+            height: 70,
+            objectFit: "cover",
+            borderRadius: 8,
+            cursor: "pointer",
+            border: "1px solid #ddd",
+            transition: "transform 0.2s ease",
+          }}
+          loading="lazy"
+          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+      </div>
+    );
   };
 
   const Pill = ({ type, message }) => {
@@ -282,6 +388,7 @@ const ProductPage = () => {
               <table className="table table-bordered table-striped">
                 <thead>
                   <tr>
+                    <th className="text-center">Image</th>
                     <th>Description</th>
                     <th>Product Type</th>
                     <th>Unit</th>
@@ -294,10 +401,24 @@ const ProductPage = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {currentData.length > 0 ? (
                     currentData.map((item, index) => (
                       <tr key={index}>
+                        <td className="text-center">
+                          <Thumb
+                            src={item.ImageUrl}
+                            alt={item.Description || "Product image"}
+                            onClick={() =>
+                              openImage(
+                                item.ImageUrl,
+                                item.Description || "Product image"
+                              )
+                            }
+                          />
+                        </td>
+
                         <td>{item.Description || "N/A"}</td>
                         <td>{item.ProductType || "N/A"}</td>
                         <td>{item.Unit || "N/A"}</td>
@@ -307,6 +428,7 @@ const ProductPage = () => {
                         <td>{item.SKU || "N/A"}</td>
                         <td>{item.Barcode || "N/A"}</td>
                         <td>{item.QrCode || "N/A"}</td>
+
                         <td>
                           <button
                             type="button"
@@ -405,6 +527,14 @@ const ProductPage = () => {
           unitList={unitListData}
         />
       )}
+
+      {/* ✅ Reusable Image Preview Modal */}
+      <ImagePreviewModal
+        show={imgModalOpen}
+        title={imgModalTitle}
+        src={imgModalSrc}
+        onHide={closeImage}
+      />
     </div>
   );
 };

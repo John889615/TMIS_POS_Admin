@@ -1,167 +1,140 @@
-import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
-import Select from 'react-select';
 
 const DebtorForm = ({
-    currencyList,
-    onSubmitDebtor,
-    showModel,
-    handleClose,
-    debtorData,
+  currencyList,
+  onSubmitDebtor,
+  showModel,
+  handleClose,
+  debtorData,
 }) => {
-    const formRef = useRef(null);
-    const [selectedCurrency, setSelectedCurrency] = useState(null);
+  const formRef = useRef(null);
 
-    // Build currency options
-    const currencyOptions = currencyList.map(item => ({
-        value: item.CurrencyID,
-        label: `${item.Name}${item.Code ? ` (${item.Code})` : ''}`,
-    }));
+  const resetForm = () => {
+    formRef.current?.reset();
+  };
 
-    // Reset form helper
-    const resetForm = () => {
-        formRef.current?.reset();
-        setSelectedCurrency(null);
+  useEffect(() => {
+    if (!showModel) {
+      resetForm();
+    }
+  }, [showModel]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const defaultCurrency = (currencyList || [])[0];
+
+    const data = {
+      ShortCode: form.ShortCode.value.trim(),
+      Name: form.Name.value.trim(),
+      FK_CurrencyID: defaultCurrency?.CurrencyID ?? null,
+      IsActive: form.IsActive.checked,
     };
 
-    // Handle modal open / edit mode
-    useEffect(() => {
-        if (showModel) {
-            if (debtorData?.FK_CurrencyID) {
-                const existingCurrency = currencyOptions.find(
-                    c => c.value === debtorData.FK_CurrencyID
-                );
-                setSelectedCurrency(existingCurrency || null);
-            } else {
-                resetForm();
-            }
-        } else {
-            resetForm();
-        }
-    }, [showModel, debtorData]);
+    if (debtorData?.DebtorID) {
+      data.DebtorID = debtorData.DebtorID;
+    }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    await onSubmitDebtor(data);
 
-        if (!selectedCurrency) return;
+    resetForm();
+  };
 
-        const form = e.target;
+  return (
+    <Modal
+      show={showModel}
+      onHide={handleClose}
+      centered
+      dialogClassName="custom-modal-two"
+    >
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <Modal.Header closeButton className="custom-modal-header border-0">
+          <Modal.Title>{debtorData?.DebtorID ? "Update Debtor" : "Add Debtor"}</Modal.Title>
+        </Modal.Header>
 
-        const data = {
-            ShortCode: form.ShortCode.value.trim(),
-            Name: form.Name.value.trim(),
-            FK_CurrencyID: selectedCurrency.value,
-            IsActive: form.IsActive.checked,
-        };
+        <Modal.Body className="custom-modal-body">
+          <div className="row">
+            <div className="col-lg-6">
+              <div className="input-blocks">
+                <label>Short Code</label>
+                <input
+                  name="ShortCode"
+                  type="text"
+                  className="form-control"
+                  defaultValue={debtorData?.ShortCode || ""}
+                  required
+                />
+              </div>
+            </div>
 
-        if (debtorData?.DebtorID) {
-            data.DebtorID = debtorData.DebtorID;
-        }
+            <div className="col-lg-6">
+              <div className="input-blocks">
+                <label>Name</label>
+                <input
+                  name="Name"
+                  type="text"
+                  className="form-control"
+                  defaultValue={debtorData?.Name || ""}
+                  required
+                />
+              </div>
+            </div>
 
-        await onSubmitDebtor(data);
+            <div className="col-lg-12 mt-2">
+              <div className="alert alert-light border">
+                Default currency:{" "}
+                <strong>
+                  {currencyList?.[0]
+                    ? `${currencyList[0].Name}${currencyList[0].Code ? ` (${currencyList[0].Code})` : ""}`
+                    : "No currency found"}
+                </strong>
+              </div>
+            </div>
 
-        // ✅ Clear after successful submit
-        resetForm();
-    };
+            <div className="col-lg-6 mt-3">
+              <div className="input-blocks form-check">
+                <input
+                  type="checkbox"
+                  name="IsActive"
+                  defaultChecked={debtorData?.IsActive ?? true}
+                  className="form-check-input"
+                  id="debtorIsActive"
+                />
+                <label className="form-check-label" htmlFor="debtorIsActive">
+                  Is Active?
+                </label>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
 
-    return (
-        <Modal
-            show={showModel}
-            onHide={handleClose}
-            centered
-            dialogClassName="custom-modal-two"
-        >
-            <form onSubmit={handleSubmit} ref={formRef}>
-                <Modal.Header closeButton className="custom-modal-header border-0">
-                    <Modal.Title>Location</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body className="custom-modal-body">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <div className="input-blocks">
-                                <label>Short Code</label>
-                                <input
-                                    name="ShortCode"
-                                    type="text"
-                                    className="form-control"
-                                    defaultValue={debtorData?.ShortCode || ''}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="col-lg-6">
-                            <div className="input-blocks">
-                                <label>Name</label>
-                                <input
-                                    name="Name"
-                                    type="text"
-                                    className="form-control"
-                                    defaultValue={debtorData?.Name || ''}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="col-lg-6 mt-3">
-                            <div className="input-blocks">
-                                <label>Currency</label>
-                                <Select
-                                    options={currencyOptions}
-                                    value={selectedCurrency}
-                                    onChange={setSelectedCurrency}
-                                    placeholder="Search currency..."
-                                    isClearable
-                                    classNamePrefix="react-select"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="col-lg-6 mt-4">
-                            <div className="input-blocks form-check">
-                                <input
-                                    type="checkbox"
-                                    name="IsActive"
-                                    defaultChecked={debtorData?.IsActive ?? true}
-                                    className="form-check-input"
-                                    id="isActive"
-                                />
-                                <label
-                                    className="form-check-label"
-                                    htmlFor="isActive"
-                                >
-                                    Is Active?
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </Modal.Body>
-
-                <Modal.Footer className="modal-footer-btn">
-                    <button
-                        type="button"
-                        className="btn btn-cancel me-2"
-                        onClick={handleClose}
-                    >
-                        Cancel
-                    </button>
-                    <button type="submit" className="btn btn-submit">
-                        Submit
-                    </button>
-                </Modal.Footer>
-            </form>
-        </Modal>
-    );
+        <Modal.Footer className="modal-footer-btn">
+          <button
+            type="button"
+            className="btn btn-cancel me-2"
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-submit">
+            Submit
+          </button>
+        </Modal.Footer>
+      </form>
+    </Modal>
+  );
 };
 
 DebtorForm.propTypes = {
-    currencyList: PropTypes.array.isRequired,
-    debtorData: PropTypes.object,
-    onSubmitDebtor: PropTypes.func.isRequired,
-    showModel: PropTypes.bool.isRequired,
-    handleClose: PropTypes.func.isRequired,
+  currencyList: PropTypes.array.isRequired,
+  debtorData: PropTypes.object,
+  onSubmitDebtor: PropTypes.func.isRequired,
+  showModel: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
 };
 
 export default DebtorForm;

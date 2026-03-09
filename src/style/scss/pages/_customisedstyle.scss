@@ -599,7 +599,7 @@ div.ant-picker .ant-picker-input input {
 .input-blocks .react-select__control input[type="text"],
 .input-blocks .react-select__control input[type="password"],
 .input-blocks .react-select__control input[type="email"] {
-  height: 0px;
+  height: auto !important;
 }
 .modal-header {
   justify-content: space-between;

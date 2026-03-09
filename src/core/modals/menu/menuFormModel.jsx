@@ -2,18 +2,31 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 
-const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
+const MenuForm = ({ onSubmit, showModel, handleClose, data, onRegisterReset }) => {
   const formRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const [filePreviewUrl, setFilePreviewUrl] = useState(null);
 
-  // Reset form + preview when modal opens
+  const clearForm = () => {
+    // reset fields
+    if (formRef.current) formRef.current.reset();
+
+    // clear file input (reset won't always clear file reliably)
+    if (fileInputRef.current) fileInputRef.current.value = "";
+
+    // clear preview and revoke old url
+    setFilePreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  };
+
+  // ✅ give parent a way to clear the form after SweetAlert OK
   useEffect(() => {
-    if (showModel && formRef.current) {
-      formRef.current.reset();
-      setFilePreviewUrl(null);
-    }
-  }, [showModel]);
+    if (onRegisterReset) onRegisterReset(clearForm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRegisterReset]);
 
   // Cleanup created object URLs
   useEffect(() => {
@@ -29,7 +42,6 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
       return;
     }
 
-    // Replace old preview URL if any
     setFilePreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return URL.createObjectURL(file);
@@ -46,11 +58,11 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
       ImageFile: form.ImageFile.files[0] || null,
     };
 
-    // ✅ keep the ID when editing
+    // ✅ keep ID when editing
     const id = data?.MenuID ?? data?.POS_MenuID;
     if (id) {
       menuData.MenuID = id;
-      menuData.POS_MenuID = id; // keep only if your API expects it
+      menuData.POS_MenuID = id; // only if your API expects it
     }
 
     onSubmit?.(menuData);
@@ -62,7 +74,12 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
   const previewSrc = filePreviewUrl || data?.ImageUrl || "";
 
   return (
-    <Modal show={showModel} onHide={handleClose} centered dialogClassName="custom-modal-two">
+    <Modal
+      show={showModel}
+      onHide={handleClose}
+      centered
+      dialogClassName="custom-modal-two"
+    >
       <form onSubmit={handleSubmit} ref={formRef}>
         <Modal.Header closeButton className="custom-modal-header border-0">
           <Modal.Title>Menu</Modal.Title>
@@ -77,7 +94,7 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
                   name="MenuName"
                   required
                   type="text"
-                  defaultValue={data?.MenuName}
+                  defaultValue={data?.MenuName || ""}
                   className="form-control"
                 />
               </div>
@@ -90,7 +107,7 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
                   className="form-check-input"
                   id="IsActive"
                   name="IsActive"
-                  defaultChecked={data?.IsActive || false}
+                  defaultChecked={!!data?.IsActive}
                 />
                 <label className="form-check-label" htmlFor="IsActive">
                   Is Active
@@ -117,7 +134,6 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
                         border: "1px solid #e5e5e5",
                       }}
                       onError={(e) => {
-                        // in case ImageUrl is broken
                         e.currentTarget.style.display = "none";
                       }}
                     />
@@ -130,6 +146,7 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
                 )}
 
                 <input
+                  ref={fileInputRef}
                   name="ImageFile"
                   type="file"
                   accept="image/*"
@@ -137,16 +154,12 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
                   onChange={handleFileChange}
                 />
 
-                {/* Optional: "Remove selected" */}
+                {/* Optional: remove selected file */}
                 {filePreviewUrl && (
                   <button
                     type="button"
                     className="btn btn-sm btn-outline-secondary mt-2"
-                    onClick={() => {
-                      // Clear file input + preview
-                      if (formRef.current) formRef.current.reset();
-                      setFilePreviewUrl(null);
-                    }}
+                    onClick={clearForm}
                   >
                     Remove selected image
                   </button>
@@ -157,7 +170,11 @@ const MenuForm = ({ onSubmit, showModel, handleClose, data }) => {
         </Modal.Body>
 
         <Modal.Footer className="modal-footer-btn d-flex justify-content-end">
-          <button type="button" className="btn btn-cancel me-2" onClick={handleClose}>
+          <button
+            type="button"
+            className="btn btn-cancel me-2"
+            onClick={handleClose}
+          >
             Cancel
           </button>
           <button type="submit" className="btn btn-submit">
@@ -176,4 +193,5 @@ MenuForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   showModel: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  onRegisterReset: PropTypes.func,
 };
