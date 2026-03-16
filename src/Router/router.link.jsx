@@ -226,6 +226,8 @@ import EntityDataTimeZone from "../feature-module/EntityData/TimeZone/timeZone";
 import EntityDataSlipPrinter from "../feature-module/EntityData/slipPrinter/slipPrinter";
 import PaymentTypes from "../feature-module/EntityData/Payment/paymentType";
 import TaxTypes from "../feature-module/EntityData/Tax/taxType";
+import TenantSettings from "../feature-module/EntityData/TenantSettings/tenantSettings.jsx";
+import ExchangeRatePage from "../feature-module/EntityData/ExchangeRate/exchangeRate";
 
 import Debtors from "../feature-module/Debtor/debtors";
 // import DebtorAddress from "../feature-module/Debtor/debtorAddress";
@@ -1917,6 +1919,20 @@ export const publicRoutes = [
     path: routes.BcSyncPage,
     name: "bcSyncPage",
     element: <BcSyncPage />,
+    route: Route,
+  },
+  {
+    id: 167,
+    path: routes.TenantSettings,
+    name: "tenantSettings",
+    element: <TenantSettings />,
+    route: Route,
+  },
+  {
+    id: 168,
+    path: routes.entityExchangeRate,
+    name: "exchange-rate",
+    element: <ExchangeRatePage />,
     route: Route,
   },
 ];

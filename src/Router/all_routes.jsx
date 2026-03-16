@@ -257,5 +257,7 @@ export const all_routes = {
   stockCostCenterproduct: "cost-center-product",
   priceCode: "/price-code",
   BcSyncPage: "/BcSyncPage",
+  TenantSettings: "/TenantSettingsPage",
+  entityExchangeRate: "/exchange-rate",
   //purchaseOrderTree: "/purchase-order-tree/:id",
 };

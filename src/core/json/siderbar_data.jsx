@@ -499,6 +499,18 @@ export const SidebarData = [
         icon: <Icon.DollarSign />,
         showSubRoute: false,
       },
+      {
+        label: "Tenant Settings",
+        link: "/TenantSettingsPage",
+        icon: <Icon.BookOpen />,
+        showSubRoute: false,
+      },
+      {
+        label: "Exchange Rate",
+        link: "/exchange-rate",
+        icon: <Icon.BookOpen />,
+        showSubRoute: false,
+      },
     ],
   },
 
