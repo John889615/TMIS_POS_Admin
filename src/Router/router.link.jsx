@@ -1294,7 +1294,7 @@ export const publicRoutes = [
   {
     id: 94,
     path: routes.companysettings,
-    name: "companysettings",
+    name: "companysettings1",
     element: <CompanySettings />,
     route: Route,
   },
@@ -2106,6 +2106,13 @@ export const pagesRoute = [
     path: routes.undermaintenance,
     name: "undermaintenance",
     element: <Undermaintainence />,
+    route: Route,
+  },  
+  {
+    id: 22,
+    path: routes.companysettings,
+    name: "companysettings",
+    element: <CompanySettings />,
     route: Route,
   },
 ];

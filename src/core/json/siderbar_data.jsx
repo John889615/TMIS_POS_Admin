@@ -277,6 +277,12 @@ export const SidebarData = [
         icon: <Icon.Tag />,
         showSubRoute: false,
       },
+      {
+        label: "Company Settings",
+        link: "/company-settings",
+        icon: <Icon.Home />,
+        showSubRoute: false,
+      },
     ],
   },
   {
@@ -490,7 +496,7 @@ export const SidebarData = [
       {
         label: "Payment Type",
         link: "/payment-type",
-        icon: <Icon.DollarSign />,
+        icon: <Icon.CreditCard />,
         showSubRoute: false,
       },
       {
@@ -508,7 +514,7 @@ export const SidebarData = [
       {
         label: "Exchange Rate",
         link: "/exchange-rate",
-        icon: <Icon.BookOpen />,
+        icon: <Icon.BarChart />,
         showSubRoute: false,
       },
     ],
