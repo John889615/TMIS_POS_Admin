@@ -277,12 +277,6 @@ export const SidebarData = [
         icon: <Icon.Tag />,
         showSubRoute: false,
       },
-      {
-        label: "Company Settings",
-        link: "/company-settings",
-        icon: <Icon.Home />,
-        showSubRoute: false,
-      },
     ],
   },
   {
@@ -516,8 +510,14 @@ export const SidebarData = [
         link: "/exchange-rate",
         icon: <Icon.BarChart />,
         showSubRoute: false,
+      },    
+      {
+        label: "Company Settings",
+        link: "/company-settings",
+        icon: <Icon.Home />,
+        showSubRoute: false,
       },
-    ],
+        ],
   },
 
   // {

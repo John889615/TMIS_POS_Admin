@@ -136,6 +136,7 @@ const EntityDataSlipPrinter = () => {
                                         <th>IP Address</th>
                                         <th>Port</th>
                                         <th>Is Default</th>
+                                        <th>Auto Cut</th>
                                         <th>Is Active</th>
                                         <th>Created By</th>
                                         <th>Updated By</th>
@@ -153,6 +154,7 @@ const EntityDataSlipPrinter = () => {
                                                 <td>{item.IpAddress}</td>
                                                 <td>{item.Port}</td>
                                                 <td>{item.IsDefault ? "Yes" : "No"}</td>
+                                                <td>{item.AutoCut ? "Yes" : "No"}</td>
                                                 <td>{item.IsActive ? "Yes" : "No"}</td>
                                                 <td>{item.CreatedBy}</td>
                                                 <td>{item.UpdatedBy}</td>
