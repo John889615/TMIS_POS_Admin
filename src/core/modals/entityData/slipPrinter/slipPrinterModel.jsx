@@ -112,6 +112,13 @@ const SlipPrinterForm = ({ branchList,
                         <div className="col-lg-6">
                             <div className="input-blocks">
                                 <label>
+                                    <input name="AutoCut" type="checkbox" defaultChecked={data?.AutoCut ?? true} /> Auto Cut
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="input-blocks">
+                                <label>
                                     <input name="IsActive" type="checkbox" defaultChecked={data?.IsActive ?? true} /> Is Active
                                 </label>
                             </div>
