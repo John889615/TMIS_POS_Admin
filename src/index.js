@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.js";
 import { base_path } from "./environment.jsx";
@@ -14,8 +14,7 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import store from "./core/redux/store.jsx";
 import AllRoutes from "./Router/router.jsx";
-import { AuthProvider } from "./context/AuthContext"; // Adjust the path if needed
-
+import { AuthProvider } from "./context/AuthContext";
 
 const rootElement = document.getElementById("root");
 
@@ -25,9 +24,9 @@ if (rootElement) {
     <React.StrictMode>
       <Provider store={store}>
         <AuthProvider>
-          <BrowserRouter basename={base_path}>
+          <HashRouter basename={base_path}>
             <AllRoutes />
-          </BrowserRouter>
+          </HashRouter>
         </AuthProvider>
       </Provider>
     </React.StrictMode>
