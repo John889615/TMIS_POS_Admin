@@ -83,7 +83,7 @@ const CopyMenuForm = ({
       SourceMenuID: data.MenuID,
       TargetDebtorID: parseFloat(selectedDebtor.value) || 0,
       TargetCostCenterID: selectedCostCenter ? parseFloat(selectedCostCenter.value) : null,
-      TargetSlipPrinterID: selectedSlipPrinter ? parseFloat(selectedSlipPrinter.value) : null,
+      DefaultSlipPrinterID: selectedSlipPrinter ? parseFloat(selectedSlipPrinter.value) : null,
       Override: true,
     };
 
