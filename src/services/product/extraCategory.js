@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllExtraCategory = async () => {
     try {
-        const response = await api.get('/invetory/list/product/extra/categories');
+        const response = await api.get('/inventory/list/product/extra/categories');
         if (response.data && Array.isArray(response.data.Data)) {
             return response.data.Data;  
         } else {
@@ -20,7 +20,7 @@ export const getAllExtraCategory = async () => {
 
 export const newExtraCategory = async (data) => {
     try {
-        const response = await api.post('/invetory/add/product/extra/category', data); // Use POST
+        const response = await api.post('/inventory/add/product/extra/category', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {
@@ -31,7 +31,7 @@ export const newExtraCategory = async (data) => {
 
 export const updateExtraCatagory = async (data) => {
     try {
-        const response = await api.post('/invetory/update/product/extra/category', data); // Use POST
+        const response = await api.post('/inventory/update/product/extra/category', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {

@@ -441,18 +441,19 @@ const ProductPage = () => {
 
                           {/* ✅ Only Product-level actions here */}
                           <select
-                            className="form-select form-select-sm d-inline-block"
-                            style={{ width: "140px" }}
-                            onChange={(e) => handleRedirect(e, item)}
-                            defaultValue=""
-                            disabled={syncing}
-                          >
-                            <option value="" disabled>
-                              Select Action
-                            </option>
-                            <option value="product-combination">Combination</option>
-                            <option value="product-extra">Extra</option>
-                          </select>
+  className="form-select form-select-sm d-inline-block"
+  style={{ width: "140px" }}
+  onChange={(e) => handleRedirect(e, item)}
+  defaultValue=""
+  disabled={syncing}
+>
+  <option value="" disabled>
+    Select Action
+  </option>
+  <option value="product-combination">Combination</option>
+  <option value="product-extra">Extra</option>
+  <option value="product-served-as">Served As</option>
+</select>
                         </td>
                       </tr>
                     ))

@@ -18,7 +18,7 @@ const throwIfFailed = (payload, fallbackMsg) => {
 
 export const getAllProductCategory = async () => {
     try {
-        const response = await api.get('/invetory/list/product/categories');
+        const response = await api.get('/inventory/list/product/categories');
         if (response.data && Array.isArray(response.data.Data)) {
             return response.data.Data;  
         } else {
@@ -35,7 +35,7 @@ export const getAllProductCategory = async () => {
 
 export const newProductCategory = async (data) => {
   try {
-    const response = await api.post("/invetory/add/product/category", data);
+    const response = await api.post("/inventory/add/product/category", data);
     return throwIfFailed(response?.data, "Category add failed.");
   } catch (error) {
     const payload = error?.response?.data;
@@ -46,7 +46,7 @@ export const newProductCategory = async (data) => {
 
 export const updateProductCategory = async (data) => {
   try {
-    const response = await api.post("/invetory/update/product/category", data);
+    const response = await api.post("/inventory/update/product/category", data);
     return throwIfFailed(response?.data, "Category update failed.");
   } catch (error) {
     const payload = error?.response?.data;

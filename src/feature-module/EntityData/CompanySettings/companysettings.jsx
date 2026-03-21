@@ -26,19 +26,6 @@ const emptyForm = {
   FK_CurrencyID: 0,
 };
 
-const imageFields = [
-  {
-    key: "CompanyLogo",
-    title: "Company Logo",
-    subtitle: "Main logo used across the portal",
-  },
-  {
-    key: "CompanyIcon",
-    title: "Company Icon",
-    subtitle: "Small icon for interface branding",
-  },
-];
-
 const getApiMessage = (result, fallback) => {
   if (Array.isArray(result?.Messages) && result.Messages.length) {
     return result.Messages.join("\n");
@@ -66,15 +53,8 @@ const CompanySettings = () => {
   const [currencyList, setCurrencyList] = useState([]);
   const [loadingCurrencies, setLoadingCurrencies] = useState(false);
 
-  const [imageFiles, setImageFiles] = useState({
-    CompanyLogo: null,
-    CompanyIcon: null,
-  });
-
-  const [imagePreviews, setImagePreviews] = useState({
-    CompanyLogo: "",
-    CompanyIcon: "",
-  });
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -82,10 +62,7 @@ const CompanySettings = () => {
   const [saveError, setSaveError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const fileRefs = {
-    CompanyLogo: useRef(null),
-    CompanyIcon: useRef(null),
-  };
+  const logoFileRef = useRef(null);
 
   const renderRefreshTooltip = (props) => (
     <Tooltip id="refresh-tooltip" {...props}>
@@ -120,9 +97,9 @@ const CompanySettings = () => {
 
   const hasChanges = useMemo(() => {
     const formChanged = JSON.stringify(form) !== JSON.stringify(initialForm);
-    const filesChanged = Object.values(imageFiles).some((x) => !!x);
-    return formChanged || filesChanged;
-  }, [form, initialForm, imageFiles]);
+    const fileChanged = !!logoFile;
+    return formChanged || fileChanged;
+  }, [form, initialForm, logoFile]);
 
   const setField = (field, value) => {
     setForm((prev) => ({
@@ -131,12 +108,10 @@ const CompanySettings = () => {
     }));
   };
 
-  const resetFileInputs = () => {
-    Object.values(fileRefs).forEach((ref) => {
-      if (ref.current) {
-        ref.current.value = "";
-      }
-    });
+  const resetFileInput = () => {
+    if (logoFileRef.current) {
+      logoFileRef.current.value = "";
+    }
   };
 
   const normaliseSettingsRecord = (record) => {
@@ -150,6 +125,12 @@ const CompanySettings = () => {
     };
   };
 
+  const getExistingLogoUrl = (record) => {
+    if (!record || typeof record !== "object") return "";
+
+    return ( record.ImageFile ||    ""    );
+  };
+
   const resetFormState = (record) => {
     const nextForm = normaliseSettingsRecord(record);
 
@@ -157,20 +138,13 @@ const CompanySettings = () => {
     setInitialForm(nextForm);
     setCurrentRecord(record && typeof record === "object" ? record : null);
 
-    setImageFiles({
-      CompanyLogo: null,
-      CompanyIcon: null,
-    });
-
-    setImagePreviews({
-      CompanyLogo: "",
-      CompanyIcon: "",
-    });
+    setLogoFile(null);
+    setLogoPreview(getExistingLogoUrl(record));
 
     setLoadError("");
     setSaveError("");
     setSuccessMessage("");
-    resetFileInputs();
+    resetFileInput();
   };
 
   const fetchCurrencies = async () => {
@@ -250,36 +224,19 @@ const CompanySettings = () => {
     return "";
   };
 
-  const handleImageChange = (key, file) => {
+  const handleLogoChange = (file) => {
     if (!file) return;
 
     const objectUrl = URL.createObjectURL(file);
 
-    setImageFiles((prev) => ({
-      ...prev,
-      [key]: file,
-    }));
-
-    setImagePreviews((prev) => ({
-      ...prev,
-      [key]: objectUrl,
-    }));
+    setLogoFile(file);
+    setLogoPreview(objectUrl);
   };
 
-  const removeImage = (key) => {
-    setImageFiles((prev) => ({
-      ...prev,
-      [key]: null,
-    }));
-
-    setImagePreviews((prev) => ({
-      ...prev,
-      [key]: "",
-    }));
-
-    if (fileRefs[key]?.current) {
-      fileRefs[key].current.value = "";
-    }
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview("");
+    resetFileInput();
   };
 
   const buildPayload = () => {
@@ -288,6 +245,7 @@ const CompanySettings = () => {
       Email: form.Email.trim(),
       HeadOfficeNo: form.HeadOfficeNo.trim(),
       FK_CurrencyID: Number(form.FK_CurrencyID) || 0,
+      ImageFile: logoFile || undefined,
       ...(currentRecord?.SettingID ? { SettingID: currentRecord.SettingID } : {}),
     };
   };
@@ -308,27 +266,24 @@ const CompanySettings = () => {
 
     try {
       const payload = buildPayload();
-
+console.log("payload", payload)
       const isUpdate = !!currentRecord?.SettingID;
-      const result = isUpdate ? await updateSetting(payload) : await newSetting(payload);
+      const result = isUpdate
+        ? await updateSetting(payload)
+        : await newSetting(payload);
 
       if (!result?.Success) {
         throw new Error(getApiMessage(result, "Failed to save company settings."));
       }
 
-      const returnedData = result?.Data;
-      const updatedRecord = Array.isArray(returnedData)
-        ? returnedData[0] || payload
-        : returnedData || payload;
+      await loadCompanySettings();
 
-      resetFormState(updatedRecord);
       setSuccessMessage("Company settings saved.");
 
       Swal.fire({
         icon: "success",
         title: "Saved",
         text: "Company settings saved successfully.",
-        confirmButtonText: "OK",
       });
     } catch (err) {
       console.error("saveCompanySettings failed", err);
@@ -340,7 +295,6 @@ const CompanySettings = () => {
         icon: "error",
         title: "Could not save company settings",
         text: message,
-        confirmButtonText: "OK",
       });
     } finally {
       setSaving(false);
@@ -349,15 +303,9 @@ const CompanySettings = () => {
 
   const handleCancel = () => {
     setForm(initialForm);
-    setImageFiles({
-      CompanyLogo: null,
-      CompanyIcon: null,
-    });
-    setImagePreviews({
-      CompanyLogo: "",
-      CompanyIcon: "",
-    });
-    resetFileInputs();
+    setLogoFile(null);
+    setLogoPreview(getExistingLogoUrl(currentRecord));
+    resetFileInput();
     setSaveError("");
     setSuccessMessage("");
   };
@@ -488,88 +436,79 @@ const CompanySettings = () => {
             <div className="card-body">
               <div className="d-flex align-items-center gap-2 mb-4">
                 <ImageIcon size={18} />
-                <h5 className="mb-0">Brand Assets</h5>
+                <h5 className="mb-0">Company Logo</h5>
               </div>
 
               <div className="row g-3">
-                {imageFields.map((item) => {
-                  const preview = imagePreviews[item.key];
-                  const hasImage = !!preview;
-
-                  return (
-                    <div className="col-xl-3 col-md-6" key={item.key}>
-                      <div
-                        className="border rounded-3 p-3 h-100"
-                        style={{ background: "#fff" }}
-                      >
-                        <div className="mb-3">
-                          <div className="fw-semibold">{item.title}</div>
-                          <div className="text-muted small">{item.subtitle}</div>
-                        </div>
-
-                        <div
-                          className="border rounded-3 d-flex align-items-center justify-content-center mb-3"
-                          style={{
-                            height: 120,
-                            background: "#f8f9fa",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {hasImage ? (
-                            <img
-                              src={preview}
-                              alt={item.title}
-                              style={{
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                objectFit: "contain",
-                              }}
-                            />
-                          ) : (
-                            <div className="text-center text-muted">
-                              <Upload size={20} />
-                              <div className="small mt-2">No image</div>
-                            </div>
-                          )}
-                        </div>
-
-                        <input
-                          ref={fileRefs[item.key]}
-                          type="file"
-                          accept="image/*"
-                          className="d-none"
-                          onChange={(e) => handleImageChange(item.key, e.target.files?.[0] || null)}
-                        />
-
-                        <div className="d-flex gap-2">
-                          <button
-                            type="button"
-                            className="btn btn-light border w-100"
-                            onClick={() => fileRefs[item.key]?.current?.click()}
-                            disabled={loading || saving}
-                          >
-                            Upload
-                          </button>
-
-                          {hasImage ? (
-                            <button
-                              type="button"
-                              className="btn btn-light border"
-                              onClick={() => removeImage(item.key)}
-                              disabled={loading || saving}
-                            >
-                              <X size={16} />
-                            </button>
-                          ) : null}
-                        </div>
+                <div className="col-xl-4 col-md-6">
+                  <div
+                    className="border rounded-3 p-3 h-100"
+                    style={{ background: "#fff" }}
+                  >
+                    <div className="mb-3">
+                      <div className="fw-semibold">Logo</div>
+                      <div className="text-muted small">
+                        Upload the main company logo
                       </div>
                     </div>
-                  );
-                })}
-              </div>
 
-              <div className="text-muted small mt-3">
-                Images are kept on the page for now and will be wired into upload calls next.
+                    <div
+                      className="border rounded-3 d-flex align-items-center justify-content-center mb-3"
+                      style={{
+                        height: 140,
+                        background: "#f8f9fa",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {logoPreview ? (
+                        <img
+                          src={logoPreview}
+                          alt="Company Logo"
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      ) : (
+                        <div className="text-center text-muted">
+                          <Upload size={20} />
+                          <div className="small mt-2">No logo selected</div>
+                        </div>
+                      )}
+                    </div>
+
+                    <input
+                      ref={logoFileRef}
+                      type="file"
+                      accept="image/*"
+                      className="d-none"
+                      onChange={(e) => handleLogoChange(e.target.files?.[0] || null)}
+                    />
+
+                    <div className="d-flex gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-light border w-100"
+                        onClick={() => logoFileRef.current?.click()}
+                        disabled={loading || saving}
+                      >
+                        Upload Logo
+                      </button>
+
+                      {logoPreview ? (
+                        <button
+                          type="button"
+                          className="btn btn-light border"
+                          onClick={removeLogo}
+                          disabled={loading || saving}
+                        >
+                          <X size={16} />
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

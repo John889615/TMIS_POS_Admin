@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllCombinationById = async (prodId) => {
     try {
-        const response = await api.post('/invetory/list/product/combinations', { FK_ProductID: prodId });
+        const response = await api.post('/inventory/list/product/combinations', { FK_ProductID: prodId });
 
         // API returns 400 inside response.data
         if (response.data?.StatusCode === 400) {
@@ -30,7 +30,7 @@ export const getAllCombinationById = async (prodId) => {
 
 export const newCombination = async (data) => {
     try {
-        const response = await api.post('/invetory/add/product/combination', data); // Use POST
+        const response = await api.post('/inventory/add/product/combination', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {
@@ -44,7 +44,7 @@ export const removeCombination = async (productCombinationId) => {
     const payload = { ProductCombinationID: Number(productCombinationId) };
 
     const response = await api.post(
-      "/invetory/remove/product/combination", // ✅ fix spelling if needed
+      "/inventory/remove/product/combination", // ✅ fix spelling if needed
       payload
     );
 
@@ -61,7 +61,7 @@ export const removeCombination = async (productCombinationId) => {
 export const updateCombination = async (data) => {
     try {
         debugger;
-        const response = await api.post('/invetory/update/product/combination', data); // Use POST
+        const response = await api.post('/inventory/update/product/combination', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {

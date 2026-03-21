@@ -136,7 +136,7 @@ import SecuritySettings from "../feature-module/settings/generalsettings/securit
 import Notification from "../feature-module/settings/generalsettings/notification";
 import ConnectedApps from "../feature-module/settings/generalsettings/connectedapps";
 import SystemSettings from "../feature-module/settings/websitesettings/systemsettings";
-import CompanySettings from "../feature-module/settings/websitesettings/companysettings";
+import CompanySettings from "../feature-module/EntityData/CompanySettings/companysettings.jsx";
 import LocalizationSettings from "../feature-module/settings/websitesettings/localizationsettings";
 import Prefixes from "../feature-module/settings/websitesettings/prefixes";
 import Preference from "../feature-module/settings/websitesettings/preference";
@@ -247,6 +247,7 @@ import ExtraPage from "../feature-module/Products/extra";
 import PreparationPage from "../feature-module/Products/preparation";
 import ExtraCategory from "../feature-module/Products/extraCategory";
 import PreparationMethod from "../feature-module/Products/preparationMethod";
+import ServedAs from "../feature-module/Products/servedAs";
 import SubstitutionPage from "../feature-module/Products/substitution";
 import PurchaseOrderPage from "../feature-module/stock/purchaseOrder";
 import PurchaseOrderLinePage from "../feature-module/stock/purchaseOrderLine";
@@ -266,6 +267,7 @@ import CostCenterProduct from "../feature-module/stock/costCenterProduct";
 import PriceCodePage from "../feature-module/stock/priceCode";
 import DebtorProductPagePage from "../feature-module/stock/debtorProductPrice";
 import BcSyncPage from "../feature-module/Sync/bcSync";
+import ServedAsProduct from "../feature-module/Products/servedAsProduct.jsx";
 
 export const publicRoutes = [
   {
@@ -1887,6 +1889,14 @@ export const publicRoutes = [
   },
 
   {
+    id: 163,
+    path: routes.servedAs,
+    name: "servedAs",
+    element: <ServedAs />,
+    route: Route,
+  },
+
+  {
     id: 164,
     path: routes.menutreeCamp,
     name: "menuTreeCamp",
@@ -1933,6 +1943,13 @@ export const publicRoutes = [
     path: routes.entityExchangeRate,
     name: "exchange-rate",
     element: <ExchangeRatePage />,
+    route: Route,
+  },
+  {
+    id: 169,
+    path: routes.productServedAs,
+    name: "productServedAs",
+    element: <ServedAsProduct />,
     route: Route,
   },
 ];

@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllPreparation = async (prodId) => {
     try {
-        const response = await api.post('/invetory/list/product/preparation', { FK_ProductID: prodId });
+        const response = await api.post('/inventory/list/product/preparation', { FK_ProductID: prodId });
         if (response.data && Array.isArray(response.data.Data)) {
             return response.data.Data;
         } else {
@@ -20,7 +20,7 @@ export const getAllPreparation = async (prodId) => {
 
 export const newPreparation = async (data) => {
     try {
-        const response = await api.post('/invetory/add/product/preparation', data); // Use POST
+        const response = await api.post('/inventory/add/product/preparation', data); // Use POST
         return response.data;
     } catch (error) {
         return error.response.data;
@@ -30,7 +30,7 @@ export const newPreparation = async (data) => {
 
 export const updatePreparation = async (data) => {
     try {
-        const response = await api.post('/invetory/update/product/preparation', data); // Use POST
+        const response = await api.post('/inventory/update/product/preparation', data); // Use POST
         return response.data;
     } catch (error) {
         return error.response.data;
@@ -42,7 +42,7 @@ export const removePreparation = async (productPreparationId) => {
     const payload = { ProductPreparationID: Number(productPreparationId) };
 
     const response = await api.post(
-      "/invetory/remove/product/preparation",
+      "/inventory/remove/product/preparation",
       payload
     );
 

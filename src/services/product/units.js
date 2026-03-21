@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllUnits = async () => {
     try {
-        const response = await api.get('/invetory/list/units');
+        const response = await api.get('/inventory/list/units');
         if (response.data && Array.isArray(response.data.Data)) {
             return response.data.Data;  
         } else {
@@ -20,7 +20,7 @@ export const getAllUnits = async () => {
 
 export const newUnit = async (data) => {
     try {
-        const response = await api.post('/invetory/add/unit', data); // Use POST
+        const response = await api.post('/inventory/add/unit', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {
@@ -31,7 +31,7 @@ export const newUnit = async (data) => {
 
 export const updateUnit = async (data) => {
     try {
-        const response = await api.post('/invetory/update/unit', data); // Use POST
+        const response = await api.post('/inventory/update/unit', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {

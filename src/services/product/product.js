@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllProducts = async () => {
     try {
-        const response = await api.get('/invetory/list/products');
+        const response = await api.get('/inventory/list/products');
         if (response.data && Array.isArray(response.data.Data)) {
             return response.data.Data;
         } else {
@@ -25,7 +25,7 @@ export const syncAllProducts = async () => {
 
 export const newProduct = async (data) => {
   try {
-    const response = await api.post("/invetory/add/product", data, {
+    const response = await api.post("/inventory/add/product", data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -70,7 +70,7 @@ export const newProduct = async (data) => {
 
 export const updateProduct = async (data) => {
     try {
-        const response = await api.post('/invetory/update/product', data, {
+        const response = await api.post('/inventory/update/product', data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllSubstitutionById = async (prodId) => {
     try {
-        const response = await api.post('/invetory/list/product/substitutions', { FK_ProductID: prodId });
+        const response = await api.post('/inventory/list/product/substitutions', { FK_ProductID: prodId });
 
         // API returns 400 inside response.data
         if (response.data?.StatusCode === 400) {
@@ -30,7 +30,7 @@ export const getAllSubstitutionById = async (prodId) => {
 
 export const newSubstitution = async (data) => {
     try {
-        const response = await api.post('/invetory/add/product/substitution', data); // Use POST
+        const response = await api.post('/inventory/add/product/substitution', data); // Use POST
         debugger;
         return response.data;
     } catch (error) {
@@ -41,7 +41,7 @@ export const newSubstitution = async (data) => {
 
 export const updateSubstitution = async (data) => {
     try {
-        const response = await api.post('/invetory/update/product/substitution', data); // Use POST
+        const response = await api.post('/inventory/update/product/substitution', data); // Use POST
         debugger;
 
         return response.data;
@@ -56,7 +56,7 @@ export const removeSubstitution = async (productSubstitutionId) => {
     const payload = { ProductSubstitutionID: Number(productSubstitutionId) };
 
     const response = await api.post(
-      "/invetory/remove/product/substitution", // using your API path as given
+      "/inventory/remove/product/substitution", // using your API path as given
       payload
     );
 

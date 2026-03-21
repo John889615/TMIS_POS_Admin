@@ -3,7 +3,7 @@ import api from '../posAPI';
 
 export const getAllPreparationMethod = async () => {
     try {
-        const response = await api.get('/invetory/list/product/preparation/methods');
+        const response = await api.get('/inventory/list/product/preparation/methods');
         if (response.data && Array.isArray(response.data.Data)) {
             return response.data.Data;  
         } else {
@@ -20,7 +20,7 @@ export const getAllPreparationMethod = async () => {
 
 export const newPreparationMethod = async (data) => {
     try {
-        const response = await api.post('/invetory/add/product/preparation/method', data); // Use POST
+        const response = await api.post('/inventory/add/product/preparation/method', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {
@@ -31,7 +31,7 @@ export const newPreparationMethod = async (data) => {
 
 export const updatePreparationMethod = async (data) => {
     try {
-        const response = await api.post('/invetory/update/product/preparation/method', data); // Use POST
+        const response = await api.post('/inventory/update/product/preparation/method', data); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {

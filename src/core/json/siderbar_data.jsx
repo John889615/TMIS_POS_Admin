@@ -206,6 +206,12 @@ export const SidebarData = [
         icon: <Icon.Hash />,
         showSubRoute: false,
       },
+      {
+        label: "Served As",
+        link: "/served-as",
+        icon: <Icon.Archive />,
+        showSubRoute: false,
+      },
     ],
   },
 
