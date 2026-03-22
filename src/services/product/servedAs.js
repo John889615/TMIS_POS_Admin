@@ -20,6 +20,7 @@ export const newServedAs = async (data) => {
         const payload = {
             ServedAsType: data?.ServedAsType?.trim() || "",
             Name: data?.Name?.trim() || "",
+            IsDefault: Boolean(data?.IsDefault),
         };
 
         const response = await api.post("/inventory/add/servedas", payload);
@@ -41,6 +42,7 @@ export const updateServedAs = async (data) => {
             ServedAsID: Number(data?.ServedAsID) || 0,
             ServedAsType: data?.ServedAsType?.trim() || "",
             Name: data?.Name?.trim() || "",
+            IsDefault: Boolean(data?.IsDefault),
         };
 
         const response = await api.post("/inventory/update/servedas", payload);
@@ -80,6 +82,7 @@ export const newServedAsProduct = async (data) => {
             ServedAsID: Number(data?.ServedAsID) || 0,
             IsQuantified: Boolean(data?.IsQuantified),
             Quantity: Number(data?.Quantity) || 0,
+            IsDefault: Boolean(data?.IsDefault),
         };
 
         const response = await api.post("/inventory/add/servedas/product", payload);
@@ -121,6 +124,7 @@ export const updateServedAsProduct = async (data) => {
             ServedAsID: Number(data?.ServedAsID) || 0,
             IsQuantified: Boolean(data?.IsQuantified),
             Quantity: Number(data?.Quantity) || 0,
+            IsDefault: Boolean(data?.IsDefault),
         };
 
         const response = await api.post("/inventory/update/servedas/product", payload);

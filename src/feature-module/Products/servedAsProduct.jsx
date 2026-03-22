@@ -234,6 +234,7 @@ const ServedAsProduct = () => {
                                     <tr>
                                         <th>Served As</th>
                                         <th>Type</th>
+                                        <th>Is Default</th>
                                         <th>Is Quantified</th>
                                         <th>Quantity</th>
                                         <th>Action</th>
@@ -246,37 +247,38 @@ const ServedAsProduct = () => {
                                             const servedAsId = getServedAsIdFromRow(item);
 
                                             return (
-                                                <tr key={getServedAsProductIdFromRow(item) || index}>
-                                                    <td>{getServedAsName(servedAsId)}</td>
-                                                    <td>{getServedAsType(servedAsId)}</td>
-                                                    <td>{item?.IsQuantified ? "Yes" : "No"}</td>
-                                                    <td>{item?.Quantity ?? 0}</td>
-                                                    <td className="text-nowrap">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleEdit(item)}
-                                                            className="btn btn-sm btn-primary me-2"
-                                                            title="Edit"
-                                                        >
-                                                            <i className="feather-edit"></i>
-                                                        </button>
+                                               <tr key={getServedAsProductIdFromRow(item) || index}>
+    <td>{getServedAsName(servedAsId)}</td>
+    <td>{getServedAsType(servedAsId)}</td>
+    <td>{item?.IsDefault ? "Yes" : "No"}</td>
+    <td>{item?.IsQuantified ? "Yes" : "No"}</td>
+    <td>{item?.Quantity ?? 0}</td>
+    <td className="text-nowrap">
+        <button
+            type="button"
+            onClick={() => handleEdit(item)}
+            className="btn btn-sm btn-primary me-2"
+            title="Edit"
+        >
+            <i className="feather-edit"></i>
+        </button>
 
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleDelete(item)}
-                                                            className="btn btn-sm btn-light me-2"
-                                                            title="Delete"
-                                                            style={{ border: "1px solid #f1c0c0" }}
-                                                        >
-                                                            <Trash2 size={16} color="red" />
-                                                        </button>
-                                                    </td>
-                                                </tr>
+        <button
+            type="button"
+            onClick={() => handleDelete(item)}
+            className="btn btn-sm btn-light me-2"
+            title="Delete"
+            style={{ border: "1px solid #f1c0c0" }}
+        >
+            <Trash2 size={16} color="red" />
+        </button>
+    </td>
+</tr>
                                             );
                                         })
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" className="text-center">
+                                            <td colSpan="6" className="text-center">
                                                 No records found
                                             </td>
                                         </tr>

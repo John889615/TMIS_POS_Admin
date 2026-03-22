@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 
@@ -16,6 +16,12 @@ const ServedAsProductForm = ({
         "";
 
     const [isQuantified, setIsQuantified] = useState(Boolean(data?.IsQuantified));
+    const [isDefault, setIsDefault] = useState(Boolean(data?.IsDefault));
+
+    useEffect(() => {
+        setIsQuantified(Boolean(data?.IsQuantified));
+        setIsDefault(Boolean(data?.IsDefault));
+    }, [data, showModel]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,6 +33,7 @@ const ServedAsProductForm = ({
             ServedAsID: Number(form.ServedAsID.value) || 0,
             IsQuantified: isQuantified,
             Quantity: isQuantified ? Number(form.Quantity.value) || 0 : 0,
+            IsDefault: isDefault,
         };
 
         if (onSubmit) {
@@ -103,6 +110,28 @@ const ServedAsProductForm = ({
                                     disabled={!isQuantified}
                                     className="form-control"
                                 />
+                            </div>
+                        </div>
+
+                        <div className="col-lg-12 mt-2">
+                            <div className="input-blocks">
+                                <label className="d-block">Default</label>
+                                <div className="form-check mt-2">
+                                    <input
+                                        id="product-served-as-is-default"
+                                        name="IsDefault"
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        checked={isDefault}
+                                        onChange={(e) => setIsDefault(e.target.checked)}
+                                    />
+                                    <label
+                                        htmlFor="product-served-as-is-default"
+                                        className="form-check-label"
+                                    >
+                                        Set as default served as for this product
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
