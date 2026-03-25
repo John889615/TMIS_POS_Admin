@@ -1,6 +1,5 @@
 import api from '../posAPI';
 
-
 export const getAllCostCenter = async () => {
     try {
         const response = await api.get('/Debtor/list/cost/center');
@@ -17,7 +16,6 @@ export const getAllCostCenter = async () => {
     }
 };
 
-
 export const newCostCenter = async (data) => {
     try {
         const response = await api.post('/Debtor/add/cost/center', data, {
@@ -31,7 +29,6 @@ export const newCostCenter = async (data) => {
         return error.response.data;
     }
 };
-
 
 export const updateCostCenter = async (data) => {
     try {
@@ -60,5 +57,25 @@ export const getAllCostCenterTypes = async () => {
             // You can use a toast or console.log here for user-friendly error reporting
         }
         throw new Error('Failed to fetch users. Please try again.');
+    }
+};
+
+export const getCostCenterPrinters = async (data) => {
+    try {
+        const response = await api.post('/Debtor/list/cost/center/printers', data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data;
+    }
+};
+
+export const toggleCostCenterPrinter = async (data) => {
+    try {
+        const response = await api.post('/Debtor/cost/center/printer/toggle', data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data;
     }
 };

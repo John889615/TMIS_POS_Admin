@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { getAllCostCenter, getAllCostCenterTypes, newCostCenter, updateCostCenter } from "../../services/debtors/costCenter";
+import {
+    getAllCostCenter,
+    getAllCostCenterTypes,
+    newCostCenter,
+    updateCostCenter,
+    getCostCenterPrinters,
+    toggleCostCenterPrinter,
+} from "../../services/debtors/costCenter";
 import { getAllDebtors } from "../../services/debtors/debtors";
 import { getAllStatus } from "../../services/entityData/status";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
     PlusCircle,
+    Printer,
+    Link as LinkIcon,
+    XCircle,
 } from "react-feather";
 import CostCenterForm from "../../core/modals/debtors/costCenterFormModel";
-
-
 
 const CostCenter = () => {
     const [listData, setListData] = useState([]);
@@ -20,24 +28,42 @@ const CostCenter = () => {
     const [showModel, setModelShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
 
+    const [showPrinterModal, setShowPrinterModal] = useState(false);
+    const [selectedCostCenter, setSelectedCostCenter] = useState(null);
+    const [printerSearch, setPrinterSearch] = useState("");
+    const [printerLoading, setPrinterLoading] = useState(false);
+    const [printerActionLoadingId, setPrinterActionLoadingId] = useState(null);
+
+    // TEMP MASTER PRINTER LIST - REPLACE WITH REAL LIST-ALL-PRINTERS API LATER
+    const [printerList, setPrinterList] = useState([
+        { PrinterID: 1, PrinterName: "Kitchen Printer", IsLinked: false },
+        { PrinterID: 2, PrinterName: "Bar Printer", IsLinked: false },
+        { PrinterID: 3, PrinterName: "Front Counter Printer", IsLinked: false },
+        { PrinterID: 4, PrinterName: "Backup Receipt Printer", IsLinked: false },
+    ]);
+
     useEffect(() => {
         fetchRecords();
     }, []);
 
-    const fetchRecords = async () => {
-        try {
-            const data = await getAllCostCenter();
-            setListData(data);
-            const type = await getAllCostCenterTypes();
-            setCostTypeList(type);
-            const status = await getAllStatus();
-            setStatusList(status);
-            const debtor = await getAllDebtors();
-            setDebtorList(debtor);
-        } catch (err) {
-            console.error("Failed to load addresses:", err.message);
-        }
-    };
+   const fetchRecords = async () => {
+    try {
+        const data = await getAllCostCenter();
+        console.log("getAllCostCenter result", data);
+        setListData(data || []);
+
+        const type = await getAllCostCenterTypes();
+        setCostTypeList(type || []);
+
+        const status = await getAllStatus();
+        setStatusList(status || []);
+
+        const debtor = await getAllDebtors();
+        setDebtorList(debtor || []);
+    } catch (err) {
+        console.error("Failed to load cost center records:", err.message);
+    }
+};
 
     const filteredData = listData.filter((item) =>
         Object.values(item).some(
@@ -47,27 +73,129 @@ const CostCenter = () => {
         )
     );
 
-    const handleShow = () => setModelShow(true);
-    const handleClose = () => setModelShow(false);
-    const handleAddCostCenter = async (data) => {
-        try {
-            if (data.POS_CostCenterID) {
-                await updateCostCenter(data);
-            }
-            else {
-                await newCostCenter(data);
-            }
-            await fetchRecords();
-            setModelShow(false);
-        } catch (err) {
-            console.error("Error creating user:", err.message);
-        }
+    const filteredPrinters = printerList.filter((printer) =>
+        (printer.PrinterName || "").toLowerCase().includes(printerSearch.toLowerCase())
+    );
+
+    const handleShow = () => {
+        setSelectedData(null);
+        setModelShow(true);
     };
+
+    const handleClose = () => setModelShow(false);
+
+    const handleAddCostCenter = async (data) => {
+    try {
+        if (data.CostCenterID) {
+            await updateCostCenter(data);
+        } else {
+            await newCostCenter(data);
+        }
+
+        await fetchRecords();
+        setModelShow(false);
+        setSelectedData(null);
+    } catch (err) {
+        console.error("Error saving cost center:", err.message);
+    }
+};
 
     const handleEditCostCenter = (record) => {
         setSelectedData(record);
         setModelShow(true);
     };
+
+    const loadLinkedPrinters = async (costCenterId) => {
+        try {
+            setPrinterLoading(true);
+
+            const response = await getCostCenterPrinters({
+                FK_CostCenterID: costCenterId,
+            });
+
+            const linkedRows = Array.isArray(response?.Data) ? response.Data : [];
+            const linkedPrinterIds = new Set(
+                linkedRows
+                    .map((x) => x.FK_PrinterID)
+                    .filter((x) => x !== null && x !== undefined)
+            );
+
+            setPrinterList((prev) =>
+                prev.map((printer) => ({
+                    ...printer,
+                    IsLinked: linkedPrinterIds.has(printer.PrinterID),
+                }))
+            );
+        } catch (err) {
+            console.error("Failed to load linked printers:", err);
+            setPrinterList((prev) =>
+                prev.map((printer) => ({
+                    ...printer,
+                    IsLinked: false,
+                }))
+            );
+        } finally {
+            setPrinterLoading(false);
+        }
+    };
+
+   const handleOpenPrinterModal = async (record) => {
+    console.log("selected cost center row", record);
+
+    if (!record?.CostCenterID) {
+        console.error("Invalid cost center row passed to printer modal.", record);
+        return;
+    }
+
+    setSelectedCostCenter(record);
+    setPrinterSearch("");
+    setShowPrinterModal(true);
+
+    await loadLinkedPrinters(record.CostCenterID);
+};
+
+    const handleClosePrinterModal = () => {
+        setShowPrinterModal(false);
+        setSelectedCostCenter(null);
+        setPrinterSearch("");
+        setPrinterActionLoadingId(null);
+    };
+
+    const handleTogglePrinterLink = async (printer) => {
+    if (!selectedCostCenter?.CostCenterID) {
+        console.error("No valid CostCenterID found on selected cost center.", selectedCostCenter);
+        return;
+    }
+
+    const payload = {
+        FK_CostCenterID: selectedCostCenter.CostCenterID,
+        FK_PrinterID: printer.PrinterID,
+    };
+
+    console.log("toggle payload", payload);
+
+    try {
+        setPrinterActionLoadingId(printer.PrinterID);
+
+        const response = await toggleCostCenterPrinter(payload);
+        const returnedRow = response?.Data || null;
+
+        setPrinterList((prev) =>
+            prev.map((item) =>
+                item.PrinterID === printer.PrinterID
+                    ? {
+                          ...item,
+                          IsLinked: !!returnedRow?.CostCenterPrinterID,
+                      }
+                    : item
+            )
+        );
+    } catch (err) {
+        console.error("Failed to toggle printer link:", err);
+    } finally {
+        setPrinterActionLoadingId(null);
+    }
+};
 
     return (
         <div className="page-wrapper">
@@ -86,6 +214,7 @@ const CostCenter = () => {
                         </Button>
                     </div>
                 </div>
+
                 <div className="card table-list-card">
                     <div className="card-body">
                         <div className="table-top">
@@ -104,6 +233,7 @@ const CostCenter = () => {
                                 </div>
                             </div>
                         </div>
+
                         <div className="table-responsive">
                             <table className="table table-bordered table-striped">
                                 <thead>
@@ -126,17 +256,31 @@ const CostCenter = () => {
                                                 <td>{item.Type ? "Yes" : "No"}</td>
                                                 <td>{item.BillingReference || "N/A"}</td>
                                                 <td>
-                                                    <button type='button'
-                                                        onClick={() => handleEditCostCenter(item)}
-                                                        className="btn btn-sm btn-primary me-2">
-                                                        <i className="feather-edit"></i>
-                                                    </button>
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleEditCostCenter(item)}
+                                                            className="btn btn-sm btn-primary"
+                                                            title="Edit Cost Center"
+                                                        >
+                                                            <i className="feather-edit"></i>
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleOpenPrinterModal(item)}
+                                                            className="btn btn-sm btn-dark"
+                                                            title="Link / Unlink Printers"
+                                                        >
+                                                            <Printer size={14} />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="8" className="text-center">
+                                            <td colSpan="6" className="text-center">
                                                 No records found
                                             </td>
                                         </tr>
@@ -147,7 +291,9 @@ const CostCenter = () => {
                     </div>
                 </div>
             </div>
-            <CostCenterForm costTypeList={costTypeList}
+
+            <CostCenterForm
+                costTypeList={costTypeList}
                 debtorList={debtorList}
                 onSubmitCostCenter={handleAddCostCenter}
                 showModel={showModel}
@@ -155,9 +301,104 @@ const CostCenter = () => {
                 data={selectedData}
                 statusList={statusList}
             />
+
+            <Modal show={showPrinterModal} onHide={handleClosePrinterModal} size="lg" centered>
+                <Modal.Header closeButton className="border-0 pb-0">
+                    <div className="w-100">
+                        <h4 className="mb-1">Printer Linking</h4>
+                        <h6 className="text-muted mb-0">
+                            {selectedCostCenter?.Name || "Cost Center"}
+                        </h6>
+                    </div>
+                </Modal.Header>
+
+                <Modal.Body className="pt-3">
+                    <div className="card table-list-card mb-0">
+                        <div className="card-body">
+                            <div className="table-top mb-3">
+                                <div className="search-set">
+                                    <div className="search-input">
+                                        <input
+                                            type="text"
+                                            placeholder="Search printers..."
+                                            className="form-control"
+                                            value={printerSearch}
+                                            onChange={(e) => setPrinterSearch(e.target.value)}
+                                        />
+                                        <Link to className="btn btn-searchset">
+                                            <i data-feather="search" className="feather-search" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="table-responsive">
+                                <table className="table table-bordered table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Printer Name</th>
+                                            <th style={{ width: "70px" }}>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {printerLoading ? (
+                                            <tr>
+                                                <td colSpan="2" className="text-center">
+                                                    Loading printers...
+                                                </td>
+                                            </tr>
+                                        ) : filteredPrinters.length > 0 ? (
+                                            filteredPrinters.map((printer) => {
+                                                const isBusy = printerActionLoadingId === printer.PrinterID;
+
+                                                return (
+                                                    <tr key={printer.PrinterID}>
+                                                        <td>{printer.PrinterName}</td>
+                                                        <td>
+                                                            <button
+                                                                type="button"
+                                                                className={`btn btn-sm d-inline-flex align-items-center justify-content-center ${
+                                                                    printer.IsLinked
+                                                                        ? "btn-outline-danger"
+                                                                        : "btn-outline-success"
+                                                                }`}
+                                                                onClick={() => handleTogglePrinterLink(printer)}
+                                                                title={printer.IsLinked ? "Unlink Printer" : "Link Printer"}
+                                                                style={{ minWidth: "42px", height: "32px" }}
+                                                                disabled={isBusy}
+                                                            >
+                                                                {printer.IsLinked ? (
+                                                                    <XCircle size={14} />
+                                                                ) : (
+                                                                    <LinkIcon size={14} />
+                                                                )}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="2" className="text-center">
+                                                    No printers found
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+
+                <Modal.Footer className="border-0 pt-2">
+                    <Button variant="light" onClick={handleClosePrinterModal}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
-
 
 export default CostCenter;

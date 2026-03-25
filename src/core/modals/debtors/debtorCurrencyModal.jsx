@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { Link as LinkIcon, XCircle } from "react-feather";
 import {
   listLocationCurrencies,
   newLocationCurrency,
@@ -15,6 +16,7 @@ const DebtorCurrencyModal = ({
 }) => {
   const [locationCurrencyList, setLocationCurrencyList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const fetchLocationCurrencies = async () => {
     if (!debtorId) return;
@@ -52,11 +54,14 @@ const DebtorCurrencyModal = ({
       fetchLocationCurrencies();
     } else {
       setLocationCurrencyList([]);
+      setActionLoadingId(null);
     }
   }, [showCurrencyModel, debtorId]);
 
   const handleToggleCurrency = async (currency) => {
     try {
+      setActionLoadingId(currency.CurrencyID);
+
       if (currency.IsActive) {
         await deleteLocationCurrency({
           LocationCurrencyID: currency.LocationCurrencyID,
@@ -64,26 +69,11 @@ const DebtorCurrencyModal = ({
           CurrencyID: currency.CurrencyID,
         });
 
-        Swal.fire({
-          icon: "success",
-          title: "Removed",
-          text: `${currency.Currency} removed from location`,
-          timer: 1400,
-          showConfirmButton: false,
-        });
       } else {
         await newLocationCurrency({
           LocationID: debtorId,
           CurrencyID: currency.CurrencyID,
           IsActive: true,
-        });
-
-        Swal.fire({
-          icon: "success",
-          title: "Added",
-          text: `${currency.Currency} added to location`,
-          timer: 1400,
-          showConfirmButton: false,
         });
       }
 
@@ -95,6 +85,8 @@ const DebtorCurrencyModal = ({
         title: "Error",
         text: err.message || "Failed to update location currency",
       });
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -104,76 +96,86 @@ const DebtorCurrencyModal = ({
       onHide={handleCurrencyClose}
       centered
       size="lg"
-      dialogClassName="custom-modal-two"
     >
-      <Modal.Header closeButton className="custom-modal-header border-0">
-        <Modal.Title>Manage Location Currencies</Modal.Title>
+      <Modal.Header closeButton className="border-0 pb-0">
+        <div className="w-100">
+          <h4 className="mb-1">Currency Linking</h4>
+          <h6 className="text-muted mb-0">Manage linked currencies for this debtor</h6>
+        </div>
       </Modal.Header>
 
-      <Modal.Body className="custom-modal-body">
-        {loading ? (
-          <div className="text-center py-4">Loading currencies...</div>
-        ) : (
-          <div className="table-responsive">
-            <table className="table table-bordered table-striped align-middle">
-              <thead>
-                <tr>
-                  <th style={{ width: "90px" }}>Action</th>
-                  <th>Currency</th>
-                  <th>Symbol</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {locationCurrencyList.length > 0 ? (
-                  locationCurrencyList.map((currency) => (
-                    <tr key={currency.CurrencyID}>
-                      <td>
-                        <button
-                          type="button"
-                          className={`btn btn-sm ${currency.IsActive ? "btn-success" : "btn-danger"}`}
-                          onClick={() => handleToggleCurrency(currency)}
-                          title={
-                            currency.IsActive
-                              ? "Currency linked - click to remove"
-                              : "Currency not linked - click to add"
-                          }
-                        >
-                          {currency.IsActive ? "+" : "-"}
-                        </button>
-                      </td>
-                      <td>{currency.Currency || "N/A"}</td>
-                      <td>{currency.Symbol || "N/A"}</td>
-                      <td>
-                        {currency.IsActive ? (
-                          <span className="badge bg-success">Active</span>
-                        ) : (
-                          <span className="badge bg-danger">Inactive</span>
-                        )}
+      <Modal.Body className="pt-3">
+        <div className="card table-list-card mb-0">
+          <div className="card-body">
+            <div className="table-responsive">
+              <table className="table table-bordered table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>Currency</th>
+                    <th>Symbol</th>
+                    <th style={{ width: "160px" }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="4" className="text-center">
+                        Loading currencies...
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-center">
-                      No currencies found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  ) : locationCurrencyList.length > 0 ? (
+                    locationCurrencyList.map((currency) => {
+                      const isBusy = actionLoadingId === currency.CurrencyID;
+
+                      return (
+                        <tr key={currency.CurrencyID}>
+                          <td>{currency.Currency || "N/A"}</td>
+                          <td>{currency.Symbol || "N/A"}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className={`btn btn-sm d-inline-flex align-items-center justify-content-center ${
+                                currency.IsActive
+                                  ? "btn-outline-danger"
+                                  : "btn-outline-success"
+                              }`}
+                              onClick={() => handleToggleCurrency(currency)}
+                              title={
+                                currency.IsActive
+                                  ? "Unlink Currency"
+                                  : "Link Currency"
+                              }
+                              style={{ minWidth: "42px", height: "32px" }}
+                              disabled={isBusy}
+                            >
+                              {currency.IsActive ? (
+                                <XCircle size={14} />
+                              ) : (
+                                <LinkIcon size={14} />
+                              )}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="text-center">
+                        No currencies found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        )}
+        </div>
       </Modal.Body>
 
-      <Modal.Footer className="modal-footer-btn">
-        <button
-          type="button"
-          className="btn btn-cancel"
-          onClick={handleCurrencyClose}
-        >
+      <Modal.Footer className="border-0 pt-2">
+        <Button variant="light" onClick={handleCurrencyClose}>
           Close
-        </button>
+        </Button>
       </Modal.Footer>
     </Modal>
   );
