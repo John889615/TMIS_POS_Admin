@@ -18,6 +18,7 @@ import {
     XCircle,
 } from "react-feather";
 import CostCenterForm from "../../core/modals/debtors/costCenterFormModel";
+import { getAllSlipPrinter } from "../../services/entityData/slipPrinter";
 
 const CostCenter = () => {
     const [listData, setListData] = useState([]);
@@ -34,13 +35,7 @@ const CostCenter = () => {
     const [printerLoading, setPrinterLoading] = useState(false);
     const [printerActionLoadingId, setPrinterActionLoadingId] = useState(null);
 
-    // TEMP MASTER PRINTER LIST - REPLACE WITH REAL LIST-ALL-PRINTERS API LATER
-    const [printerList, setPrinterList] = useState([
-        { PrinterID: 1, PrinterName: "Kitchen Printer", IsLinked: false },
-        { PrinterID: 2, PrinterName: "Bar Printer", IsLinked: false },
-        { PrinterID: 3, PrinterName: "Front Counter Printer", IsLinked: false },
-        { PrinterID: 4, PrinterName: "Backup Receipt Printer", IsLinked: false },
-    ]);
+    const [printerList, setPrinterList] = useState([]);
 
     useEffect(() => {
         fetchRecords();
@@ -62,6 +57,33 @@ const CostCenter = () => {
         setDebtorList(debtor || []);
     } catch (err) {
         console.error("Failed to load cost center records:", err.message);
+    }
+};
+
+const loadAllPrinters = async () => {
+    try {
+        const printers = await getAllSlipPrinter();
+
+        const mappedPrinters = Array.isArray(printers)
+            ? printers.map((printer) => ({
+                  ...printer,
+                  PrinterID:
+                      printer.PrinterID ??
+                      printer.SlipPrinterID ??
+                      printer.ID,
+                  PrinterName:
+                      printer.PrinterName ??
+                      printer.Name ??
+                      printer.Description ??
+                      "Unnamed Printer",
+                  IsLinked: false,
+              }))
+            : [];
+
+        setPrinterList(mappedPrinters);
+    } catch (err) {
+        console.error("Failed to load printer master list:", err);
+        setPrinterList([]);
     }
 };
 
@@ -106,38 +128,51 @@ const CostCenter = () => {
     };
 
     const loadLinkedPrinters = async (costCenterId) => {
-        try {
-            setPrinterLoading(true);
+    try {
+        setPrinterLoading(true);
 
-            const response = await getCostCenterPrinters({
+        const [allPrinters, response] = await Promise.all([
+            getAllSlipPrinter(),
+            getCostCenterPrinters({
                 FK_CostCenterID: costCenterId,
-            });
+            }),
+        ]);
 
-            const linkedRows = Array.isArray(response?.Data) ? response.Data : [];
-            const linkedPrinterIds = new Set(
-                linkedRows
-                    .map((x) => x.FK_PrinterID)
-                    .filter((x) => x !== null && x !== undefined)
-            );
+        const linkedRows = Array.isArray(response?.Data) ? response.Data : [];
+        const linkedPrinterIds = new Set(
+            linkedRows
+                .map((x) => x.FK_PrinterID)
+                .filter((x) => x !== null && x !== undefined)
+        );
 
-            setPrinterList((prev) =>
-                prev.map((printer) => ({
-                    ...printer,
-                    IsLinked: linkedPrinterIds.has(printer.PrinterID),
-                }))
-            );
-        } catch (err) {
-            console.error("Failed to load linked printers:", err);
-            setPrinterList((prev) =>
-                prev.map((printer) => ({
-                    ...printer,
-                    IsLinked: false,
-                }))
-            );
-        } finally {
-            setPrinterLoading(false);
-        }
-    };
+        const mappedPrinters = Array.isArray(allPrinters)
+            ? allPrinters.map((printer) => {
+                  const printerId =
+                      printer.PrinterID ??
+                      printer.SlipPrinterID ??
+                      printer.ID;
+
+                  return {
+                      ...printer,
+                      PrinterID: printerId,
+                      PrinterName:
+                          printer.PrinterName ??
+                          printer.Name ??
+                          printer.Description ??
+                          "Unnamed Printer",
+                      IsLinked: linkedPrinterIds.has(printerId),
+                  };
+              })
+            : [];
+
+        setPrinterList(mappedPrinters);
+    } catch (err) {
+        console.error("Failed to load linked printers:", err);
+        setPrinterList([]);
+    } finally {
+        setPrinterLoading(false);
+    }
+};
 
    const handleOpenPrinterModal = async (record) => {
     console.log("selected cost center row", record);
