@@ -20,6 +20,9 @@ const CopyMenuForm = ({
   const [selectedCostCenter, setSelectedCostCenter] = useState(null);
   const [selectedSlipPrinter, setSelectedSlipPrinter] = useState(null);
 
+  const [debtorError, setDebtorError] = useState(false);
+  const [costCenterError, setCostCenterError] = useState(false);
+
   const debtorOptions = useMemo(
     () =>
       (debtorList || []).map((item) => ({
@@ -44,7 +47,7 @@ const CopyMenuForm = ({
         value: item.SlipPrinterID,
         label: item.Name,
       })),
-    [costCenterList]
+    [slipPrinterList]
   );
 
   const resetForm = () => {
@@ -52,9 +55,10 @@ const CopyMenuForm = ({
     setSelectedDebtor(null);
     setSelectedCostCenter(null);
     setSelectedSlipPrinter(null);
+    setDebtorError(false);
+    setCostCenterError(false);
   };
 
-  // When modal opens, set defaults (debtorId takes priority), otherwise reset
   useEffect(() => {
     if (!showModel) {
       resetForm();
@@ -65,25 +69,58 @@ const CopyMenuForm = ({
     const initialCostCenterId = data?.TargetCostCenterID || null;
     const initialSlipPrinterId = data?.SlipPrinterID || null;
 
-    const existingDebtor = debtorOptions.find((d) => d.value === initialDebtorId) || null;
-    const existingCostCenter = costCenterOptions.find((c) => c.value === initialCostCenterId) || null;
-    const existingSlipPrinter = slipPrinterOptions.find((c) => c.value === initialSlipPrinterId) || null;
+    const existingDebtor =
+      debtorOptions.find((d) => d.value === initialDebtorId) || null;
+    const existingCostCenter =
+      costCenterOptions.find((c) => c.value === initialCostCenterId) || null;
+    const existingSlipPrinter =
+      slipPrinterOptions.find((s) => s.value === initialSlipPrinterId) || null;
 
     setSelectedDebtor(existingDebtor);
     setSelectedCostCenter(existingCostCenter);
     setSelectedSlipPrinter(existingSlipPrinter);
+    setDebtorError(false);
+    setCostCenterError(false);
   }, [showModel, data, debtorId, debtorOptions, costCenterOptions, slipPrinterOptions]);
+
+  const handleDebtorChange = (option) => {
+    setSelectedDebtor(option);
+    if (option) {
+      setDebtorError(false);
+    }
+  };
+
+  const handleCostCenterChange = (option) => {
+    setSelectedCostCenter(option);
+    if (option) {
+      setCostCenterError(false);
+    }
+  };
+
+  const handleSlipPrinterChange = (option) => {
+    setSelectedSlipPrinter(option);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!selectedDebtor) return; // Debtor is required
+    const hasDebtor = !!selectedDebtor;
+    const hasCostCenter = !!selectedCostCenter;
+
+    setDebtorError(!hasDebtor);
+    setCostCenterError(!hasCostCenter);
+
+    if (!hasDebtor || !hasCostCenter) {
+      return;
+    }
 
     const menuData = {
-      SourceMenuID: data.MenuID,
+      SourceMenuID: data?.MenuID,
       TargetDebtorID: parseFloat(selectedDebtor.value) || 0,
-      TargetCostCenterID: selectedCostCenter ? parseFloat(selectedCostCenter.value) : null,
-      DefaultSlipPrinterID: selectedSlipPrinter ? parseFloat(selectedSlipPrinter.value) : null,
+      TargetCostCenterID: parseFloat(selectedCostCenter.value) || 0,
+      DefaultSlipPrinterID: selectedSlipPrinter
+        ? parseFloat(selectedSlipPrinter.value)
+        : null,
       Override: true,
     };
 
@@ -110,13 +147,12 @@ const CopyMenuForm = ({
                 <Select
                   options={debtorOptions}
                   value={selectedDebtor}
-                  onChange={setSelectedDebtor}
+                  onChange={handleDebtorChange}
                   placeholder="Search debtor..."
                   isClearable
                   classNamePrefix="react-select"
                 />
-                {/* if you want it visually "required" add a small message when empty */}
-                {!selectedDebtor && (
+                {debtorError && (
                   <small className="text-danger">Debtor is required.</small>
                 )}
               </div>
@@ -128,11 +164,14 @@ const CopyMenuForm = ({
                 <Select
                   options={costCenterOptions}
                   value={selectedCostCenter}
-                  onChange={setSelectedCostCenter}
+                  onChange={handleCostCenterChange}
                   placeholder="Search cost center..."
-                  isClearable
+                  isClearable={false}
                   classNamePrefix="react-select"
                 />
+                {costCenterError && (
+                  <small className="text-danger">Cost Center is required.</small>
+                )}
               </div>
             </div>
 
@@ -142,7 +181,7 @@ const CopyMenuForm = ({
                 <Select
                   options={slipPrinterOptions}
                   value={selectedSlipPrinter}
-                  onChange={setSelectedSlipPrinter}
+                  onChange={handleSlipPrinterChange}
                   placeholder="Search slip printer..."
                   isClearable
                   classNamePrefix="react-select"
