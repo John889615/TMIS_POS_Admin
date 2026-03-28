@@ -59,6 +59,20 @@ export const updateMenu = async (data) => {
     }
 };
 
+export const updateDebtorMenu = async (data) => {
+    try {
+        const response = await api.post('/Menu/update/debtor/menu', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
 export const getMenuTree = async (menuId) => {
     try {
         const response = await api.post('/Menu/list/menu/tree', { MenuID: menuId });

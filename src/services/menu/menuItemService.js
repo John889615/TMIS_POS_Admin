@@ -33,6 +33,21 @@ export const newMenuItem = async (data) => {
 };
 
 
+export const newDebtorMenuItem = async (data) => {
+    try {
+        const response = await api.post('/Menu/add/debtor/menu/item', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
+
 export const updateMenuItem = async (data) => {
     try {
         const response = await api.post('/Menu/update/menu/item', data, {
@@ -47,9 +62,34 @@ export const updateMenuItem = async (data) => {
     }
 };
 
+
+export const updateDebtorMenuItem = async (data) => {
+    try {
+        const response = await api.post('/Menu/update/debtor/menu/item', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
 export const deleteMenuItem = async (id) => {
     try {
         const response = await api.post('/Menu/remove/menu/item', { POS_MenuItemID: id }); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
+export const deleteDebtorMenuItem = async (id) => {
+    try {
+        const response = await api.post('/Menu/remove/debtor/menu/item', { POS_MenuItemID: id }); // Use POST
         console.log("response", response.data);
         return response.data;
     } catch (error) {

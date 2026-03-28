@@ -36,3 +36,23 @@ export const deleteMenuItemProduct = async (id) => {
         return error.response.data;
     }
 };
+
+export const newDebtorMenuItemProduct = async (data) => {
+    try {
+        const response = await api.post('/Menu/add/debtor/menu/item/product', data); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
+export const deleteDebtorMenuItemProduct = async (id) => {
+    try {
+        const response = await api.post('/Menu/remove/debtor/menu/item/product', { POS_MenuItemProductID: id }); // Use POST
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};

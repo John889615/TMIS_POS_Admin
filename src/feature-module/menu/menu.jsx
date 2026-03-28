@@ -6,6 +6,7 @@ import {
   newMenu,
   updateMenu,
   copyMenu,
+  updateDebtorMenu, // <-- ADD THIS. Rename to your actual linked-menu update API
 } from "../../services/menu/menuService";
 
 import { getAllDebtors } from "../../services/debtors/debtors";
@@ -20,10 +21,6 @@ import { useSelector, useDispatch } from "react-redux";
 import MenuForm from "../../core/modals/menu/menuFormModel";
 import CopyMenuForm from "../../core/modals/menu/copyMenuFormModel";
 
-/**
- * ✅ Tries to extract the debtor ID from whatever shape your debtor object is.
- * Adjust this if your API returns a different key.
- */
 function getDebtorIdValue(d) {
   if (!d) return null;
 
@@ -43,7 +40,7 @@ function getDebtorIdValue(d) {
 }
 
 const MenuPage = () => {
-  const dispatch = useDispatch(); // optional if you want to set redux debtor
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const debtorIdFromRedux = useSelector((state) => state.selectedDebtorStore);
@@ -62,15 +59,8 @@ const MenuPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
-  // ✅ Parent holds a reset function provided by MenuForm
   const menuFormResetRef = useRef(null);
 
-  /**
-   * ✅ Resolve which debtorId to actually use:
-   * - If redux has a valid debtor id -> use it
-   * - Else if we have debtors loaded -> use the first debtor's id
-   * - Else -> null (until we load debtors)
-   */
   const resolvedDebtorId = useMemo(() => {
     const redux = Number(debtorIdFromRedux);
     if (Number.isFinite(redux) && redux > 0) return redux;
@@ -83,11 +73,6 @@ const MenuPage = () => {
     return null;
   }, [debtorIdFromRedux, debtorList]);
 
-  /**
-   * ✅ Load supporting lists first (debtors/cost/printers).
-   * Once debtors are loaded, resolvedDebtorId will become the first debtor ID
-   * if redux was null.
-   */
   useEffect(() => {
     (async () => {
       try {
@@ -105,10 +90,6 @@ const MenuPage = () => {
     })();
   }, []);
 
-  /**
-   * ✅ When resolvedDebtorId changes, load menus for that debtor.
-   * Also reset paging when debtor changes.
-   */
   useEffect(() => {
     if (!resolvedDebtorId) return;
 
@@ -123,14 +104,7 @@ const MenuPage = () => {
         setListData([]);
       }
     })();
-
-    // OPTIONAL: If you want redux to be set automatically when it was null,
-    // dispatch it here. You must replace `setSelectedDebtorStore` with your actual action.
-    //
-    // if (!debtorIdFromRedux || Number(debtorIdFromRedux) <= 0) {
-    //   dispatch(setSelectedDebtorStore(resolvedDebtorId));
-    // }
-  }, [resolvedDebtorId]); // intentionally not depending on debtorIdFromRedux
+  }, [resolvedDebtorId]);
 
   const filteredData = (listData || []).filter((item) =>
     Object.values(item || {}).some(
@@ -164,19 +138,49 @@ const MenuPage = () => {
     setListData(Array.isArray(data) ? data : []);
   };
 
-  // ✅ this will handle BOTH add + edit
-  const handleAddProduct = async (data) => {
+  const isLinkedMenu = (menu) => {
+    if (!menu) return false;
+
+    // Prefer SourceType if your API returns it
+    if (menu.SourceType && menu.SourceType !== "Global") {
+      return true;
+    }
+
+    // Fallback checks if SourceType is missing
+    if (menu.FK_CostCenterID || menu.CostCenterID) {
+      return true;
+    }
+
+    if (menu.FK_LocationID || menu.LocationID) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleAddProduct = async (formData) => {
     try {
-      const id = data?.MenuID ?? data?.POS_MenuID;
+      const id = formData?.MenuID ?? formData?.POS_MenuID ?? selectedData?.MenuID ?? selectedData?.POS_MenuID;
+      const editing = !!id;
 
       let response;
-      if (id) {
-        response = await updateMenu({ ...data, MenuID: id });
+
+      if (editing) {
+        const payload = {
+          ...selectedData,
+          ...formData,
+          MenuID: id,
+        };
+
+        if (isLinkedMenu(selectedData)) {
+          response = await updateDebtorMenu(payload); // <-- linked/location/costcenter menu update API
+        } else {
+          response = await updateMenu(payload); // <-- template/global menu update API
+        }
       } else {
-        response = await newMenu(data);
+        response = await newMenu(formData);
       }
 
-      // Your service returns API error payload instead of throwing.
       if (response?.Success === false) {
         const msg =
           response?.Messages?.[0] ||
@@ -191,13 +195,15 @@ const MenuPage = () => {
           allowOutsideClick: false,
         });
 
-        // ✅ Keep modal OPEN, clear ALL inputs
-        setSelectedData(null);
-        if (menuFormResetRef.current) menuFormResetRef.current();
+        setSelectedData(editing ? selectedData : null);
+
+        if (!editing && menuFormResetRef.current) {
+          menuFormResetRef.current();
+        }
+
         return;
       }
 
-      // ✅ success
       await refreshMenus();
       setModelShow(false);
       setSelectedData(null);
@@ -212,9 +218,9 @@ const MenuPage = () => {
         allowOutsideClick: false,
       });
 
-      // ✅ Keep modal OPEN, clear ALL inputs
-      setSelectedData(null);
-      if (menuFormResetRef.current) menuFormResetRef.current();
+      if (!selectedData && menuFormResetRef.current) {
+        menuFormResetRef.current();
+      }
     }
   };
 
@@ -414,7 +420,6 @@ const MenuPage = () => {
         </div>
       </div>
 
-      {/* ✅ Menu Modal */}
       {showModel && (
         <MenuForm
           onSubmit={handleAddProduct}
@@ -425,7 +430,6 @@ const MenuPage = () => {
         />
       )}
 
-      {/* ✅ Copy Menu Modal */}
       {showCopyModel && (
         <CopyMenuForm
           onSubmit={handleAddCopyMenu}
