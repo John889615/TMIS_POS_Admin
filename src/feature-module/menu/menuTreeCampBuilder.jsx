@@ -38,17 +38,37 @@ const MenuTreeCampBuilder = () => {
   const [editItemName, setEditItemName] = useState("");
   const [editItemDesc, setEditItemDesc] = useState("");
 
-  // ✅ SAME FILTER STATE AS NORMAL BUILDER
   const [productFilter, setProductFilter] = useState("");
   const [onlyUnassigned, setOnlyUnassigned] = useState(false);
 
-  // -----------------------------
-  // Helpers
-  // -----------------------------
   const getProductLabel = (p) =>
-    (p?.Description || p?.ProductDescription || p?.ProductName || p?.Product || "")
+    (
+      p?.Description ||
+      p?.ProductDescription ||
+      p?.ProductName ||
+      p?.Product ||
+      ""
+    )
       ?.toString()
       .trim();
+
+  const getProductId = (p) => {
+    const value = p?.ProductID ?? p?.POS_ProductID ?? p?.FK_ProductID;
+    return value !== null && value !== undefined ? Number(value) : null;
+  };
+
+  // THIS is the important fix
+  const getMenuItemProductId = (p) => {
+    const value =
+      p?.DebtorMenuItemProductID ??
+      p?.POS_MenuItemProductID ??
+      p?.MenuItemProductID ??
+      p?.FK_MenuItemProductID;
+
+    return value !== null && value !== undefined && value !== ""
+      ? Number(value)
+      : null;
+  };
 
   const getApiMessage = (res, fallback) =>
     res?.Messages?.[0] || res?.Errors?.[0] || fallback || "Something went wrong.";
@@ -93,9 +113,6 @@ const MenuTreeCampBuilder = () => {
     return result.isConfirmed;
   };
 
-  // -----------------------------
-  // Data loading
-  // -----------------------------
   useEffect(() => {
     if (id) {
       fetchData();
@@ -107,6 +124,7 @@ const MenuTreeCampBuilder = () => {
   async function fetchData() {
     try {
       const tree = await getCampMenuTree(id);
+      console.log("getCampMenuTree response:", tree);
       setMenuData(tree);
     } catch (err) {
       await swalError(
@@ -128,9 +146,6 @@ const MenuTreeCampBuilder = () => {
     }
   }
 
-  // -----------------------------
-  // Expand all
-  // -----------------------------
   useEffect(() => {
     if (menuData && menuData.MenuItems && menuData.MenuItems.length > 0) {
       const expanded = {};
@@ -152,9 +167,6 @@ const MenuTreeCampBuilder = () => {
     }
   }, [menuData]);
 
-  // -----------------------------
-  // ✅ SAME ASSIGNED PRODUCT HELPERS AS NORMAL BUILDER
-  // -----------------------------
   function collectAssignedProductIds(menuItems) {
     const ids = new Set();
 
@@ -164,8 +176,8 @@ const MenuTreeCampBuilder = () => {
       items.forEach((it) => {
         if (it.Product && it.Product.length > 0) {
           it.Product.forEach((p) => {
-            const pid = p.ProductID ?? p.POS_ProductID;
-            if (pid != null) ids.add(Number(pid));
+            const pid = getProductId(p);
+            if (pid != null) ids.add(pid);
           });
         }
 
@@ -190,13 +202,10 @@ const MenuTreeCampBuilder = () => {
     })
     .filter((p) => {
       if (!onlyUnassigned) return true;
-      const pid = Number(p.ProductID ?? p.POS_ProductID);
-      return !assignedIds.has(pid);
+      const pid = getProductId(p);
+      return pid == null ? true : !assignedIds.has(pid);
     });
 
-  // -----------------------------
-  // DnD
-  // -----------------------------
   function DroppableProducts({ item, parentId, children }) {
     const { setNodeRef, isOver } = useDroppable({
       id: `menu-products-${item.ItemID}`,
@@ -231,17 +240,16 @@ const MenuTreeCampBuilder = () => {
       );
     }
 
+    const draggableProductId = getProductId(product);
+
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-      id: `product-${product.POS_ProductID}`,
+      id: `product-${draggableProductId}`,
       data: { product },
     });
 
     useEffect(() => {
       if (isDragging) setActiveProduct(product);
-      else if (
-        activeProduct &&
-        activeProduct.POS_ProductID === product.POS_ProductID
-      ) {
+      else if (activeProduct && getProductId(activeProduct) === getProductId(product)) {
         setActiveProduct(null);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -262,9 +270,6 @@ const MenuTreeCampBuilder = () => {
     );
   }
 
-  // -----------------------------
-  // Render tree
-  // -----------------------------
   const renderMenuTree = (items, level = 0, parentId = "root") => (
     <ul className="list-group" style={{ marginLeft: level * 10 }}>
       {items.map((item) => {
@@ -313,7 +318,7 @@ const MenuTreeCampBuilder = () => {
                         if (Array.isArray(prevExpanded)) {
                           if (prevExpanded.includes(item.ItemID)) {
                             newExpanded = prevExpanded.filter(
-                              (id) => id !== item.ItemID
+                              (x) => x !== item.ItemID
                             );
                           } else {
                             newExpanded = [...prevExpanded, item.ItemID];
@@ -421,62 +426,78 @@ const MenuTreeCampBuilder = () => {
                       )}
 
                       {item.Product && item.Product.length > 0 ? (
-                        item.Product.map((prod) => (
-                          <li
-                            key={
-                              prod.POS_MenuItemProductID ||
-                              prod.ProductID ||
-                              prod.POS_ProductID
-                            }
-                            className="mb-1 d-flex align-items-center justify-content-between"
-                            style={{
-                              border: "1px solid #dee2e6",
-                              borderRadius: "5px",
-                              padding: "6px 10px",
-                              background: "#f9f9f9",
-                            }}
-                          >
-                            <span>{getProductLabel(prod)}</span>
+                        item.Product.map((prod, index) => {
+                          const menuItemProductId = getMenuItemProductId(prod);
+                          const productId = getProductId(prod);
 
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-link text-danger ms-2 p-0"
-                              title="Delete Product"
-                              onClick={async () => {
-                                const ok = await swalConfirm(
-                                  "Delete product link?",
-                                  "Remove this product from the menu item?",
-                                  "Remove"
-                                );
-                                if (!ok) return;
+                          return (
+                            <li
+                              key={
+                                menuItemProductId ||
+                                productId ||
+                                `${item.ItemID}-${index}`
+                              }
+                              className="mb-1 d-flex align-items-center justify-content-between"
+                              style={{
+                                border: "1px solid #dee2e6",
+                                borderRadius: "5px",
+                                padding: "6px 10px",
+                                background: "#f9f9f9",
+                              }}
+                            >
+                              <span>{getProductLabel(prod)}</span>
 
-                                try {
-                                  const res = await deleteDebtorMenuItemProduct(
-                                    prod.POS_MenuItemProductID
-                                  );
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-link text-danger ms-2 p-0"
+                                title="Delete Product"
+                                onClick={async () => {
+                                  console.log("Delete clicked product:", prod);
 
-                                  if (res?.Success === false) {
-                                    await swalError("Remove failed", res);
+                                  const deleteId = getMenuItemProductId(prod);
+
+                                  if (!deleteId) {
+                                    await swalError(
+                                      "Remove failed",
+                                      "No menu-item-product link ID found on this row. Check the console log for the product object field names."
+                                    );
                                     return;
                                   }
 
-                                  await fetchData();
-                                  await swalSuccess(
-                                    "Removed",
-                                    "Product removed from menu item."
+                                  const ok = await swalConfirm(
+                                    "Delete product link?",
+                                    "Remove this product from the menu item?",
+                                    "Remove"
                                   );
-                                } catch (err) {
-                                  await swalError(
-                                    "Remove failed",
-                                    err?.message || "Error removing product."
-                                  );
-                                }
-                              }}
-                            >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          </li>
-                        ))
+                                  if (!ok) return;
+
+                                  try {
+                                    const res =
+                                      await deleteDebtorMenuItemProduct(deleteId);
+
+                                    if (res?.Success === false) {
+                                      await swalError("Remove failed", res);
+                                      return;
+                                    }
+
+                                    await fetchData();
+                                    await swalSuccess(
+                                      "Removed",
+                                      "Product removed from menu item."
+                                    );
+                                  } catch (err) {
+                                    await swalError(
+                                      "Remove failed",
+                                      err?.message || "Error removing product."
+                                    );
+                                  }
+                                }}
+                              >
+                                <i className="bi bi-trash"></i>
+                              </button>
+                            </li>
+                          );
+                        })
                       ) : (
                         <li className="text-muted">
                           {isOver ? "Drop product here..." : "No products assigned"}
@@ -502,89 +523,76 @@ const MenuTreeCampBuilder = () => {
     </ul>
   );
 
-  // -----------------------------
-  // Drag end
-  // -----------------------------
-  const handleDragEnd = (event) => {
+  const findMenuItemById = (items, menuItemId) => {
+    for (const item of items) {
+      if (item.ItemID === menuItemId) return item;
+      if (item.ChildItem && item.ChildItem.length > 0) {
+        const found = findMenuItemById(item.ChildItem, menuItemId);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
+    setActiveProduct(null);
+
     if (!active || !over) return;
 
     if (
       active.id.startsWith("product-") &&
       over.id.startsWith("menu-products-")
     ) {
-      const match = active.id.match(/^product-(\d+)(?:-from-(\d+))?$/);
+      const match = active.id.match(/^product-(\d+)$/);
       if (!match) return;
 
       const productId = parseInt(match[1], 10);
-      const fromMenuItemId = match[2] ? parseInt(match[2], 10) : null;
-      if (fromMenuItemId) return;
-
       const menuItemId = parseInt(over.id.replace("menu-products-", ""), 10);
+
       const draggedProduct = productList.find(
-        (p) => p.POS_ProductID === productId
+        (p) => getProductId(p) === productId
       );
-      if (!draggedProduct) return;
 
-      async function addProduct(items) {
-        return Promise.all(
-          items.map(async (item) => {
-            if (item.ItemID === menuItemId) {
-              const alreadyExists =
-                item.Product &&
-                item.Product.some(
-                  (p) => p.ProductID === productId || p.POS_ProductID === productId
-                );
-
-              if (!alreadyExists) {
-                const res = await newDebtorMenuItemProduct({
-                  FK_MenuItemID: menuItemId,
-                  FK_ProductID:
-                    draggedProduct.ProductID || draggedProduct.POS_ProductID,
-                });
-
-                if (res?.Success === false) {
-                  await swalError("Could not add product", res);
-                  return item;
-                }
-
-                const newProd = {
-                  POS_MenuItemProductID: Math.random(),
-                  ProductID:
-                    draggedProduct.ProductID || draggedProduct.POS_ProductID,
-                  Product: getProductLabel(draggedProduct),
-                  ProductName:
-                    draggedProduct.ProductName || draggedProduct.Product,
-                  Description:
-                    draggedProduct.Description ||
-                    draggedProduct.ProductDescription ||
-                    "",
-                };
-
-                item.Product = item.Product ? [...item.Product, newProd] : [newProd];
-              }
-            }
-
-            if (item.ChildItem && item.ChildItem.length > 0) {
-              item.ChildItem = await addProduct(item.ChildItem);
-            }
-
-            return item;
-          })
-        );
+      if (!draggedProduct) {
+        await swalError("Drag/drop failed", "Could not find dragged product.");
+        return;
       }
 
-      (async () => {
-        try {
-          const updatedMenuItems = await addProduct(menuData.MenuItems);
-          setMenuData((prev) => ({ ...prev, MenuItems: updatedMenuItems }));
-        } catch (err) {
-          await swalError(
-            "Drag/drop failed",
-            err?.message || "Could not add product to item."
-          );
+      const targetMenuItem = findMenuItemById(menuData?.MenuItems || [], menuItemId);
+
+      if (!targetMenuItem) {
+        await swalError("Drag/drop failed", "Could not find target menu item.");
+        return;
+      }
+
+      const alreadyExists =
+        targetMenuItem.Product &&
+        targetMenuItem.Product.some((p) => getProductId(p) === productId);
+
+      if (alreadyExists) {
+        await swalError("Already linked", "This product is already linked to the menu item.");
+        return;
+      }
+
+      try {
+        const res = await newDebtorMenuItemProduct({
+          FK_MenuItemID: menuItemId,
+          FK_ProductID: getProductId(draggedProduct),
+        });
+
+        if (res?.Success === false) {
+          await swalError("Could not add product", res);
+          return;
         }
-      })();
+
+        await fetchData();
+      } catch (err) {
+        await swalError(
+          "Drag/drop failed",
+          err?.message || "Could not add product to item."
+        );
+      }
     }
   };
 
@@ -851,10 +859,10 @@ const MenuTreeCampBuilder = () => {
                 >
                   {filteredProducts && filteredProducts.length > 0 ? (
                     <ul className="list-group">
-                      {filteredProducts.map((product) => (
+                      {filteredProducts.map((product, index) => (
                         <DraggableProduct
                           product={product}
-                          key={product.POS_ProductID}
+                          key={getProductId(product) || index}
                         />
                       ))}
                     </ul>

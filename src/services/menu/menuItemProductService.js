@@ -48,11 +48,20 @@ export const newDebtorMenuItemProduct = async (data) => {
 };
 
 export const deleteDebtorMenuItemProduct = async (id) => {
+    console.log("deleteDebtorMenuItemProduct ID:", id);
+
     try {
-        const response = await api.post('/Menu/remove/debtor/menu/item/product', { POS_MenuItemProductID: id }); // Use POST
-        console.log("response", response.data);
+        const response = await api.post("/Menu/remove/debtor/menu/item/product", {
+            POS_MenuItemProductID: Number(id),
+        });
+
+        console.log("deleteDebtorMenuItemProduct response", response.data);
         return response.data;
     } catch (error) {
-        return error.response.data;
+        console.error("deleteDebtorMenuItemProduct error", error);
+        return error.response?.data || {
+            Success: false,
+            Messages: ["Failed to delete menu item product."],
+        };
     }
 };
