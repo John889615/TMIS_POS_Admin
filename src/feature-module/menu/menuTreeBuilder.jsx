@@ -73,16 +73,6 @@ const MenuTreeBuilder = () => {
     });
   };
 
-  const swalSuccess = async (title, msg) => {
-    await Swal.fire({
-      icon: "success",
-      title: title || "Success",
-      text: msg || "Done.",
-      confirmButtonText: "OK",
-      allowOutsideClick: false,
-    });
-  };
-
   const swalConfirm = async (title, text, confirmText = "Yes") => {
     const result = await Swal.fire({
       icon: "warning",
@@ -244,9 +234,8 @@ const MenuTreeBuilder = () => {
         ref={setNodeRef}
         {...attributes}
         {...listeners}
-        className={`list-group-item${
-          isDragging ? " bg-info border border-primary" : ""
-        }`}
+        className={`list-group-item${isDragging ? " bg-info border border-primary" : ""
+          }`}
         style={{ cursor: "grab", opacity: isDragging ? 0.5 : 1 }}
       >
         {getProductLabel(product)}
@@ -271,15 +260,14 @@ const MenuTreeBuilder = () => {
         return (
           <li
             key={item.ItemID}
-            className={`list-group-item${
-              isTopLevel ? " mb-3 border-1" : "shadow-sm"
-            }`}
+            className={`list-group-item${isTopLevel ? " mb-3 border-1" : "shadow-sm"
+              }`}
             style={
               isTopLevel
                 ? {
-                    borderRadius: "8px",
-                    boxShadow: "0 0.125rem 0.25rem rgba(0,0,0,.075)",
-                  }
+                  borderRadius: "8px",
+                  boxShadow: "0 0.125rem 0.25rem rgba(0,0,0,.075)",
+                }
                 : {}
             }
           >
@@ -357,7 +345,6 @@ const MenuTreeBuilder = () => {
                         return;
                       }
                       await fetchData();
-                      await swalSuccess("Deleted", "Menu item removed.");
                     } catch (err) {
                       await swalError(
                         "Delete failed",
@@ -437,10 +424,7 @@ const MenuTreeBuilder = () => {
                                     return;
                                   }
                                   await fetchData();
-                                  await swalSuccess(
-                                    "Removed",
-                                    "Product removed from menu item."
-                                  );
+
                                 } catch (err) {
                                   await swalError(
                                     "Remove failed",
@@ -633,7 +617,6 @@ const MenuTreeBuilder = () => {
                         setNewItemDesc("");
                         setNewItemImage(null);
                         setParentItemId(null);
-                        await swalSuccess("Added", "Menu item created.");
                       } else {
                         await swalError("Could not add item", res);
                       }
@@ -743,7 +726,6 @@ const MenuTreeBuilder = () => {
                         setShowEditModal(false);
                         setEditItem(null);
                         setEditItemImage(null);
-                        await swalSuccess("Updated", "Menu item updated.");
                       } else {
                         await swalError("Update failed", res);
                       }

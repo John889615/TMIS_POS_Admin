@@ -114,19 +114,9 @@ const TenantSettings = () => {
       if (data.SettingID) {
         await updateSetting(data);
 
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Settings updated successfully.",
-        });
       } else {
         await newSetting(data);
 
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Settings added successfully.",
-        });
       }
 
       await fetchRecord();
