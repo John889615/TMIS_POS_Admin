@@ -1,11 +1,10 @@
 import api from '../posAPI';
 
-
 export const getAllSlipPrinter = async () => {
     try {
         const response = await api.get('/EntityData/list/slip/printers');
         if (response.data && Array.isArray(response.data.Data)) {
-            return response.data.Data;  
+            return response.data.Data;
         } else {
             throw new Error("Unexpected response format");
         }
@@ -17,9 +16,25 @@ export const getAllSlipPrinter = async () => {
     }
 };
 
+export const getAllSlipTypes = async () => {
+    try {
+        const response = await api.get('/EntityData/list/slip/types');
+        if (response.data && Array.isArray(response.data.Data)) {
+            return response.data.Data;
+        } else {
+            throw new Error("Unexpected response format");
+        }
+    } catch (error) {
+        if (error.response) {
+            // You can use a toast or console.log here for user-friendly error reporting
+        }
+        throw new Error('Failed to fetch slip types. Please try again.');
+    }
+};
+
 export const newSlipPrinter = async (slipPrinterData) => {
     try {
-        const response = await api.post('/EntityData/add/slip/printer', slipPrinterData); // Use POST
+        const response = await api.post('/EntityData/add/slip/printer', slipPrinterData);
         console.log("response", response.data);
         return response.data;
     } catch (error) {
@@ -27,10 +42,9 @@ export const newSlipPrinter = async (slipPrinterData) => {
     }
 };
 
-
 export const updateSlipPrinter = async (slipPrinterData) => {
     try {
-        const response = await api.post('/EntityData/update/slip/printer', slipPrinterData); // Use POST
+        const response = await api.post('/EntityData/update/slip/printer', slipPrinterData);
         console.log("response", response.data);
         return response.data;
     } catch (error) {

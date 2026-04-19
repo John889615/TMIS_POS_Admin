@@ -6,16 +6,17 @@ import {
   newMenu,
   updateMenu,
   copyMenu,
-  updateDebtorMenu, // <-- ADD THIS. Rename to your actual linked-menu update API
+  updateDebtorMenu,
+  addDebtorMenuPrinter,
+  updateDebtorMenuPrinter,
 } from "../../services/menu/menuService";
-
+import { getAllSlipPrinter, getAllSlipTypes } from "../../services/entityData/slipPrinter";
 import { getAllDebtors } from "../../services/debtors/debtors";
 import { getAllCostCenter } from "../../services/debtors/costCenter";
-import { getAllSlipPrinter } from "../../services/entityData/slipPrinter";
 
-import { Button } from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircle } from "react-feather";
+import { PlusCircle, ArrowLeft, Printer } from "react-feather";
 import { useSelector, useDispatch } from "react-redux";
 
 import MenuForm from "../../core/modals/menu/menuFormModel";
@@ -49,7 +50,7 @@ const MenuPage = () => {
   const [debtorList, setDebtorList] = useState([]);
   const [costCenterList, setCostCenterList] = useState([]);
   const [slipPrinterList, setSlipPrinterList] = useState([]);
-
+const [slipTypeList, setSlipTypeList] = useState([]);
   const [showModel, setModelShow] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
@@ -60,6 +61,24 @@ const MenuPage = () => {
   const recordsPerPage = 10;
 
   const menuFormResetRef = useRef(null);
+
+  const [showPrinterView, setShowPrinterView] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState(null);
+  const [printerSearchTerm, setPrinterSearchTerm] = useState("");
+
+  // For now this is local state until you share the list endpoint
+  const [menuPrinterRows, setMenuPrinterRows] = useState([]);
+
+  const [showPrinterModal, setShowPrinterModal] = useState(false);
+  const [selectedPrinterRow, setSelectedPrinterRow] = useState(null);
+  const [savingPrinter, setSavingPrinter] = useState(false);
+
+  const [printerFormData, setPrinterFormData] = useState({
+    DebtorMenuPrinterID: 0,
+    FK_DebtorMenuID: 0,
+    FK_PrinterID: "",
+    FK_OrderSlipTypeID: "",
+  });
 
   const resolvedDebtorId = useMemo(() => {
     const redux = Number(debtorIdFromRedux);
@@ -73,22 +92,25 @@ const MenuPage = () => {
     return null;
   }, [debtorIdFromRedux, debtorList]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const d = await getAllDebtors();
-        setDebtorList(Array.isArray(d) ? d : []);
+useEffect(() => {
+  (async () => {
+    try {
+      const d = await getAllDebtors();
+      setDebtorList(Array.isArray(d) ? d : []);
 
-        const cost = await getAllCostCenter();
-        setCostCenterList(Array.isArray(cost) ? cost : []);
+      const cost = await getAllCostCenter();
+      setCostCenterList(Array.isArray(cost) ? cost : []);
 
-        const printers = await getAllSlipPrinter();
-        setSlipPrinterList(Array.isArray(printers) ? printers : []);
-      } catch (err) {
-        console.error("Failed to load debtor/cost/printers:", err?.message || err);
-      }
-    })();
-  }, []);
+      const printers = await getAllSlipPrinter();
+      setSlipPrinterList(Array.isArray(printers) ? printers : []);
+
+      const slipTypes = await getAllSlipTypes();
+      setSlipTypeList(Array.isArray(slipTypes) ? slipTypes : []);
+    } catch (err) {
+      console.error("Failed to load debtor/cost/printers/slip types:", err?.message || err);
+    }
+  })();
+}, []);
 
   useEffect(() => {
     if (!resolvedDebtorId) return;
@@ -118,6 +140,34 @@ const MenuPage = () => {
   const startIndex = (currentPage - 1) * recordsPerPage;
   const currentData = filteredData.slice(startIndex, startIndex + recordsPerPage);
 
+  const filteredPrinterRows = (menuPrinterRows || []).filter((item) =>
+    Object.values(item || {}).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(printerSearchTerm.toLowerCase())
+    )
+  );
+
+  const printerOptions = useMemo(() => {
+    return (slipPrinterList || []).map((printer) => ({
+      PrinterID: printer.PrinterID ?? printer.SlipPrinterID ?? printer.ID ?? 0,
+      PrinterName:
+        printer.PrinterName ??
+        printer.Name ??
+        printer.Description ??
+        "Unnamed Printer",
+    }));
+  }, [slipPrinterList]);
+
+const orderSlipTypeOptions = useMemo(() => {
+  return (slipTypeList || []).map((item) => ({
+    OrderSlipTypeID: item.SlipTypeID ?? 0,
+    OrderSlipTypeName: item.SlipType ?? "Unnamed Slip Type",
+    SlipCode: item.SlipCode ?? "",
+    Description: item.Description ?? "",
+  }));
+}, [slipTypeList]);
+
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
@@ -141,12 +191,10 @@ const MenuPage = () => {
   const isLinkedMenu = (menu) => {
     if (!menu) return false;
 
-    // Prefer SourceType if your API returns it
     if (menu.SourceType && menu.SourceType !== "Global") {
       return true;
     }
 
-    // Fallback checks if SourceType is missing
     if (menu.FK_CostCenterID || menu.CostCenterID) {
       return true;
     }
@@ -158,9 +206,26 @@ const MenuPage = () => {
     return false;
   };
 
+  const isTemplateMenu = (menu) => {
+    if (!menu) return false;
+
+    if (menu.SourceType === "Global") return true;
+    if (!menu.Location || String(menu.Location).trim() === "") return true;
+    if (String(menu.Location).toLowerCase() === "template") return true;
+    if (menu.IsTemplate === true) return true;
+    if (menu.Template === true) return true;
+
+    return false;
+  };
+
   const handleAddProduct = async (formData) => {
     try {
-      const id = formData?.MenuID ?? formData?.POS_MenuID ?? selectedData?.MenuID ?? selectedData?.POS_MenuID;
+      const id =
+        formData?.MenuID ??
+        formData?.POS_MenuID ??
+        selectedData?.MenuID ??
+        selectedData?.POS_MenuID;
+
       const editing = !!id;
 
       let response;
@@ -173,9 +238,9 @@ const MenuPage = () => {
         };
 
         if (isLinkedMenu(selectedData)) {
-          response = await updateDebtorMenu(payload); // <-- linked/location/costcenter menu update API
+          response = await updateDebtorMenu(payload);
         } else {
-          response = await updateMenu(payload); // <-- template/global menu update API
+          response = await updateMenu(payload);
         }
       } else {
         response = await newMenu(formData);
@@ -279,145 +344,415 @@ const MenuPage = () => {
     }
   };
 
+  const handleOpenPrinterView = (menu) => {
+    setSelectedMenu(menu);
+    setPrinterSearchTerm("");
+    setShowPrinterView(true);
+
+    // Until list endpoint exists, keep local / empty state
+    setMenuPrinterRows([]);
+  };
+
+  const handleClosePrinterView = () => {
+    setShowPrinterView(false);
+    setSelectedMenu(null);
+    setPrinterSearchTerm("");
+    setMenuPrinterRows([]);
+  };
+
+  const handleOpenAddPrinterModal = () => {
+    const debtorMenuId = selectedMenu?.DebtorMenuID ?? selectedMenu?.MenuID ?? 0;
+
+    setSelectedPrinterRow(null);
+    setPrinterFormData({
+      DebtorMenuPrinterID: 0,
+      FK_DebtorMenuID: debtorMenuId,
+      FK_PrinterID: "",
+      FK_OrderSlipTypeID: "",
+    });
+    setShowPrinterModal(true);
+  };
+
+  const handleOpenEditPrinterModal = (row) => {
+    const debtorMenuId =
+      row?.FK_DebtorMenuID ??
+      selectedMenu?.DebtorMenuID ??
+      selectedMenu?.MenuID ??
+      0;
+
+    setSelectedPrinterRow(row);
+    setPrinterFormData({
+      DebtorMenuPrinterID: row?.DebtorMenuPrinterID ?? 0,
+      FK_DebtorMenuID: debtorMenuId,
+      FK_PrinterID: row?.FK_PrinterID ?? "",
+      FK_OrderSlipTypeID: row?.FK_OrderSlipTypeID ?? "",
+    });
+    setShowPrinterModal(true);
+  };
+
+  const handleClosePrinterModal = () => {
+    setShowPrinterModal(false);
+    setSelectedPrinterRow(null);
+    setSavingPrinter(false);
+    setPrinterFormData({
+      DebtorMenuPrinterID: 0,
+      FK_DebtorMenuID: 0,
+      FK_PrinterID: "",
+      FK_OrderSlipTypeID: "",
+    });
+  };
+
+  const getPrinterName = (printerId) => {
+    const match = printerOptions.find(
+      (x) => Number(x.PrinterID) === Number(printerId)
+    );
+
+    return match?.PrinterName || "N/A";
+  };
+
+  const getOrderSlipTypeName = (orderSlipTypeId) => {
+    const match = orderSlipTypeOptions.find(
+      (x) => Number(x.OrderSlipTypeID) === Number(orderSlipTypeId)
+    );
+
+    return match?.OrderSlipTypeName || "N/A";
+  };
+
+  const handleSaveMenuPrinter = async () => {
+    try {
+      if (!printerFormData.FK_DebtorMenuID || !printerFormData.FK_PrinterID || !printerFormData.FK_OrderSlipTypeID) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Missing fields",
+          text: "Please select a printer and order slip type.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      setSavingPrinter(true);
+
+      const payload = {
+        DebtorMenuPrinterID: Number(printerFormData.DebtorMenuPrinterID || 0),
+        FK_DebtorMenuID: Number(printerFormData.FK_DebtorMenuID),
+        FK_PrinterID: Number(printerFormData.FK_PrinterID),
+        FK_OrderSlipTypeID: Number(printerFormData.FK_OrderSlipTypeID),
+      };
+
+      let response;
+
+      if (payload.DebtorMenuPrinterID > 0) {
+        response = await updateDebtorMenuPrinter(payload);
+      } else {
+        response = await addDebtorMenuPrinter({
+          FK_DebtorMenuID: payload.FK_DebtorMenuID,
+          FK_PrinterID: payload.FK_PrinterID,
+          FK_OrderSlipTypeID: payload.FK_OrderSlipTypeID,
+        });
+      }
+
+      if (response?.Success === false) {
+        const msg =
+          response?.Messages?.[0] ||
+          response?.Errors?.[0] ||
+          "Could not save menu printer.";
+
+        await Swal.fire({
+          icon: "error",
+          title: "Save failed",
+          text: msg,
+          confirmButtonText: "OK",
+        });
+
+        return;
+      }
+
+      if (payload.DebtorMenuPrinterID > 0) {
+        setMenuPrinterRows((prev) =>
+          prev.map((item) =>
+            Number(item.DebtorMenuPrinterID) === payload.DebtorMenuPrinterID
+              ? { ...item, ...payload }
+              : item
+          )
+        );
+      } else {
+        const newId =
+          response?.Data?.DebtorMenuPrinterID ??
+          response?.Data?.MenuPrinterID ??
+          Date.now();
+
+        setMenuPrinterRows((prev) => [
+          ...prev,
+          {
+            DebtorMenuPrinterID: newId,
+            FK_DebtorMenuID: payload.FK_DebtorMenuID,
+            FK_PrinterID: payload.FK_PrinterID,
+            FK_OrderSlipTypeID: payload.FK_OrderSlipTypeID,
+          },
+        ]);
+      }
+
+      handleClosePrinterModal();
+    } catch (err) {
+      console.error("Failed to save menu printer:", err);
+
+      await Swal.fire({
+        icon: "error",
+        title: "Unexpected error",
+        text: err?.message || "Something went wrong.",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setSavingPrinter(false);
+    }
+  };
+
   return (
     <div className="page-wrapper">
       <div className="content">
-        <div className="page-header">
-          <div className="add-item d-flex">
-            <div className="page-title">
-              <h4>All Menu</h4>
-              <h6>Manage Your Menu</h6>
-              <div className="text-muted" style={{ fontSize: 12 }}>
-                Active Debtor ID: {resolvedDebtorId ?? "Loading..."}
-              </div>
-            </div>
-          </div>
-
-          <div className="page-btn">
-            <Button variant="none" className="btn btn-added" onClick={handleShow}>
-              <PlusCircle className="me-2" />
-              Add New Menu
-            </Button>
-          </div>
-        </div>
-
-        <div className="card table-list-card">
-          <div className="card-body">
-            <div className="table-top d-flex justify-content-between align-items-center">
-              <div className="search-set">
-                <div className="search-input">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    className="form-control"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <Link to="#" className="btn btn-searchset">
-                    <i data-feather="search" className="feather-search" />
-                  </Link>
+        {!showPrinterView ? (
+          <>
+            <div className="page-header">
+              <div className="add-item d-flex">
+                <div className="page-title">
+                  <h4>All Menu</h4>
+                  <h6>Manage Your Menu</h6>
+                  <div className="text-muted" style={{ fontSize: 12 }}>
+                    {/* Active Debtor ID: {resolvedDebtorId ?? "Loading..."} */}
+                  </div>
                 </div>
               </div>
+
+              <div className="page-btn">
+                <Button variant="none" className="btn btn-added" onClick={handleShow}>
+                  <PlusCircle className="me-2" />
+                  Add New Menu
+                </Button>
+              </div>
             </div>
 
-            <div className="table-responsive">
-              <table className="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th>Menu Name</th>
-                    <th>Location</th>
-                    <th>Is Active</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+            <div className="card table-list-card">
+              <div className="card-body">
+                <div className="table-top d-flex justify-content-between align-items-center">
+                  <div className="search-set">
+                    <div className="search-input">
+                      <input
+                        type="text"
+                        placeholder="Search"
+                        className="form-control"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                      <Link to="#" className="btn btn-searchset">
+                        <i data-feather="search" className="feather-search" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
 
-                <tbody>
-                  {currentData.length > 0 ? (
-                    currentData.map((item, index) => (
-                      <tr key={index}>
-                        <td
-                          style={{ cursor: "pointer", textDecoration: "underline" }}
-                          onClick={() => handleMenuClick(item.MenuID, item.SourceType)}
-                        >
-                          {item.MenuName || "N/A"}
-                        </td>
-                        <td>{item.Location ? item.Location : "Template"}</td>
-                        <td>{item.IsActive ? "Yes" : "No"}</td>
-                        <td>
-                          <button
-                            type="button"
-                            onClick={() => handleEditProduct(item)}
-                            className="btn btn-sm btn-primary me-2"
-                          >
-                            <i className="feather-edit"></i>
-                          </button>
-
-                          {item.SourceType === "Global" && (
-                            <button
-                              type="button"
-                              onClick={() => HandleCopyMenu(item)}
-                              className="btn btn-sm btn-primary me-2"
-                            >
-                              Copy Menu
-                            </button>
-                          )}
-                        </td>
+                <div className="table-responsive">
+                  <table className="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>Menu Name</th>
+                        <th>Location</th>
+                        <th>Is Active</th>
+                        <th>Action</th>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4" className="text-center">
-                        {resolvedDebtorId ? "No records found" : "Loading..."}
-                      </td>
-                    </tr>
+                    </thead>
+
+                    <tbody>
+                      {currentData.length > 0 ? (
+                        currentData.map((item, index) => (
+                          <tr key={index}>
+                            <td
+                              style={{ cursor: "pointer", textDecoration: "underline" }}
+                              onClick={() => handleMenuClick(item.MenuID, item.SourceType)}
+                            >
+                              {item.MenuName || "N/A"}
+                            </td>
+                            <td>{item.Location ? item.Location : "Template"}</td>
+                            <td>{item.IsActive ? "Yes" : "No"}</td>
+                            <td>
+                              <button
+                                type="button"
+                                onClick={() => handleEditProduct(item)}
+                                className="btn btn-sm btn-primary me-2"
+                              >
+                                <i className="feather-edit"></i>
+                              </button>
+                              
+                              {!isTemplateMenu(item) && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenPrinterView(item)}
+                                  className="btn btn-sm btn-secondary me-2"
+                                  title="Menu Printers"
+                                >
+                                  <Printer size={14} />
+                                </button>
+                              )}
+                             
+
+                              {item.SourceType === "Global" && (
+                                <button
+                                  type="button"
+                                  onClick={() => HandleCopyMenu(item)}
+                                  className="btn btn-sm btn-primary me-2"
+                                >
+                                  Copy Menu
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="text-center">
+                            {resolvedDebtorId ? "No records found" : "Loading..."}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+
+                  {totalPages > 1 && (
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                      <span>
+                        Page {currentPage} of {totalPages}
+                      </span>
+
+                      <div>
+                        {Array.from({ length: totalPages }, (_, i) => (
+                          <Button
+                            key={i}
+                            variant={currentPage === i + 1 ? "primary" : "light"}
+                            size="sm"
+                            className="mx-1"
+                            onClick={() => goToPage(i + 1)}
+                          >
+                            {i + 1}
+                          </Button>
+                        ))}
+                      </div>
+
+                      <div>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          disabled={currentPage === 1}
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="ms-2"
+                          disabled={currentPage === totalPages}
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
                   )}
-                </tbody>
-              </table>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="page-header">
+              <div className="add-item d-flex align-items-center">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-secondary me-3"
+                  onClick={handleClosePrinterView}
+                  title="Back"
+                >
+                  <ArrowLeft size={16} />
+                </button>
 
-              {totalPages > 1 && (
-                <div className="d-flex justify-content-between align-items-center mt-3">
-                  <span>
-                    Page {currentPage} of {totalPages}
-                  </span>
+                <div className="page-title">
+                  <h4>Menu Printers</h4>
+                  <h6>{selectedMenu?.MenuName || "Selected Menu"}</h6>
+                </div>
+              </div>
 
-                  <div>
-                    {Array.from({ length: totalPages }, (_, i) => (
-                      <Button
-                        key={i}
-                        variant={currentPage === i + 1 ? "primary" : "light"}
-                        size="sm"
-                        className="mx-1"
-                        onClick={() => goToPage(i + 1)}
-                      >
-                        {i + 1}
-                      </Button>
-                    ))}
-                  </div>
+              <div className="page-btn">
+                <Button
+                  variant="none"
+                  className="btn btn-added"
+                  onClick={handleOpenAddPrinterModal}
+                >
+                  <PlusCircle className="me-2" />
+                  Add New Printer
+                </Button>
+              </div>
+            </div>
 
-                  <div>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      disabled={currentPage === 1}
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="ms-2"
-                      disabled={currentPage === totalPages}
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                    >
-                      Next
-                    </Button>
+            <div className="card table-list-card">
+              <div className="card-body">
+                <div className="table-top d-flex justify-content-between align-items-center">
+                  <div className="search-set">
+                    <div className="search-input">
+                      <input
+                        type="text"
+                        placeholder="Search printers"
+                        className="form-control"
+                        value={printerSearchTerm}
+                        onChange={(e) => setPrinterSearchTerm(e.target.value)}
+                      />
+                      <Link to="#" className="btn btn-searchset">
+                        <i data-feather="search" className="feather-search" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              )}
+
+                <div className="table-responsive">
+                  <table className="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>Printer</th>
+                        <th>Order Slip Type</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {filteredPrinterRows.length > 0 ? (
+                        filteredPrinterRows.map((item, index) => (
+                          <tr key={item.DebtorMenuPrinterID || index}>
+                            <td>{getPrinterName(item.FK_PrinterID)}</td>
+                            <td>{getOrderSlipTypeName(item.FK_OrderSlipTypeID)}</td>
+                            <td>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEditPrinterModal(item)}
+                                className="btn btn-sm btn-primary me-2"
+                                title="Edit Menu Printer"
+                              >
+                                <i className="feather-edit"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="3" className="text-center">
+                            No printers found
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       {showModel && (
@@ -441,6 +776,73 @@ const MenuPage = () => {
           slipPrinterList={slipPrinterList}
         />
       )}
+
+      <Modal show={showPrinterModal} onHide={handleClosePrinterModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {selectedPrinterRow ? "Edit Menu Printer" : "Add Menu Printer"}
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Printer</Form.Label>
+            <Form.Select
+              value={printerFormData.FK_PrinterID}
+              onChange={(e) =>
+                setPrinterFormData((prev) => ({
+                  ...prev,
+                  FK_PrinterID: e.target.value,
+                }))
+              }
+            >
+              <option value="">Select Printer</option>
+              {printerOptions.map((printer) => (
+                <option key={printer.PrinterID} value={printer.PrinterID}>
+                  {printer.PrinterName}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Order Slip Type</Form.Label>
+            <Form.Select
+              value={printerFormData.FK_OrderSlipTypeID}
+              onChange={(e) =>
+                setPrinterFormData((prev) => ({
+                  ...prev,
+                  FK_OrderSlipTypeID: e.target.value,
+                }))
+              }
+            >
+              <option value="">Select Order Slip Type</option>
+              {orderSlipTypeOptions.map((item) => (
+                <option key={item.OrderSlipTypeID} value={item.OrderSlipTypeID}>
+                  {item.OrderSlipTypeName}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="light" onClick={handleClosePrinterModal}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSaveMenuPrinter}
+            disabled={
+              savingPrinter ||
+              !printerFormData.FK_PrinterID ||
+              !printerFormData.FK_OrderSlipTypeID
+            }
+          >
+            {savingPrinter ? "Saving..." : "Save"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

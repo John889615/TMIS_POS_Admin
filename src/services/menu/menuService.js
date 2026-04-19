@@ -124,3 +124,23 @@ export const addProductPrinter = async (data) => {
         return error.response.data;
     }
 };
+
+export const addDebtorMenuPrinter = async (data) => {
+    try {
+        const response = await api.post('/Menu/add/debtor/menu/printer', data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data;
+    }
+};
+
+export const updateDebtorMenuPrinter = async (data) => {
+    try {
+        const response = await api.post('/Menu/update/debtor/menu/printer', data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data;
+    }
+};
