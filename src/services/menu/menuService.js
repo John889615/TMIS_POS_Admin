@@ -144,3 +144,19 @@ export const updateDebtorMenuPrinter = async (data) => {
         return error.response?.data;
     }
 };
+
+export const getDebtorMenuPrinters = async (debtorMenuId) => {
+    try {
+        const response = await api.post('/Menu/list/debtor/menu/printers', {
+            DebtorMenuID: debtorMenuId
+        });
+
+        if (response.data && Array.isArray(response.data.Data)) {
+            return response.data.Data;
+        } else {
+            throw new Error("Unexpected response format");
+        }
+    } catch (error) {
+        return [];
+    }
+};

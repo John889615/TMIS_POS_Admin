@@ -7,16 +7,15 @@ import {
     getCostCenterPrinters,
     newCostCenterPrinter,
     updateCostCenterPrinter,
-} from "../../services/debtors/costCenter";
-import { getAllDebtors } from "../../services/debtors/debtors";
-import { getAllStatus } from "../../services/entityData/status";
-import { getAllSlipPrinter } from "../../services/entityData/slipPrinter";
-import { Button, Modal, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { PlusCircle, Printer, ArrowLeft } from "react-feather";
-import CostCenterForm from "../../core/modals/debtors/costCenterFormModel";
-
-const CostCenter = () => {
+    } from "../../services/debtors/costCenter";
+    import { getAllDebtors } from "../../services/debtors/debtors";
+    import { getAllStatus } from "../../services/entityData/status";
+    import { getAllSlipPrinter, getAllSlipTypes } from "../../services/entityData/slipPrinter";
+    import { Button, Modal, Form } from "react-bootstrap";
+    import { Link } from "react-router-dom";
+    import { PlusCircle, Printer, ArrowLeft } from "react-feather";
+    import CostCenterForm from "../../core/modals/debtors/costCenterFormModel";
+    const CostCenter = () => {
     const [listData, setListData] = useState([]);
     const [costTypeList, setCostTypeList] = useState([]);
     const [statusList, setStatusList] = useState([]);
@@ -35,16 +34,22 @@ const CostCenter = () => {
 
     const [showPrinterFormModal, setShowPrinterFormModal] = useState(false);
     const [selectedPrinterRow, setSelectedPrinterRow] = useState(null);
+
     const [printerFormData, setPrinterFormData] = useState({
         CostCenterPrinterID: 0,
         FK_CostCenterID: 0,
         FK_PrinterID: "",
+        FK_InvoiceSlipTypeID: "",
+        FK_TabSlipTypeID: "",
     });
+
+    const [slipTypeList, setSlipTypeList] = useState([]);
     const [savingPrinter, setSavingPrinter] = useState(false);
 
     useEffect(() => {
         fetchRecords();
         fetchPrinterMasterList();
+        fetchSlipTypeList();
     }, []);
 
     const fetchRecords = async () => {
@@ -75,6 +80,16 @@ const CostCenter = () => {
         }
     };
 
+    const fetchSlipTypeList = async () => {
+        try {
+            const slipTypes = await getAllSlipTypes();
+            setSlipTypeList(Array.isArray(slipTypes) ? slipTypes : []);
+        } catch (err) {
+            console.error("Failed to load slip type list:", err);
+            setSlipTypeList([]);
+        }
+    };
+
     const filteredData = listData.filter((item) =>
         Object.values(item || {}).some(
             (value) =>
@@ -101,6 +116,26 @@ const CostCenter = () => {
                 "Unnamed Printer",
         }));
     }, [printerMasterList]);
+
+ const slipTypeOptions = useMemo(() => {
+    return (slipTypeList || []).map((item) => ({
+        SlipTypeID: item.SlipTypeID ?? item.ID ?? 0,
+        SlipType: item.SlipType ?? item.Name ?? "",
+        SlipCode: item.SlipCode ?? "",
+    }));
+}, [slipTypeList]);
+
+const invoiceSlipTypeOptions = useMemo(() => {
+    return slipTypeOptions.filter((item) =>
+        String(item.SlipType || "").toLowerCase().includes("invoice")
+    );
+}, [slipTypeOptions]);
+
+const tabSlipTypeOptions = useMemo(() => {
+    return slipTypeOptions.filter((item) =>
+        String(item.SlipType || "").toLowerCase().includes("tab")
+    );
+}, [slipTypeOptions]);
 
     const handleShow = () => {
         setSelectedData(null);
@@ -182,20 +217,30 @@ const CostCenter = () => {
             CostCenterPrinterID: 0,
             FK_CostCenterID: selectedCostCenter?.CostCenterID || 0,
             FK_PrinterID: "",
+            FK_InvoiceSlipTypeID: "",
+            FK_TabSlipTypeID: "",
         });
         setShowPrinterFormModal(true);
     };
 
     const handleOpenEditPrinterModal = (row) => {
-        setSelectedPrinterRow(row);
-        setPrinterFormData({
-            CostCenterPrinterID: row?.CostCenterPrinterID || 0,
-            FK_CostCenterID:
-                row?.FK_CostCenterID || selectedCostCenter?.CostCenterID || 0,
-            FK_PrinterID: row?.FK_PrinterID || "",
-        });
-        setShowPrinterFormModal(true);
-    };
+    setSelectedPrinterRow(row);
+    setPrinterFormData({
+        CostCenterPrinterID: row?.CostCenterPrinterID || 0,
+        FK_CostCenterID:
+            row?.FK_CostCenterID || selectedCostCenter?.CostCenterID || 0,
+        FK_PrinterID: row?.FK_PrinterID || "",
+        FK_InvoiceSlipTypeID:
+            row?.FK_InvoiceSlipTypeID ||
+            row?.InvoiceSlipTypeID ||
+            "",
+        FK_TabSlipTypeID:
+            row?.FK_TabSlipTypeID ||
+            row?.TabSlipTypeID ||
+            "",
+    });
+    setShowPrinterFormModal(true);
+};
 
     const handleClosePrinterFormModal = () => {
         setShowPrinterFormModal(false);
@@ -204,30 +249,38 @@ const CostCenter = () => {
             CostCenterPrinterID: 0,
             FK_CostCenterID: 0,
             FK_PrinterID: "",
+            FK_InvoiceSlipTypeID: "",
+            FK_TabSlipTypeID: "",
         });
     };
 
     const handleSavePrinter = async () => {
         try {
-            if (!printerFormData.FK_CostCenterID || !printerFormData.FK_PrinterID) {
+            if (
+                !printerFormData.FK_CostCenterID ||
+                !printerFormData.FK_PrinterID ||
+                !printerFormData.FK_InvoiceSlipTypeID ||
+                !printerFormData.FK_TabSlipTypeID
+            ) {
                 return;
             }
 
             setSavingPrinter(true);
 
             const payload = {
-                ...printerFormData,
                 FK_CostCenterID: Number(printerFormData.FK_CostCenterID),
                 FK_PrinterID: Number(printerFormData.FK_PrinterID),
+                FK_InvoiceSlipTypeID: Number(printerFormData.FK_InvoiceSlipTypeID),
+                FK_TabSlipTypeID: Number(printerFormData.FK_TabSlipTypeID),
             };
 
-            if (payload.CostCenterPrinterID && Number(payload.CostCenterPrinterID) > 0) {
-                await updateCostCenterPrinter(payload);
-            } else {
-                await newCostCenterPrinter({
-                    FK_CostCenterID: payload.FK_CostCenterID,
-                    FK_PrinterID: payload.FK_PrinterID,
+            if (printerFormData.CostCenterPrinterID && Number(printerFormData.CostCenterPrinterID) > 0) {
+                await updateCostCenterPrinter({
+                    CostCenterPrinterID: Number(printerFormData.CostCenterPrinterID),
+                    ...payload,
                 });
+            } else {
+                await newCostCenterPrinter(payload);
             }
 
             await loadCostCenterPrinters(selectedCostCenter.CostCenterID);
@@ -250,6 +303,32 @@ const CostCenter = () => {
 
         return match?.PrinterName || "N/A";
     };
+
+const getSlipCodeById = (slipTypeId) => {
+    const match = slipTypeOptions.find(
+        (x) => Number(x.SlipTypeID) === Number(slipTypeId)
+    );
+
+    return match?.SlipCode || "N/A";
+};
+
+const getInvoiceSlipCode = (row) => {
+    return (
+        row?.InvoiceSlipCode ||
+        row?.InvoiceSlipTypeCode ||
+        row?.FK_InvoiceSlipTypeCode ||
+        getSlipCodeById(row?.FK_InvoiceSlipTypeID || row?.InvoiceSlipTypeID)
+    );
+};
+
+const getTabSlipCode = (row) => {
+    return (
+        row?.TabSlipCode ||
+        row?.TabSlipTypeCode ||
+        row?.FK_TabSlipTypeCode ||
+        getSlipCodeById(row?.FK_TabSlipTypeID || row?.TabSlipTypeID)
+    );
+};
 
     return (
         <div className="page-wrapper">
@@ -402,46 +481,48 @@ const CostCenter = () => {
                                 <div className="table-responsive">
                                     <table className="table table-bordered table-striped">
                                         <thead>
-                                            <tr>
-                                                <th>Printer</th>
-                                                <th>Printer ID</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
+    <tr>
+        <th>Printer</th>
+        <th>Invoice Type</th>
+        <th>Tab Type</th>
+        <th>Action</th>
+    </tr>
+</thead>
                                         <tbody>
-                                            {printerLoading ? (
-                                                <tr>
-                                                    <td colSpan="3" className="text-center">
-                                                        Loading printers...
-                                                    </td>
-                                                </tr>
-                                            ) : filteredPrinters.length > 0 ? (
-                                                filteredPrinters.map((item, index) => (
-                                                    <tr key={item.CostCenterPrinterID || index}>
-                                                        <td>{getPrinterName(item)}</td>
-                                                        <td>{item.FK_PrinterID || "N/A"}</td>
-                                                        <td>
-                                                            <div className="d-flex align-items-center gap-2">
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => handleOpenEditPrinterModal(item)}
-                                                                    className="btn btn-sm btn-primary"
-                                                                    title="Edit Printer Link"
-                                                                >
-                                                                    <i className="feather-edit"></i>
-                                                                </button> tab invocie /api/Debtor/add/cost/center/printer
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="3" className="text-center">
-                                                        No printers found
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
+    {printerLoading ? (
+        <tr>
+            <td colSpan="4" className="text-center">
+                Loading printers...
+            </td>
+        </tr>
+    ) : filteredPrinters.length > 0 ? (
+        filteredPrinters.map((item, index) => (
+            <tr key={item.CostCenterPrinterID || index}>
+                <td>{getPrinterName(item)}</td>
+                <td>{getInvoiceSlipCode(item)}</td>
+                <td>{getTabSlipCode(item)}</td>
+                <td>
+                    <div className="d-flex align-items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => handleOpenEditPrinterModal(item)}
+                            className="btn btn-sm btn-primary"
+                            title="Edit Printer Link"
+                        >
+                            <i className="feather-edit"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        ))
+    ) : (
+        <tr>
+            <td colSpan="4" className="text-center">
+                No printers found
+            </td>
+        </tr>
+    )}
+</tbody>
                                     </table>
                                 </div>
                             </div>
@@ -472,7 +553,7 @@ const CostCenter = () => {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <Form.Group>
+                    <Form.Group className="mb-3">
                         <Form.Label>Printer</Form.Label>
                         <Form.Select
                             value={printerFormData.FK_PrinterID}
@@ -491,6 +572,46 @@ const CostCenter = () => {
                             ))}
                         </Form.Select>
                     </Form.Group>
+
+                    <Form.Group className="mb-3">
+    <Form.Label>Invoice Slip Type</Form.Label>
+    <Form.Select
+        value={printerFormData.FK_InvoiceSlipTypeID}
+        onChange={(e) =>
+            setPrinterFormData((prev) => ({
+                ...prev,
+                FK_InvoiceSlipTypeID: e.target.value,
+            }))
+        }
+    >
+        <option value="">Select Invoice Slip Type</option>
+        {invoiceSlipTypeOptions.map((item) => (
+            <option key={item.SlipTypeID} value={item.SlipTypeID}>
+                {item.SlipCode}
+            </option>
+        ))}
+    </Form.Select>
+</Form.Group>
+
+                    <Form.Group>
+    <Form.Label>Tab Slip Type</Form.Label>
+    <Form.Select
+        value={printerFormData.FK_TabSlipTypeID}
+        onChange={(e) =>
+            setPrinterFormData((prev) => ({
+                ...prev,
+                FK_TabSlipTypeID: e.target.value,
+            }))
+        }
+    >
+        <option value="">Select Tab Slip Type</option>
+        {tabSlipTypeOptions.map((item) => (
+            <option key={item.SlipTypeID} value={item.SlipTypeID}>
+                {item.SlipCode}
+            </option>
+        ))}
+    </Form.Select>
+</Form.Group>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -500,7 +621,12 @@ const CostCenter = () => {
                     <Button
                         variant="primary"
                         onClick={handleSavePrinter}
-                        disabled={savingPrinter || !printerFormData.FK_PrinterID}
+                        disabled={
+                            savingPrinter ||
+                            !printerFormData.FK_PrinterID ||
+                            !printerFormData.FK_InvoiceSlipTypeID ||
+                            !printerFormData.FK_TabSlipTypeID
+                        }
                     >
                         {savingPrinter ? "Saving..." : "Save"}
                     </Button>

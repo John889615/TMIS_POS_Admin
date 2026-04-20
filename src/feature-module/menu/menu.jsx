@@ -9,6 +9,7 @@ import {
   updateDebtorMenu,
   addDebtorMenuPrinter,
   updateDebtorMenuPrinter,
+  getDebtorMenuPrinters,
 } from "../../services/menu/menuService";
 import { getAllSlipPrinter, getAllSlipTypes } from "../../services/entityData/slipPrinter";
 import { getAllDebtors } from "../../services/debtors/debtors";
@@ -344,14 +345,32 @@ const orderSlipTypeOptions = useMemo(() => {
     }
   };
 
-  const handleOpenPrinterView = (menu) => {
-    setSelectedMenu(menu);
-    setPrinterSearchTerm("");
-    setShowPrinterView(true);
+const loadMenuPrinters = async (menuOrDebtorMenuId) => {
+  try {
+    const debtorMenuId =
+      typeof menuOrDebtorMenuId === "object"
+        ? menuOrDebtorMenuId?.DebtorMenuID ?? menuOrDebtorMenuId?.MenuID ?? 0
+        : Number(menuOrDebtorMenuId || 0);
 
-    // Until list endpoint exists, keep local / empty state
+    if (!debtorMenuId) {
+      setMenuPrinterRows([]);
+      return;
+    }
+
+    const data = await getDebtorMenuPrinters(debtorMenuId);
+    setMenuPrinterRows(Array.isArray(data) ? data : []);
+  } catch (err) {
+    console.error("Failed to load menu printers:", err);
     setMenuPrinterRows([]);
-  };
+  }
+};
+
+const handleOpenPrinterView = async (menu) => {
+  setSelectedMenu(menu);
+  setPrinterSearchTerm("");
+  setShowPrinterView(true);
+  await loadMenuPrinters(menu);
+};
 
   const handleClosePrinterView = () => {
     setShowPrinterView(false);
@@ -373,22 +392,22 @@ const orderSlipTypeOptions = useMemo(() => {
     setShowPrinterModal(true);
   };
 
-  const handleOpenEditPrinterModal = (row) => {
-    const debtorMenuId =
-      row?.FK_DebtorMenuID ??
-      selectedMenu?.DebtorMenuID ??
-      selectedMenu?.MenuID ??
-      0;
+const handleOpenEditPrinterModal = (row) => {
+  const debtorMenuId =
+    row?.FK_DebtorMenuID ??
+    selectedMenu?.DebtorMenuID ??
+    selectedMenu?.MenuID ??
+    0;
 
-    setSelectedPrinterRow(row);
-    setPrinterFormData({
-      DebtorMenuPrinterID: row?.DebtorMenuPrinterID ?? 0,
-      FK_DebtorMenuID: debtorMenuId,
-      FK_PrinterID: row?.FK_PrinterID ?? "",
-      FK_OrderSlipTypeID: row?.FK_OrderSlipTypeID ?? "",
-    });
-    setShowPrinterModal(true);
-  };
+  setSelectedPrinterRow(row);
+  setPrinterFormData({
+    DebtorMenuPrinterID: row?.DebtorMenuPrinterID ?? 0,
+    FK_DebtorMenuID: debtorMenuId,
+    FK_PrinterID: row?.FK_PrinterID ?? "",
+    FK_OrderSlipTypeID: row?.FK_OrderSlipTypeID ?? "",
+  });
+  setShowPrinterModal(true);
+};
 
   const handleClosePrinterModal = () => {
     setShowPrinterModal(false);
@@ -419,93 +438,73 @@ const orderSlipTypeOptions = useMemo(() => {
   };
 
   const handleSaveMenuPrinter = async () => {
-    try {
-      if (!printerFormData.FK_DebtorMenuID || !printerFormData.FK_PrinterID || !printerFormData.FK_OrderSlipTypeID) {
-        await Swal.fire({
-          icon: "warning",
-          title: "Missing fields",
-          text: "Please select a printer and order slip type.",
-          confirmButtonText: "OK",
-        });
-        return;
-      }
+  try {
+    if (
+      !printerFormData.FK_DebtorMenuID ||
+      !printerFormData.FK_PrinterID ||
+      !printerFormData.FK_OrderSlipTypeID
+    ) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Missing fields",
+        text: "Please select a printer and order slip type.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
 
-      setSavingPrinter(true);
+    setSavingPrinter(true);
 
-      const payload = {
-        DebtorMenuPrinterID: Number(printerFormData.DebtorMenuPrinterID || 0),
-        FK_DebtorMenuID: Number(printerFormData.FK_DebtorMenuID),
-        FK_PrinterID: Number(printerFormData.FK_PrinterID),
-        FK_OrderSlipTypeID: Number(printerFormData.FK_OrderSlipTypeID),
-      };
+    const payload = {
+      DebtorMenuPrinterID: Number(printerFormData.DebtorMenuPrinterID || 0),
+      FK_DebtorMenuID: Number(printerFormData.FK_DebtorMenuID),
+      FK_PrinterID: Number(printerFormData.FK_PrinterID),
+      FK_OrderSlipTypeID: Number(printerFormData.FK_OrderSlipTypeID),
+    };
 
-      let response;
+    let response;
 
-      if (payload.DebtorMenuPrinterID > 0) {
-        response = await updateDebtorMenuPrinter(payload);
-      } else {
-        response = await addDebtorMenuPrinter({
-          FK_DebtorMenuID: payload.FK_DebtorMenuID,
-          FK_PrinterID: payload.FK_PrinterID,
-          FK_OrderSlipTypeID: payload.FK_OrderSlipTypeID,
-        });
-      }
+    if (payload.DebtorMenuPrinterID > 0) {
+      response = await updateDebtorMenuPrinter(payload);
+    } else {
+      response = await addDebtorMenuPrinter({
+        FK_DebtorMenuID: payload.FK_DebtorMenuID,
+        FK_PrinterID: payload.FK_PrinterID,
+        FK_OrderSlipTypeID: payload.FK_OrderSlipTypeID,
+      });
+    }
 
-      if (response?.Success === false) {
-        const msg =
-          response?.Messages?.[0] ||
-          response?.Errors?.[0] ||
-          "Could not save menu printer.";
-
-        await Swal.fire({
-          icon: "error",
-          title: "Save failed",
-          text: msg,
-          confirmButtonText: "OK",
-        });
-
-        return;
-      }
-
-      if (payload.DebtorMenuPrinterID > 0) {
-        setMenuPrinterRows((prev) =>
-          prev.map((item) =>
-            Number(item.DebtorMenuPrinterID) === payload.DebtorMenuPrinterID
-              ? { ...item, ...payload }
-              : item
-          )
-        );
-      } else {
-        const newId =
-          response?.Data?.DebtorMenuPrinterID ??
-          response?.Data?.MenuPrinterID ??
-          Date.now();
-
-        setMenuPrinterRows((prev) => [
-          ...prev,
-          {
-            DebtorMenuPrinterID: newId,
-            FK_DebtorMenuID: payload.FK_DebtorMenuID,
-            FK_PrinterID: payload.FK_PrinterID,
-            FK_OrderSlipTypeID: payload.FK_OrderSlipTypeID,
-          },
-        ]);
-      }
-
-      handleClosePrinterModal();
-    } catch (err) {
-      console.error("Failed to save menu printer:", err);
+    if (response?.Success === false) {
+      const msg =
+        response?.Messages?.[0] ||
+        response?.Errors?.[0] ||
+        "Could not save menu printer.";
 
       await Swal.fire({
         icon: "error",
-        title: "Unexpected error",
-        text: err?.message || "Something went wrong.",
+        title: "Save failed",
+        text: msg,
         confirmButtonText: "OK",
       });
-    } finally {
-      setSavingPrinter(false);
+
+      return;
     }
-  };
+
+    await loadMenuPrinters(payload.FK_DebtorMenuID);
+    handleClosePrinterModal();
+  } catch (err) {
+    console.error("Failed to save menu printer:", err);
+
+    await Swal.fire({
+      icon: "error",
+      title: "Unexpected error",
+      text: err?.message || "Something went wrong.",
+      confirmButtonText: "OK",
+    });
+  } finally {
+    setSavingPrinter(false);
+  }
+};
 
   return (
     <div className="page-wrapper">
@@ -720,33 +719,32 @@ const orderSlipTypeOptions = useMemo(() => {
                         <th>Action</th>
                       </tr>
                     </thead>
-
-                    <tbody>
-                      {filteredPrinterRows.length > 0 ? (
-                        filteredPrinterRows.map((item, index) => (
-                          <tr key={item.DebtorMenuPrinterID || index}>
-                            <td>{getPrinterName(item.FK_PrinterID)}</td>
-                            <td>{getOrderSlipTypeName(item.FK_OrderSlipTypeID)}</td>
-                            <td>
-                              <button
-                                type="button"
-                                onClick={() => handleOpenEditPrinterModal(item)}
-                                className="btn btn-sm btn-primary me-2"
-                                title="Edit Menu Printer"
-                              >
-                                <i className="feather-edit"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="3" className="text-center">
-                            No printers found
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
+<tbody>
+  {filteredPrinterRows.length > 0 ? (
+    filteredPrinterRows.map((item, index) => (
+      <tr key={item.DebtorMenuPrinterID || index}>
+        <td>{item.PrinterName || "N/A"}</td>
+        <td>{item.SlipCode || "N/A"}</td>
+        <td>
+          <button
+            type="button"
+            onClick={() => handleOpenEditPrinterModal(item)}
+            className="btn btn-sm btn-primary me-2"
+            title="Edit Menu Printer"
+          >
+            <i className="feather-edit"></i>
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="3" className="text-center">
+        No printers found
+      </td>
+    </tr>
+  )}
+</tbody>
                   </table>
                 </div>
               </div>
@@ -819,7 +817,7 @@ const orderSlipTypeOptions = useMemo(() => {
               <option value="">Select Order Slip Type</option>
               {orderSlipTypeOptions.map((item) => (
                 <option key={item.OrderSlipTypeID} value={item.OrderSlipTypeID}>
-                  {item.OrderSlipTypeName}
+                  {item.SlipCode}
                 </option>
               ))}
             </Form.Select>
