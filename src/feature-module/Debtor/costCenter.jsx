@@ -256,23 +256,25 @@ const tabSlipTypeOptions = useMemo(() => {
 
     const handleSavePrinter = async () => {
         try {
-            if (
-                !printerFormData.FK_CostCenterID ||
-                !printerFormData.FK_PrinterID ||
-                !printerFormData.FK_InvoiceSlipTypeID ||
-                !printerFormData.FK_TabSlipTypeID
-            ) {
-                return;
-            }
+           if (
+    !printerFormData.FK_CostCenterID ||
+    !printerFormData.FK_PrinterID
+) {
+    return;
+}
 
             setSavingPrinter(true);
 
-            const payload = {
-                FK_CostCenterID: Number(printerFormData.FK_CostCenterID),
-                FK_PrinterID: Number(printerFormData.FK_PrinterID),
-                FK_InvoiceSlipTypeID: Number(printerFormData.FK_InvoiceSlipTypeID),
-                FK_TabSlipTypeID: Number(printerFormData.FK_TabSlipTypeID),
-            };
+           const payload = {
+    FK_CostCenterID: Number(printerFormData.FK_CostCenterID),
+    FK_PrinterID: Number(printerFormData.FK_PrinterID),
+    FK_InvoiceSlipTypeID: printerFormData.FK_InvoiceSlipTypeID
+        ? Number(printerFormData.FK_InvoiceSlipTypeID)
+        : null,
+    FK_TabSlipTypeID: printerFormData.FK_TabSlipTypeID
+        ? Number(printerFormData.FK_TabSlipTypeID)
+        : null,
+};
 
             if (printerFormData.CostCenterPrinterID && Number(printerFormData.CostCenterPrinterID) > 0) {
                 await updateCostCenterPrinter({
@@ -293,16 +295,19 @@ const tabSlipTypeOptions = useMemo(() => {
     };
 
     const getPrinterName = (row) => {
-        if (row?.PrinterName) return row.PrinterName;
-        if (row?.Name) return row.Name;
-        if (row?.Description) return row.Description;
+    const match = printerMasterList.find(
+        (x) =>
+            Number(x.PrinterID ?? x.SlipPrinterID ?? x.ID) ===
+            Number(row?.FK_PrinterID)
+    );
 
-        const match = printerOptions.find(
-            (x) => Number(x.PrinterID) === Number(row?.FK_PrinterID)
-        );
-
-        return match?.PrinterName || "N/A";
-    };
+    return (
+        match?.PrinterName ??
+        match?.Name ??
+        match?.Description ??
+        `Printer #${row?.FK_PrinterID}`
+    );
+};
 
 const getSlipCodeById = (slipTypeId) => {
     const match = slipTypeOptions.find(
@@ -622,11 +627,9 @@ const getTabSlipCode = (row) => {
                         variant="primary"
                         onClick={handleSavePrinter}
                         disabled={
-                            savingPrinter ||
-                            !printerFormData.FK_PrinterID ||
-                            !printerFormData.FK_InvoiceSlipTypeID ||
-                            !printerFormData.FK_TabSlipTypeID
-                        }
+    savingPrinter ||
+    !printerFormData.FK_PrinterID
+}
                     >
                         {savingPrinter ? "Saving..." : "Save"}
                     </Button>
