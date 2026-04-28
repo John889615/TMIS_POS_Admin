@@ -8,6 +8,13 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  // Shim Node's `global` to the browser's `globalThis`. Some CommonJS deps
+  // (e.g. dragula via crossvent) reference `global` at module-init time,
+  // which is undefined in browser ES modules. Webpack provided this shim
+  // implicitly; Vite needs it spelled out.
+  define: {
+    global: 'globalThis',
+  },
   server: {
     port: 3000,
     host: true,
