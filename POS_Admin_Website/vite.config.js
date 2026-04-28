@@ -12,6 +12,25 @@ export default defineConfig({
     port: 3000,
     host: true,
     open: true,
+    // Dev-only proxies. The frontend reads relative paths from
+    // .env.development (VITE_PORTAL_API_URL=/portal-api,
+    // VITE_POS_API_URL=/pos-api). Vite forwards them server-side to the
+    // real upstreams, so the browser never makes a cross-origin request
+    // and CORS / self-signed cert issues do not apply during local dev.
+    // Production uses absolute URLs from .env.production (no proxy).
+    proxy: {
+      '/portal-api': {
+        target: 'https://tmis.co.za/TMIS_Portal/Portal_Api/api',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/portal-api/, ''),
+      },
+      '/pos-api': {
+        target: 'https://localhost:44392/api',
+        changeOrigin: true,
+        secure: false, // POS API uses a self-signed cert in dev
+        rewrite: (path) => path.replace(/^\/pos-api/, ''),
+      },
+    },
   },
   build: {
     outDir: 'dist',
