@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace POS_Common.Models.Stock.POS_PurchaseOrderLines
+{
+   public class PurchaseOrderLine : PurchaseOrderLine_Base
+    {
+        #region Additional Properties
+        
+        public string ProductName { get; set; }
+
+        public decimal? StockOnHand { get; set; }
+        #endregion
+    }
+}

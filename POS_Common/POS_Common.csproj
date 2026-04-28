@@ -1,0 +1,599 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{59F9B6EB-794F-46DB-ADBC-D19ACA386842}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>POS_Common</RootNamespace>
+    <AssemblyName>POS_Common</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
+    <PackageReference Include="Refit" Version="8.0.0" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+    <PackageReference Include="System.Buffers" Version="4.6.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Enums\AppErrorCode.cs" />
+    <Compile Include="Enums\CurrencySymbol.cs" />
+    <Compile Include="Extensions\ErrorCodeExtensions.cs" />
+    <Compile Include="Interfaces\Api_Endpoints\IDashboardApi.cs" />
+    <Compile Include="Interfaces\Api_Endpoints\IEntity_Api.cs" />
+    <Compile Include="Interfaces\Api_Endpoints\IInventory.cs" />
+    <Compile Include="Interfaces\Api_Endpoints\IInventory_Api.cs" />
+    <Compile Include="Interfaces\Api_Endpoints\IUserApi.cs" />
+    <Compile Include="ModelsDto\Authenticate\Req_Authenticate.cs" />
+    <Compile Include="ModelsDto\Authenticate\Res_Authenticate.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorAddress\Req_CreditorAddress_Add.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorAddress\Req_CreditorAddress_Update.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorAddress\Res_CreditorAddressType_List.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorContact\Req_CreditorContact_Add.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorContact\Req_CreditorContact_Update.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorContact\Res_CreditorContactType_List.cs" />
+    <Compile Include="ModelsDto\CreditorsController\CreditorType\Res_CreditorType_List.cs" />
+    <Compile Include="ModelsDto\CreditorsController\Creditor\Req_Creditor_Add.cs" />
+    <Compile Include="ModelsDto\CreditorsController\Creditor\Req_Creditor_Update.cs" />
+    <Compile Include="ModelsDto\CreditorsController\Creditor\Res_Creditor_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\Branch\Res_Branch_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterPrinter\Res_CostCenterPrinter_Switch.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterPrinter\Req_CostCenterPrinter_Switch.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterPrinter\Res_CostCenterPrinter_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterPrinter\Req_CostCenterPrinter_Update.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterPrinter\Req_CostCenterPrinter_Add.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterPrinter\Req_CostCenterPrinter_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenterType\Res_CostCenterType_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenter\Req_CostCenter_Add.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenter\Res_CostCenter_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorAddress\Req_DebtorAddress_Add.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorAddress\Req_DebtorAddress_Update.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorAddress\Res_DebtorAddressType_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorContact\Req_DebtorContact_Add.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorContact\Req_DebtorContact_Update.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorContact\Res_DebtorContactType_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\Debtor\Req_Debtor_Add.cs" />
+    <Compile Include="ModelsDto\DebtorsController\Debtor\Req_Debtor_Update.cs" />
+    <Compile Include="ModelsDto\DebtorsController\DebtorType\Res_DebtorType_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\Debtor\Res_Debtor_List.cs" />
+    <Compile Include="ModelsDto\DebtorsController\Department\Res_Department_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_AddressRegion_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_AddressRegion_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_AddressType_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_AddressType_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_Address_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_Address_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Req_AllEntityAddress_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Res_AddressRegion_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Res_AddressType_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Res_Address_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Address\Res_AllEntityAddress_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Req_AllEntityContact_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Req_ContactType_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Req_ContactType_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Req_Contact_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Req_Contact_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Res_AllEntityContact_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Res_ContactType_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Contact\Res_Contact_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Continent\Res_Continent_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_CountryProvince_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_CountryProvince_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_CountryRegion_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_CountryRegion_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_CountrySubRegion_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_CountrySubRegion_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_Country_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Req_Country_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Res_CountryProvince_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Res_CountryRegion_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Res_CountrySubRegion_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Country\Res_Country_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Currency\Req_Currency_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Currency\Req_Currency_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Currency\Res_Currency_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\DialingCode\Req_DialingCode_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\DialingCode\Req_DialingCode_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\DialingCode\Res_DialingCode_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Req_EntityAddress_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Req_EntityAddress_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Req_EntityContact_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Req_EntityContact_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Res_EntityAddress_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Res_EntityContact_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Entity\Res_Entity_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\ExchangeRates\Req_ExchangeRate_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\ExchangeRates\Req_ExchangeRate_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\ExchangeRates\Res_ExchangeRate_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\LocationCurrency\Req_LocationCurrency_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\LocationCurrency\Req_LocationCurrency_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\LocationCurrency\Req_LocationCurrency_Remove.cs" />
+    <Compile Include="ModelsDto\EntityDataController\LocationCurrency\Res_LocationCurrency_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\PaymentType\Req_PaymentType_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\PaymentType\Req_PaymentType_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\PaymentType\Res_PaymentTypeIcon_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\PaymentType\Res_PaymentType_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Settings\Req_Settings_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Settings\Req_Settings_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Settings\Res_Settings_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\SlipPrinter\Req_SlipPrinter_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\SlipPrinter\Req_SlipPrinter_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\SlipPrinter\Res_SlipPrinter_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\SlipType\Res_SlipType_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Status\Res_StatusGroup_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Status\Res_Status_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\TaxType\Req_TaxType_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\TaxType\Req_TaxType_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\TaxType\Res_TaxType_List.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Timezone\Req_Timezone_Add.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Timezone\Req_Timezone_Update.cs" />
+    <Compile Include="ModelsDto\EntityDataController\Timezone\Res_Timezone_List.cs" />
+    <Compile Include="ModelsDto\ImageSaveResult.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCategory\Req_ProductCategory_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCategory\Req_ProductCategory_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCategory\Res_ProductCategory_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCombination\Req_ProductCombination_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCombination\Req_ProductCombination_Delete.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCombination\Req_ProductCombination_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCombination\Req_ProductCombination_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductCombination\Res_ProductCombination_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtraCategories\Req_ProductExtraCategory_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtraCategories\Req_ProductExtraCategory_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtraCategories\Res_ProductExtraCategory_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtra\Req_ProductExtra_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtra\Req_ProductExtra_Delete.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtra\Req_ProductExtra_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtra\Req_ProductExtra_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductExtra\Res_ProductExtra_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparationMethod\Req_ProductPreparationMethod_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparationMethod\Req_ProductPreparationMethod_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparationMethod\Res_ProductPreparationMethod_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparation\Req_ProductPreparation_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparation\Req_ProductPreparation_Delete.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparation\Req_ProductPreparation_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparation\Req_ProductPreparation_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductPreparation\Res_ProductPreparation_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductSubstitution\Req_ProductSubstitution_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductSubstitution\Req_ProductSubstitution_Delete.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductSubstitution\Req_ProductSubstitution_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductSubstitution\Req_Substitution_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductSubstitution\Res_ProductSubstitution_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductType\Req_ProductType_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductType\Req_ProductType_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ProductType\Res_ProductType_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\Product\Req_Product_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\Product\Req_Product_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\Product\Res_Product_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAsProducts\Req_Served_As_Product_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAsProducts\Req_Served_As_Products_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAsProducts\Req_Served_As_Products_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAsProducts\Req_Served_As_Products_Remove.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAsProducts\Res_Served_As_Products_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAs\Req_ServedAs_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAs\Req_ServedAs_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\ServedAs\Res_ServedAs_List.cs" />
+    <Compile Include="ModelsDto\InventoryController\Unit\Req_Unit_Add.cs" />
+    <Compile Include="ModelsDto\InventoryController\Unit\Req_Unit_Update.cs" />
+    <Compile Include="ModelsDto\InventoryController\Unit\Res_Unit_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuItemProduct\Req_DebtorMenuItemProductPrinter_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuItem\Req_DebtorMenuItem_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuItem\Res_DebtorMenuItem_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuPrinter\Req_DebtorMenuPrinter_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuPrinter\Req_DebtorMenuPrinter_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuPrinter\Req_DebtorMenuPrinter_Update.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenuPrinter\Res_DebtorMenuPrinter_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenu\DebtorMenuTreeResponse.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenu\Req_DebtorMenuTree_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenu\Req_DebtorMenu_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenu\Req_DebtorMenu_List.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenu\Req_DebtorMenu_Update.cs" />
+    <Compile Include="ModelsDto\MenuController\DebtorMenu\Res_DebtorMenu_List.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItemProduct\Req_MenuItemProduct_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItemProduct\Req_MenuItemProduct_List.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItemProduct\Req_MenuItemProduct_Remove.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItemProduct\Res_MenuItemProduct_List.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItem\Req_MenuItem_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItem\Req_MenuItem_List.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItem\Req_MenuItem_Remove.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItem\Req_MenuItem_Update.cs" />
+    <Compile Include="ModelsDto\MenuController\MenuItem\Res_MenuItem_List.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Req_MenuTree_List.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Req_Menu_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Req_Menu_Copy.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Req_Menu_List.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Req_Menu_Update.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Res_MenuTree_List.cs" />
+    <Compile Include="ModelsDto\MenuController\Menu\Res_Menu_List.cs" />
+    <Compile Include="ModelsDto\MenuController\TabLine\Req_TabLine_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\TabLine\Req_TabLine_List.cs" />
+    <Compile Include="ModelsDto\MenuController\TabLine\Res_TabLine_List.cs" />
+    <Compile Include="ModelsDto\MenuController\Tabs\Req_PlaceOrder.cs" />
+    <Compile Include="ModelsDto\MenuController\Tabs\Req_Tab_Add.cs" />
+    <Compile Include="ModelsDto\MenuController\Tabs\Res_Tab_List.cs" />
+    <Compile Include="ModelsDto\StockController\CostCenterProduct\Req_CostCenterProduct_Add.cs" />
+    <Compile Include="ModelsDto\StockController\CostCenterProduct\Req_CostCenterProduct_List.cs" />
+    <Compile Include="ModelsDto\StockController\CostCenterProduct\Req_CostCenterProduct_Update.cs" />
+    <Compile Include="ModelsDto\StockController\CostCenterProduct\Res_CostCenterProduct_List.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProductPrice\Req_DebtorProductPrice_Add.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProductPrice\Req_DebtorProductPrice_List.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProductPrice\Req_DebtorProductPrice_Update.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProductPrice\Res_DebtorProductPrice_List.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProduct\Req_DebtorProduct_Add.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProduct\Req_DebtorProduct_List.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProduct\Req_DebtorProduct_Update.cs" />
+    <Compile Include="ModelsDto\StockController\DebtorProduct\Res_DebtorProduct_List.cs" />
+    <Compile Include="ModelsDto\StockController\PriceCode\Req_PriceCode_Add.cs" />
+    <Compile Include="ModelsDto\StockController\PriceCode\Req_PriceCode_Update.cs" />
+    <Compile Include="ModelsDto\StockController\PriceCode\Res_PriceCode_List.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrderLine\Req_PurchaseOrderLine_Add.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrderLine\Req_PurchaseOrderLine_List.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrderLine\Res_PurchaseOrderLine_List.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrder\Req_PurchaseOrder_Add.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrder\Req_PurchaseOrder_List.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrder\Req_PurchaseOrder_Update.cs" />
+    <Compile Include="ModelsDto\StockController\PurchaseOrder\Res_PurchaseOrder_List.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequestLine\Req_StockRequestLine_List.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequestLine\Req_StockRequestLine_Add.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequestLine\Res_StockRequestLine_List.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequest\Req_StockRequest_Add.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequest\Req_StockRequest_List.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequest\Req_StockRequest_Update.cs" />
+    <Compile Include="ModelsDto\StockController\StockRequest\Res_StockRequest_List.cs" />
+    <Compile Include="ModelsDto\StockController\StockTransfer\Req_StockTransfer_Add.cs" />
+    <Compile Include="ModelsDto\StockController\StockTransfer\Req_StockTransfer_List.cs" />
+    <Compile Include="ModelsDto\StockController\StockTransfer\Req_StockTransfer_Update.cs" />
+    <Compile Include="ModelsDto\StockController\StockTransfer\Res_StockTransfer_List.cs" />
+    <Compile Include="ModelsDto\StockController\SubmittedPurchaseOrderLines\Req_PurchaseOrderLineStatus_Update.cs" />
+    <Compile Include="ModelsDto\StockController\SubmittedPurchaseOrderLines\Req_SubmittedPurchaseOrderLines_List.cs" />
+    <Compile Include="ModelsDto\StockController\SubmittedPurchaseOrderLines\Res_SubmittedPurchaseOrderLines_List.cs" />
+    <Compile Include="ModelsDto\StockController\SubmittedPurchaseOrder\Req_PurchaseOrderStatus_Update.cs" />
+    <Compile Include="ModelsDto\StockController\SubmittedPurchaseOrder\Res_SubmittedPurchaseOrder_List.cs" />
+    <Compile Include="ModelsDto\StockController\SupplierProduct\Req_SupplierProduct_Add.cs" />
+    <Compile Include="ModelsDto\StockController\SupplierProduct\Req_SupplierProduct_List.cs" />
+    <Compile Include="ModelsDto\StockController\SupplierProduct\Req_SupplierProduct_Update.cs" />
+    <Compile Include="ModelsDto\StockController\SupplierProduct\Res_SupplierProduct_List.cs" />
+    <Compile Include="ModelsDto\SyncController\FromServer\Req_BookingHeader_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\FromServer\Req_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_CostCenterPrinter_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_CurrencyExchangeRate_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Currency_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_GlobalSettings_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ImageCategory_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Image_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_LocationCurrency_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_PaymentTypeIcon_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ProductExtra_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ProductPreparation_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_BookingGuest_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_BookingHeader_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_CostCenterProduct_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_CostCenter_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_DebtorProductPrices_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Guest_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_LocationProduct_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Location_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_MenuItemProductPrinter_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_MenuItemProduct_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_MenuItem_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_MenuPrinter_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Menu_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_PaymentType_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ProductPreparationMethod_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_PriceCode_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ProductCombination_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ProductExtraCategory_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ProductSubstitution_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Product_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ServedAsProducts_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_ServedAs_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Settings_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_SlipPrinter_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_SlipTypes_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_TaxType_Sync.cs" />
+    <Compile Include="ModelsDto\SyncController\Res_Unit_Sync.cs" />
+    <Compile Include="Models\ApiResponse.cs" />
+    <Compile Include="Models\ApiResponse_DoNotUse.cs" />
+    <Compile Include="Models\BusinessCentral\BcItemAvailabilityLocation.cs" />
+    <Compile Include="Models\BusinessCentral\BcODataResponse.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralCreditor.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralDebtor.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralItemCategoryList.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralItemList.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralItemUom.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralItemUomList.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralItemWithCategory.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralItemWithPrices.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralLocation.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralODataResponse.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralSalesPriceList.cs" />
+    <Compile Include="Models\BusinessCentral\BusinessCentralSettings.cs" />
+    <Compile Include="Models\BusinessCentral\GetProductsResult.cs" />
+    <Compile Include="Models\Cache\Cache_Lookup.cs" />
+    <Compile Include="Models\Creditors\Creditors\Creditor.cs" />
+    <Compile Include="Models\Creditors\Creditors\Creditor_Base.cs" />
+    <Compile Include="Models\Creditors\CreditorTypeMappings\CreditorTypeMapping.cs" />
+    <Compile Include="Models\Creditors\CreditorTypeMappings\CreditorTypeMapping_Base.cs" />
+    <Compile Include="Models\Creditors\CreditorTypes\CreditorType.cs" />
+    <Compile Include="Models\Creditors\CreditorTypes\CreditorType_Base.cs" />
+    <Compile Include="Models\Debtors\Branches\Branch.cs" />
+    <Compile Include="Models\Debtors\Branches\Branch_Base.cs" />
+    <Compile Include="Models\Debtors\Debtors\Debtor.cs" />
+    <Compile Include="Models\Debtors\Debtors\Debtor_Base.cs" />
+    <Compile Include="Models\Debtors\DebtorTypeMappings\DebtorTypeMapping.cs" />
+    <Compile Include="Models\Debtors\DebtorTypeMappings\DebtorTypeMapping_Base.cs" />
+    <Compile Include="Models\Debtors\DebtorTypes\DebtorType.cs" />
+    <Compile Include="Models\Debtors\DebtorTypes\DebtorType_Base.cs" />
+    <Compile Include="Models\Debtors\Departments\Department.cs" />
+    <Compile Include="Models\Debtors\Departments\Department_Base.cs" />
+    <Compile Include="ModelsDto\DebtorsController\CostCenter\Req_CostCenter_Update.cs" />
+    <Compile Include="Models\Debtors\POS_CostCenterPrinters\CostCenterPrinter.cs" />
+    <Compile Include="Models\Debtors\POS_CostCenterPrinters\CostCenterPrinter_Base.cs" />
+    <Compile Include="Models\Debtors\POS_CostCenters\CostCenter.cs" />
+    <Compile Include="Models\Debtors\POS_CostCenters\CostCenter_Base.cs" />
+    <Compile Include="Models\Debtors\POS_CostCenterTypes\CostCenterType.cs" />
+    <Compile Include="Models\Debtors\POS_CostCenterTypes\CostCenterType_Base.cs" />
+    <Compile Include="Models\Debtors\POS_LocationCurrencies\LocationCurrencies.cs" />
+    <Compile Include="Models\Debtors\POS_LocationCurrencies\LocationCurrencies_Base.cs" />
+    <Compile Include="Models\Debtors\POS_Locations\Location.cs" />
+    <Compile Include="Models\Debtors\POS_Locations\Location_Base.cs" />
+    <Compile Include="Models\EntityData\Addresses\Address.cs" />
+    <Compile Include="Models\EntityData\Addresses\Address_Base.cs" />
+    <Compile Include="Models\EntityData\AddressRegions\AddressRegion.cs" />
+    <Compile Include="Models\EntityData\AddressRegions\AddressRegion_Base.cs" />
+    <Compile Include="Models\EntityData\AddressTypes\AddressType.cs" />
+    <Compile Include="Models\EntityData\AddressTypes\AddressType_Base.cs" />
+    <Compile Include="Models\EntityData\Contacts\Contact.cs" />
+    <Compile Include="Models\EntityData\Contacts\Contact_Base.cs" />
+    <Compile Include="Models\EntityData\ContactTypes\ContactType.cs" />
+    <Compile Include="Models\EntityData\ContactTypes\ContactType_Base.cs" />
+    <Compile Include="Models\EntityData\Continents\Continent.cs" />
+    <Compile Include="Models\EntityData\Continents\Continent_Base.cs" />
+    <Compile Include="Models\EntityData\Countries\Country.cs" />
+    <Compile Include="Models\EntityData\Countries\Country_Base.cs" />
+    <Compile Include="Models\EntityData\CountryProvinces\CountryProvince.cs" />
+    <Compile Include="Models\EntityData\CountryProvinces\CountryProvince_Base.cs" />
+    <Compile Include="Models\EntityData\CountryRegions\CountryRegion.cs" />
+    <Compile Include="Models\EntityData\CountryRegions\CountryRegion_Base.cs" />
+    <Compile Include="Models\EntityData\CountrySubregions\CountrySubregion.cs" />
+    <Compile Include="Models\EntityData\CountrySubregions\CountrySubregion_Base.cs" />
+    <Compile Include="Models\EntityData\Currencies\Currency.cs" />
+    <Compile Include="Models\EntityData\Currencies\Currency_Base.cs" />
+    <Compile Include="Models\EntityData\CurrencyExchangeRates\CurrencyExchangeRate.cs" />
+    <Compile Include="Models\EntityData\CurrencyExchangeRates\CurrencyExchangeRate_Base.cs" />
+    <Compile Include="Models\EntityData\DialingCodes\DialingCode.cs" />
+    <Compile Include="Models\EntityData\DialingCodes\DialingCode_Base.cs" />
+    <Compile Include="Models\EntityData\Entities\Entity.cs" />
+    <Compile Include="Models\EntityData\Entities\Entity_Base.cs" />
+    <Compile Include="Models\EntityData\EntityAddresses\EntityAddress.cs" />
+    <Compile Include="Models\EntityData\EntityAddresses\EntityAddress_Base.cs" />
+    <Compile Include="Models\EntityData\EntityContacts\EntityContact.cs" />
+    <Compile Include="Models\EntityData\EntityContacts\EntityContact_Base.cs" />
+    <Compile Include="Models\EntityData\EntitySettings\EntitySetting.cs" />
+    <Compile Include="Models\EntityData\EntitySettings\EntitySetting_Base.cs" />
+    <Compile Include="Models\EntityData\GlobalSettings\GlobalSettings.cs" />
+    <Compile Include="Models\EntityData\GlobalSettings\GlobalSettings_Base.cs" />
+    <Compile Include="Models\EntityData\Guests\Guest.cs" />
+    <Compile Include="Models\EntityData\Guests\Guest_Base.cs" />
+    <Compile Include="Models\EntityData\POS_ExchangeRates\ExchangeRate.cs" />
+    <Compile Include="Models\EntityData\POS_ExchangeRates\ExchangeRate_Base.cs" />
+    <Compile Include="Models\EntityData\POS_ImageCategories\ImageCategory.cs" />
+    <Compile Include="Models\EntityData\POS_ImageCategories\ImageCategory_Base.cs" />
+    <Compile Include="Models\EntityData\POS_Images\Image.cs" />
+    <Compile Include="Models\EntityData\POS_Images\Image_Base.cs" />
+    <Compile Include="Models\EntityData\POS_PaymentTypeIcons\PaymentTypeIcon.cs" />
+    <Compile Include="Models\EntityData\POS_PaymentTypeIcons\PaymentTypeIcon_Base.cs" />
+    <Compile Include="Models\EntityData\POS_PaymentTypes\PaymentType.cs" />
+    <Compile Include="Models\EntityData\POS_PaymentTypes\PaymentType_Base.cs" />
+    <Compile Include="Models\EntityData\POS_Settings\Settings.cs" />
+    <Compile Include="Models\EntityData\POS_Settings\Settings_Base.cs" />
+    <Compile Include="Models\EntityData\POS_SlipTypes\SlipType.cs" />
+    <Compile Include="Models\EntityData\POS_SlipTypes\SlipType_Base.cs" />
+    <Compile Include="Models\EntityData\POS_TaxTypes\TaxType.cs" />
+    <Compile Include="Models\EntityData\POS_TaxTypes\TaxType_Base.cs" />
+    <Compile Include="Models\EntityData\Statuses\Status.cs" />
+    <Compile Include="Models\EntityData\Statuses\Status_Base.cs" />
+    <Compile Include="Models\EntityData\StatusGroups\StatusGroup.cs" />
+    <Compile Include="Models\EntityData\StatusGroups\StatusGroup_Base.cs" />
+    <Compile Include="Models\EntityData\TH_BookingGuests\BookingGuest.cs" />
+    <Compile Include="Models\EntityData\TH_BookingGuests\BookingGuest_Base.cs" />
+    <Compile Include="Models\EntityData\TH_BookingHeaders\BookingHeader.cs" />
+    <Compile Include="Models\EntityData\TH_BookingHeaders\BookingHeader_Base.cs" />
+    <Compile Include="Models\EntityData\TimeZones\_TimeZone.cs" />
+    <Compile Include="Models\EntityData\TimeZones\_TimeZone_Base.cs" />
+    <Compile Include="Models\EntityData\Users\User.cs" />
+    <Compile Include="Models\EntityData\Users\User_Base.cs" />
+    <Compile Include="Models\Inventory\Custom\DeleteProductCombination\Req_DeleteProductCombination.cs" />
+    <Compile Include="Models\Inventory\Custom\DeleteProductCombination\Res_DeleteProductCombination.cs" />
+    <Compile Include="Models\Inventory\Custom\SelectProductCombinationsID\Req_SelectProductCombinationsID.cs" />
+    <Compile Include="Models\Inventory\Custom\SelectProductCombinationsID\Res_SelectProductCombinationsID.cs" />
+    <Compile Include="Models\Inventory\POS_ProductCategories\ProductCategory.cs" />
+    <Compile Include="Models\Inventory\POS_ProductCategories\ProductCategory_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductCombinations\ProductCombination.cs" />
+    <Compile Include="Models\Inventory\POS_ProductCombinations\ProductCombination_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductExtraCategories\ProductExtraCategory.cs" />
+    <Compile Include="Models\Inventory\POS_ProductExtraCategories\ProductExtraCategory_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductExtras\ProductExtra.cs" />
+    <Compile Include="Models\Inventory\POS_ProductExtras\ProductExtra_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductPreparationMethods\ProductPreparationMethod.cs" />
+    <Compile Include="Models\Inventory\POS_ProductPreparationMethods\ProductPreparationMethod_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductPreparation\ProductPreparation.cs" />
+    <Compile Include="Models\Inventory\POS_ProductPreparation\ProductPreparation_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductSubstitutions\ProductSubstitution.cs" />
+    <Compile Include="Models\Inventory\POS_ProductSubstitutions\ProductSubstitution_Base.cs" />
+    <Compile Include="Models\Inventory\POS_Products\Product.cs" />
+    <Compile Include="Models\Inventory\POS_Products\Product_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ProductTypes\ProductType.cs" />
+    <Compile Include="Models\Inventory\POS_ProductTypes\ProductType_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ServedAsProducts\ServedAsProduct.cs" />
+    <Compile Include="Models\Inventory\POS_ServedAsProducts\ServedAsProduct_Base.cs" />
+    <Compile Include="Models\Inventory\POS_ServedAs\ServedAs.cs" />
+    <Compile Include="Models\Inventory\POS_ServedAs\ServedAs_Base.cs" />
+    <Compile Include="Models\Inventory\POS_Units\Unit.cs" />
+    <Compile Include="Models\Inventory\POS_Units\Unit_Base.cs" />
+    <Compile Include="Models\Logs\POS_Logs\POS_Log.cs" />
+    <Compile Include="Models\Logs\POS_Logs\POS_Log_Base.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuItemProductPrinters\DebtorMenuItemProductPrinter.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuItemProductPrinters\DebtorMenuItemProductPrinter_Base.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuItemProducts\DebtorMenuItemProduct.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuItemProducts\DebtorMenuItemProduct_Base.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuItems\DebtorMenuItem.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuItems\DebtorMenuItem_Base.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuPrinters\DebtorMenuPrinter.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenuPrinters\DebtorMenuPrinter_Base.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenus\DebtorMenu.cs" />
+    <Compile Include="Models\Menu\POS_DebtorMenus\DebtorMenu_Base.cs" />
+    <Compile Include="Models\Menu\POS_MenuItemProducts\MenuItemProduct.cs" />
+    <Compile Include="Models\Menu\POS_MenuItemProducts\MenuItemProduct_Base.cs" />
+    <Compile Include="Models\Menu\POS_MenuItems\MenuItem.cs" />
+    <Compile Include="Models\Menu\POS_MenuItems\MenuItem_Base.cs" />
+    <Compile Include="Models\Menu\POS_Menus\_Menu.cs" />
+    <Compile Include="Models\Menu\POS_Menus\_Menu_Base.cs" />
+    <Compile Include="Models\Stock\POS_CostCenterProductPriceHistory\CostCenterProductPriceHistory.cs" />
+    <Compile Include="Models\Stock\POS_CostCenterProductPriceHistory\CostCenterProductPriceHistory_Base.cs" />
+    <Compile Include="Models\Stock\POS_CostCenterProducts\CostCenterProduct.cs" />
+    <Compile Include="Models\Stock\POS_CostCenterProducts\CostCenterProduct_Base.cs" />
+    <Compile Include="Models\Stock\POS_DebtorProductPriceHistory\DebtorProductPriceHistory.cs" />
+    <Compile Include="Models\Stock\POS_DebtorProductPriceHistory\DebtorProductPriceHistory_Base.cs" />
+    <Compile Include="Models\Stock\POS_DebtorProductPrices\DebtorProductPrice.cs" />
+    <Compile Include="Models\Stock\POS_DebtorProductPrices\DebtorProductPrice_Base.cs" />
+    <Compile Include="Models\Stock\POS_DebtorProducts\DebtorProduct.cs" />
+    <Compile Include="Models\Stock\POS_DebtorProducts\DebtorProduct_Base.cs" />
+    <Compile Include="Models\Stock\POS_InternalStockTransferLines\InternalStockTransferLine.cs" />
+    <Compile Include="Models\Stock\POS_InternalStockTransferLines\InternalStockTransferLine_Base.cs" />
+    <Compile Include="Models\Stock\POS_InternalStockTransfers\InternalStockTransfer.cs" />
+    <Compile Include="Models\Stock\POS_InternalStockTransfers\InternalStockTransfer_Base.cs" />
+    <Compile Include="Models\Stock\POS_PriceCodes\PriceCodes.cs" />
+    <Compile Include="Models\Stock\POS_PriceCodes\PriceCodes_Base.cs" />
+    <Compile Include="Models\Stock\POS_ProductCostCenters\POS_ProductCostCenter.cs" />
+    <Compile Include="Models\Stock\POS_ProductCostCenters\POS_ProductCostCenter_Base.cs" />
+    <Compile Include="Models\Stock\POS_ProductSuppliers\POS_ProductSupplier.cs" />
+    <Compile Include="Models\Stock\POS_ProductSuppliers\POS_ProductSupplier_Base.cs" />
+    <Compile Include="Models\Stock\POS_PurchaseOrderLines\PurchaseOrderLine.cs" />
+    <Compile Include="Models\Stock\POS_PurchaseOrderLines\PurchaseOrderLine_Base.cs" />
+    <Compile Include="Models\Stock\POS_PurchaseOrders\PurchaseOrder.cs" />
+    <Compile Include="Models\Stock\POS_PurchaseOrders\PurchaseOrder_Base.cs" />
+    <Compile Include="Models\Stock\POS_StockReceiveLines\StockReceiveLine.cs" />
+    <Compile Include="Models\Stock\POS_StockReceiveLines\StockReceiveLine_Base.cs" />
+    <Compile Include="Models\Stock\POS_StockReceive\StockReceive.cs" />
+    <Compile Include="Models\Stock\POS_StockReceive\StockReceive_Base.cs" />
+    <Compile Include="Models\Stock\POS_StockRequestLines\StockRequestLine.cs" />
+    <Compile Include="Models\Stock\POS_StockRequestLines\StockRequestLine_Base.cs" />
+    <Compile Include="Models\Stock\POS_StockRequests\StockRequest.cs" />
+    <Compile Include="Models\Stock\POS_StockRequests\StockRequest_Base.cs" />
+    <Compile Include="Models\Stock\POS_StockTransferLines\StockTransferLine.cs" />
+    <Compile Include="Models\Stock\POS_StockTransferLines\StockTransferLine_Base.cs" />
+    <Compile Include="Models\Stock\POS_StockTransfers\StockTransfer.cs" />
+    <Compile Include="Models\Stock\POS_StockTransfers\StockTransfer_Base.cs" />
+    <Compile Include="Models\Stock\POS_SupplierProducts\SupplierProduct.cs" />
+    <Compile Include="Models\Stock\POS_SupplierProducts\SupplierProduct_Base.cs" />
+    <Compile Include="Models\Sync\Custom\SelectLocationRecipients\Req_SelectLocationRecipients.cs" />
+    <Compile Include="Models\Sync\Custom\SelectLocationRecipients\Res_SelectLocationRecipients.cs" />
+    <Compile Include="Models\Sync\Custom\SelectLocationsSilentSites\Req_SelectLocationsSilentSites.cs" />
+    <Compile Include="Models\Sync\Custom\SelectLocationsSilentSites\Res_SelectLocationsSilentSites.cs" />
+    <Compile Include="Models\Sync\Custom\SelectSiteSyncStatusForSite\Req_SelectSiteSyncStatusForSite.cs" />
+    <Compile Include="Models\Sync\Custom\SelectSiteSyncStatusForSite\Res_SelectSiteSyncStatusForSite.cs" />
+    <Compile Include="Models\Sync\Custom\SelectSiteSyncStatus\Req_SelectSiteSyncStatus.cs" />
+    <Compile Include="Models\Sync\Custom\SelectSiteSyncStatus\Res_SelectSiteSyncStatus.cs" />
+    <Compile Include="Models\Sync\Custom\SetLocationsSilentAlert\Req_SetLocationsSilentAlert.cs" />
+    <Compile Include="Models\Sync\Custom\SetLocationsSilentAlert\Res_SetLocationsSilentAlert.cs" />
+    <Compile Include="Models\Sync\Custom\UpdateLocationsLastSeen\Req_UpdateLocationsLastSeen.cs" />
+    <Compile Include="Models\Sync\Custom\UpdateLocationsLastSeen\Res_UpdateLocationsLastSeen.cs" />
+    <Compile Include="Models\Sync\Custom\UpsertSiteSyncStatus\Req_UpsertSiteSyncStatus.cs" />
+    <Compile Include="Models\Sync\Custom\UpsertSiteSyncStatus\Res_UpsertSiteSyncStatus.cs" />
+    <Compile Include="Models\Sync\POS_AccountGuests\AccountGuest.cs" />
+    <Compile Include="Models\Sync\POS_AccountGuests\AccountGuest_Base.cs" />
+    <Compile Include="Models\Sync\POS_Accounts\Account.cs" />
+    <Compile Include="Models\Sync\POS_Accounts\Account_Base.cs" />
+    <Compile Include="Models\Sync\POS_Arrivals\Arrival.cs" />
+    <Compile Include="Models\Sync\POS_Arrivals\Arrival_Base.cs" />
+    <Compile Include="Models\Sync\POS_CashUpHeaders\CashUpHeader.cs" />
+    <Compile Include="Models\Sync\POS_CashUpHeaders\CashUpHeader_Base.cs" />
+    <Compile Include="Models\Sync\POS_CashUpLines\CashUpLine.cs" />
+    <Compile Include="Models\Sync\POS_CashUpLines\CashUpLine_Base.cs" />
+    <Compile Include="Models\Sync\POS_InvoiceHeaders\InvoiceHeader.cs" />
+    <Compile Include="Models\Sync\POS_InvoiceHeaders\InvoiceHeader_Base.cs" />
+    <Compile Include="Models\Sync\POS_InvoiceLines\InvoiceLine.cs" />
+    <Compile Include="Models\Sync\POS_InvoiceLines\InvoiceLine_Base.cs" />
+    <Compile Include="Models\Sync\POS_InvoicePayments\InvoicePayment.cs" />
+    <Compile Include="Models\Sync\POS_InvoicePayments\InvoicePayment_Base.cs" />
+    <Compile Include="Models\Sync\POS_InvoiceTabs\InvoiceTab.cs" />
+    <Compile Include="Models\Sync\POS_InvoiceTabs\InvoiceTab_Base.cs" />
+    <Compile Include="Models\Sync\POS_RequestFromServer\RequestFromServer.cs" />
+    <Compile Include="Models\Sync\POS_RequestFromServer\RequestFromServer_Base.cs" />
+    <Compile Include="Models\Sync\ImageBytesResult.cs" />
+    <Compile Include="Models\Sync\Req_Notify_Result.cs" />
+    <Compile Include="Models\Sync\POS_SlipPrinters\SlipPrinter.cs" />
+    <Compile Include="Models\Sync\POS_SlipPrinters\SlipPrinter_Base.cs" />
+    <Compile Include="Models\Sync\POS_TabLineCombinations\TabLineCombination.cs" />
+    <Compile Include="Models\Sync\POS_TabLineCombinations\TabLineCombination_Base.cs" />
+    <Compile Include="Models\Sync\POS_TabLineExtras\TabLineExtra.cs" />
+    <Compile Include="Models\Sync\POS_TabLineExtras\TabLineExtra_Base.cs" />
+    <Compile Include="Models\Sync\POS_TabLineGuests\TabLineGuest.cs" />
+    <Compile Include="Models\Sync\POS_TabLineGuests\TabLineGuest_Base.cs" />
+    <Compile Include="Models\Sync\POS_TabLinePreparationMethods\TabLinePreparationMethod.cs" />
+    <Compile Include="Models\Sync\POS_TabLinePreparationMethods\TabLinePreparationMethod_Base.cs" />
+    <Compile Include="Models\Sync\POS_TablineSubstitutes\TabLineSubstitute.cs" />
+    <Compile Include="Models\Sync\POS_TablineSubstitutes\TabLineSubstitute_Base.cs" />
+    <Compile Include="Models\Sync\POS_TabLines\TabLine.cs" />
+    <Compile Include="Models\Sync\POS_TabLines\TabLine_Base.cs" />
+    <Compile Include="Models\Sync\POS_Tabs\Tab.cs" />
+    <Compile Include="Models\Sync\POS_Tabs\Tab_Base.cs" />
+    <Compile Include="Models\Sync\POS_VoidLogs\VoidLog.cs" />
+    <Compile Include="Models\Sync\POS_VoidLogs\VoidLog_Base.cs" />
+    <Compile Include="Models\Sync\SiteSyncStatus\SiteSyncStatus.cs" />
+    <Compile Include="Models\Sync\SiteSyncStatus\SiteSyncStatus_Base.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\Users\Login_Request.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TMIS_Authenticate\TMIS_Authenticate\TMIS_Common\TMIS_Common.csproj">
+      <Project>{1a0edd46-90cb-4aaa-9977-54b8f8152aad}</Project>
+      <Name>TMIS_Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

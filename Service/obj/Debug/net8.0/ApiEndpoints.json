@@ -1,0 +1,3758 @@
+[
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncAllAsync",
+    "RelativePath": "api/bc/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "CreateInvoiceAsync",
+    "RelativePath": "api/bc/create/invoice",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "GetCreditors",
+    "RelativePath": "api/bc/creditors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "GetDebtors",
+    "RelativePath": "api/bc/debtors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncLocationsAsync",
+    "RelativePath": "api/bc/locations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "Ping",
+    "RelativePath": "api/bc/ping",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncPriceCodesAsync",
+    "RelativePath": "api/bc/price/codes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncProductCategoriesAsync",
+    "RelativePath": "api/bc/product/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncSalesPricingAsync",
+    "RelativePath": "api/bc/product/location/prices",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncItemAvailabilityByLocationAsync",
+    "RelativePath": "api/bc/product/locations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncProductsAsync",
+    "RelativePath": "api/bc/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.BusinessCentralController",
+    "Method": "SyncUnitsFromItemsAsync",
+    "RelativePath": "api/bc/units",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "Add_Creditor_Async",
+    "RelativePath": "api/Creditor/add/creditor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.CreditorsController.Creditor.Req_Creditor_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "Add_Creditor_Address_Async",
+    "RelativePath": "api/Creditor/add/creditor/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.CreditorsController.CreditorAddress.Req_CreditorAddress_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "Add_Creditor_Contact_Async",
+    "RelativePath": "api/Creditor/add/creditor/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.CreditorsController.CreditorContact.Req_CreditorContact_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "List_Creditor_Address_Types_Async",
+    "RelativePath": "api/Creditor/list/creditor/types",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "List_CreditorTypes_Async",
+    "RelativePath": "api/Creditor/list/creditor/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "List_Creditors_Async",
+    "RelativePath": "api/Creditor/list/creditors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "Update_Creditor_Async",
+    "RelativePath": "api/Creditor/update/creditor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.CreditorsController.Creditor.Req_Creditor_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "Update_Creditor_Address_Async",
+    "RelativePath": "api/Creditor/update/creditor/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.CreditorsController.CreditorAddress.Req_CreditorAddress_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.CreditorController",
+    "Method": "Update_Creditor_Contact_Async",
+    "RelativePath": "api/Creditor/update/creditor/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.CreditorsController.CreditorContact.Req_CreditorContact_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Add_CostCenter_Async",
+    "RelativePath": "api/Debtor/add/cost/center",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FK_DebtorID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BillingReference",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_StatusID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_CostCenterTypeID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Add_CostCenter_Printer_Async",
+    "RelativePath": "api/Debtor/add/cost/center/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.CostCenterPrinter.Req_CostCenterPrinter_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Add_Debtor_Async",
+    "RelativePath": "api/Debtor/add/debtor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.Req_Debtor_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Add_Debtor_Address_Async",
+    "RelativePath": "api/Debtor/add/debtor/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.DebtorAddress.Req_DebtorAddress_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Add_Debtor_Contact_Async",
+    "RelativePath": "api/Debtor/add/debtor/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.DebtorContact.Req_DebtorContact_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Switch_CostCenter_Printer_Link_Async",
+    "RelativePath": "api/Debtor/cost/center/printer/toggle",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.CostCenterPrinter.Req_CostCenterPrinter_Switch",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "List_Debtor_Address_Types_Async",
+    "RelativePath": "api/Debtor/list/address/types",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "List_CostCenters_Async",
+    "RelativePath": "api/Debtor/list/cost/center",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "List_CostCenter_Printers_Async",
+    "RelativePath": "api/Debtor/list/cost/center/printers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.CostCenterPrinter.Req_CostCenterPrinter_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "List_CostCenterTypes_Async",
+    "RelativePath": "api/Debtor/list/cost/center/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "List_Debtors_Async",
+    "RelativePath": "api/Debtor/list/debtors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Update_CostCenter_Async",
+    "RelativePath": "api/Debtor/update/cost/center",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "POS_CostCenterID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_DebtorID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BillingReference",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_StatusID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_CostCenterTypeID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Update_CostCenter_Printer_Async",
+    "RelativePath": "api/Debtor/update/cost/center/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.CostCenterPrinter.Req_CostCenterPrinter_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Update_Debtor_Async",
+    "RelativePath": "api/Debtor/update/debtor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.Req_Debtor_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Update_Debtor_Address_Async",
+    "RelativePath": "api/Debtor/update/debtor/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.DebtorAddress.Req_DebtorAddress_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.DebtorController",
+    "Method": "Update_Debtor_Contact_Async",
+    "RelativePath": "api/Debtor/update/debtor/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.DebtorsController.DebtorContact.Req_DebtorContact_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Address_Async",
+    "RelativePath": "api/EntityData/add/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_Address_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Address_Region_Async",
+    "RelativePath": "api/EntityData/add/address/region",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_AddressRegion_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Address_Type_Async",
+    "RelativePath": "api/EntityData/add/address/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_AddressType_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Contact_Async",
+    "RelativePath": "api/EntityData/add/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Contact.Req_Contact_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Contact_Type_Async",
+    "RelativePath": "api/EntityData/add/contact/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Contact.Req_ContactType_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Country_Async",
+    "RelativePath": "api/EntityData/add/country",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_Country_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Country_Province_Async",
+    "RelativePath": "api/EntityData/add/country/province",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_CountryProvince_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Country_Region_Async",
+    "RelativePath": "api/EntityData/add/country/region",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_CountryRegion_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Country_Subregion_Async",
+    "RelativePath": "api/EntityData/add/country/subregion",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_CountrySubRegion_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Currency_Async",
+    "RelativePath": "api/EntityData/add/currency",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Currency.Req_Currency_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Dialing_Code_Async",
+    "RelativePath": "api/EntityData/add/dialing/code",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.DialingCode.Req_DialingCode_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Entity_Address_Async",
+    "RelativePath": "api/EntityData/add/entity/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Entity.Req_EntityAddress_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Entity_Contact_Async",
+    "RelativePath": "api/EntityData/add/entity/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Entity.Req_EntityContact_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Exchange_Rate_Async",
+    "RelativePath": "api/EntityData/add/exchange/rate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.ExchangeRates.Req_ExchangeRate_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Location_Currency_Async",
+    "RelativePath": "api/EntityData/add/location/currency",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.LocationCurrency.Req_LocationCurrency_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Payment_Type_Async",
+    "RelativePath": "api/EntityData/add/payment/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.PaymentType.Req_PaymentType_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Setting_Async",
+    "RelativePath": "api/EntityData/add/setting",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Company",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "HeadOfficeNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_CurrencyID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Slip_Printer_Async",
+    "RelativePath": "api/EntityData/add/slip/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.SlipPrinter.Req_SlipPrinter_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Tax_Type_Async",
+    "RelativePath": "api/EntityData/add/tax/types",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.TaxType.Req_TaxType_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Add_Timezone_Async",
+    "RelativePath": "api/EntityData/add/timezone",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Timezone.Req_Timezone_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Address_Regions_Async",
+    "RelativePath": "api/EntityData/list/address/regions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Address_Types_Async",
+    "RelativePath": "api/EntityData/list/address/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Addresses_Async",
+    "RelativePath": "api/EntityData/list/addresses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_All_Entity_Addresses_Async",
+    "RelativePath": "api/EntityData/list/all/entity/addresses",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_AllEntityAddress_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_All_Entity_Contacts_Async",
+    "RelativePath": "api/EntityData/list/all/entity/contacts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Contact.Req_AllEntityContact_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Contact_Types_Async",
+    "RelativePath": "api/EntityData/list/contact/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Contacts_Async",
+    "RelativePath": "api/EntityData/list/contacts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Continents_Async",
+    "RelativePath": "api/EntityData/list/continents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Countries_Async",
+    "RelativePath": "api/EntityData/list/countries",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Country_Provinces_Async",
+    "RelativePath": "api/EntityData/list/country/provinces",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Country_Regions_Async",
+    "RelativePath": "api/EntityData/list/country/regions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Country_Subregions_Async",
+    "RelativePath": "api/EntityData/list/country/subregions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Currencies_Async",
+    "RelativePath": "api/EntityData/list/currencies",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Dialing_Codes_Async",
+    "RelativePath": "api/EntityData/list/dialing/codes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Entities_Async",
+    "RelativePath": "api/EntityData/list/entities",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Entity_Addresses_Async",
+    "RelativePath": "api/EntityData/list/entity/addresses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Entity_Contacts_Async",
+    "RelativePath": "api/EntityData/list/entity/contacts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Exchange_Rates_Async",
+    "RelativePath": "api/EntityData/list/exchange/rates",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Location_Currencies_Async",
+    "RelativePath": "api/EntityData/list/location/currencies",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.LocationCurrency.Req_LocationCurrency_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Payment_Type_Icons_Async",
+    "RelativePath": "api/EntityData/list/payment/type/icons",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Payment_Types_Async",
+    "RelativePath": "api/EntityData/list/payment/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Settings_Async",
+    "RelativePath": "api/EntityData/list/settings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Slip_Printers_Async",
+    "RelativePath": "api/EntityData/list/slip/printers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Slip_Types_Async",
+    "RelativePath": "api/EntityData/list/slip/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Status_Groups_Async",
+    "RelativePath": "api/EntityData/list/status/groups",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Statuses_Async",
+    "RelativePath": "api/EntityData/list/statuses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Tax_Types_Async",
+    "RelativePath": "api/EntityData/list/tax/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "List_Timezones_Async",
+    "RelativePath": "api/EntityData/list/timezones",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Remove_Location_Currency_Async",
+    "RelativePath": "api/EntityData/remove/location/currency",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.LocationCurrency.Req_LocationCurrency_Remove",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Address_Async",
+    "RelativePath": "api/EntityData/update/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_Address_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Address_Region_Async",
+    "RelativePath": "api/EntityData/update/address/region",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_AddressRegion_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Address_Type_Async",
+    "RelativePath": "api/EntityData/update/address/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Address.Req_AddressType_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Contact_Async",
+    "RelativePath": "api/EntityData/update/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Contact.Req_Contact_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Contact_Type_Async",
+    "RelativePath": "api/EntityData/update/contact/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Contact.Req_ContactType_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Country_Async",
+    "RelativePath": "api/EntityData/update/country",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_Country_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Country_Province_Async",
+    "RelativePath": "api/EntityData/update/country/province",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_CountryProvince_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Country_Region_Async",
+    "RelativePath": "api/EntityData/update/country/region",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_CountryRegion_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Country_Subregion_Async",
+    "RelativePath": "api/EntityData/update/country/subregion",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Country.Req_CountrySubRegion_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Currency_Async",
+    "RelativePath": "api/EntityData/update/currency",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Currency.Req_Currency_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Dialing_Code_Async",
+    "RelativePath": "api/EntityData/update/dialing/code",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.DialingCode.Req_DialingCode_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Entity_Address_Async",
+    "RelativePath": "api/EntityData/update/entity/address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Entity.Req_EntityAddress_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Entity_Contact_Async",
+    "RelativePath": "api/EntityData/update/entity/contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Entity.Req_EntityContact_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Exchange_Rate_Async",
+    "RelativePath": "api/EntityData/update/exchange/rate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.ExchangeRates.Req_ExchangeRate_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Payment_Type_Async",
+    "RelativePath": "api/EntityData/update/payment/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.PaymentType.Req_PaymentType_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Setting_Async",
+    "RelativePath": "api/EntityData/update/setting",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SettingID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Company",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "HeadOfficeNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_CurrencyID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Slip_Printer_Async",
+    "RelativePath": "api/EntityData/update/slip/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.SlipPrinter.Req_SlipPrinter_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Tax_Type_Async",
+    "RelativePath": "api/EntityData/update/tax/types",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.TaxType.Req_TaxType_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.EntityDataController",
+    "Method": "Update_Timezone_Async",
+    "RelativePath": "api/EntityData/update/timezone",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.EntityDataController.Timezone.Req_Timezone_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Async",
+    "RelativePath": "api/inventory/add/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ProductName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_ProductTypeID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsStockTracked",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_UnitID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_ProductCategoryID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_DefaultUnitID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SKU",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Barcode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "QrCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Category_Async",
+    "RelativePath": "api/inventory/add/product/category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductCategory.Req_ProductCategory_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Combination_Async",
+    "RelativePath": "api/inventory/add/product/combination",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductCombination.Req_ProductCombination_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Extra_Async",
+    "RelativePath": "api/inventory/add/product/extra",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductExtra.Req_ProductExtra_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Extra_Category_Async",
+    "RelativePath": "api/inventory/add/product/extra/category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductExtraCategories.Req_ProductExtraCategory_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Preparation_Async",
+    "RelativePath": "api/inventory/add/product/preparation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductPreparation.Req_ProductPreparation_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Preparation_Method_Async",
+    "RelativePath": "api/inventory/add/product/preparation/method",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductPreparationMethod.Req_ProductPreparationMethod_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Substitution_Async",
+    "RelativePath": "api/inventory/add/product/substitution",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductSubstitution.Req_ProductSubstitution_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Product_Type_Async",
+    "RelativePath": "api/inventory/add/product/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductType.Req_ProductType_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Served_As_Async",
+    "RelativePath": "api/inventory/add/servedas",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ServedAs.Req_ServedAs_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Served_As_Product_Async",
+    "RelativePath": "api/inventory/add/servedas/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ServedAsProducts.Req_Served_As_Products_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Add_Unit_Async",
+    "RelativePath": "api/inventory/add/unit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.Unit.Req_Unit_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Categories_Async",
+    "RelativePath": "api/inventory/list/product/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Combinations_Async",
+    "RelativePath": "api/inventory/list/product/combinations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductCombination.Req_ProductCombination_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Extra_Categories_Async",
+    "RelativePath": "api/inventory/list/product/extra/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Extras_Async",
+    "RelativePath": "api/inventory/list/product/extras",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductExtra.Req_ProductExtra_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Preparation_Async",
+    "RelativePath": "api/inventory/list/product/preparation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductPreparation.Req_ProductPreparation_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Preparation_Methods_Async",
+    "RelativePath": "api/inventory/list/product/preparation/methods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Substitutions_Async",
+    "RelativePath": "api/inventory/list/product/substitutions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductSubstitution.Req_Substitution_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Product_Types_Async",
+    "RelativePath": "api/inventory/list/product/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Products_Async",
+    "RelativePath": "api/inventory/list/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Served_As_Async",
+    "RelativePath": "api/inventory/list/servedas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Served_As_Products_Async",
+    "RelativePath": "api/inventory/list/servedas/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ServedAsProducts.Req_Served_As_Products_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "List_Units_Async",
+    "RelativePath": "api/inventory/list/units",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Remove_Product_Combination_Async",
+    "RelativePath": "api/inventory/remove/product/combination",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductCombination.Req_ProductCombination_Delete",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Remove_Product_Extra_Async",
+    "RelativePath": "api/inventory/remove/product/extra",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductExtra.Req_ProductExtra_Delete",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Remove_Product_Preparation_Async",
+    "RelativePath": "api/inventory/remove/product/preparation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductPreparation.Req_ProductPreparation_Delete",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Remove_Product_Substitution_Async",
+    "RelativePath": "api/inventory/remove/product/substitution",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductSubstitution.Req_ProductSubstitution_Delete",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Remove_Served_As_Product",
+    "RelativePath": "api/inventory/remove/servedas/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ServedAsProducts.Req_Served_As_Products_Remove",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Async",
+    "RelativePath": "api/inventory/update/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "POS_ProductID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ProductName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_ProductTypeID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsStockTracked",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_UnitID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_ProductCategoryID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_DefaultUnitID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SKU",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Barcode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "QrCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Category_Async",
+    "RelativePath": "api/inventory/update/product/category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductCategory.Req_ProductCategory_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Combination_Async",
+    "RelativePath": "api/inventory/update/product/combination",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductCombination.Req_ProductCombination_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Extra_Async",
+    "RelativePath": "api/inventory/update/product/extra",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductExtra.Req_ProductExtra_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Extra_Category_Async",
+    "RelativePath": "api/inventory/update/product/extra/category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductExtraCategories.Req_ProductExtraCategory_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Preparation_Async",
+    "RelativePath": "api/inventory/update/product/preparation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductPreparation.Req_ProductPreparation_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Preparation_Method_Async",
+    "RelativePath": "api/inventory/update/product/preparation/method",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductPreparationMethod.Req_ProductPreparationMethod_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Substitution_Async",
+    "RelativePath": "api/inventory/update/product/substitution",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductSubstitution.Req_ProductSubstitution_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Product_Type_Async",
+    "RelativePath": "api/inventory/update/product/type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ProductType.Req_ProductType_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Served_As_Async",
+    "RelativePath": "api/inventory/update/servedas",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ServedAs.Req_ServedAs_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Served_As_Product_Async",
+    "RelativePath": "api/inventory/update/servedas/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.ServedAsProducts.Req_Served_As_Product_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.InventoryController",
+    "Method": "Update_Unit_Async",
+    "RelativePath": "api/inventory/update/unit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.InventoryController.Unit.Req_Unit_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Debtor_Menu_Item_Async",
+    "RelativePath": "api/Menu/add/debtor/menu/item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FK_MenuID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Item",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_POS_MenuItemID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Debtor_Menu_Item_Product_Async",
+    "RelativePath": "api/Menu/add/debtor/menu/item/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItemProduct.Req_MenuItemProduct_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Debtor_Menu_Item_Product_Printer_Async",
+    "RelativePath": "api/Menu/add/debtor/menu/item/product/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.DebtorMenuItemProduct.Req_DebtorMenuItemProductPrinter_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Debtor_Menu_Printer_Async",
+    "RelativePath": "api/Menu/add/debtor/menu/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.DebtorMenuPrinter.Req_DebtorMenuPrinter_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Menu_Async",
+    "RelativePath": "api/Menu/add/menu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MenuName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsActive",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Menu_Item_Async",
+    "RelativePath": "api/Menu/add/menu/item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FK_MenuID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Item",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_POS_MenuItemID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Add_Menu_Item_Product_Async",
+    "RelativePath": "api/Menu/add/menu/item/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItemProduct.Req_MenuItemProduct_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Copy_Menu_Async",
+    "RelativePath": "api/Menu/copy/menu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.Menu.Req_Menu_Copy",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_All_Menu_Tree_Async",
+    "RelativePath": "api/Menu/list/all/menu/tree",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_Debtor_Menu_Printers_Async",
+    "RelativePath": "api/Menu/list/debtor/menu/printers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.DebtorMenuPrinter.Req_DebtorMenuPrinter_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_Debtor_Menu_Tree_Async",
+    "RelativePath": "api/Menu/list/debtor/menu/tree",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.DebtorMenu.Req_DebtorMenuTree_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_Menu_Item_Products_Async",
+    "RelativePath": "api/Menu/list/menu/item/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItemProduct.Req_MenuItemProduct_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_Menu_Items_Async",
+    "RelativePath": "api/Menu/list/menu/items",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItem.Req_MenuItem_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_Menu_Tree_Async",
+    "RelativePath": "api/Menu/list/menu/tree",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.Menu.Req_MenuTree_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "List_Menus_Async",
+    "RelativePath": "api/Menu/list/menus",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.Menu.Req_Menu_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Remove_Debtor_Menu_Item_Async",
+    "RelativePath": "api/Menu/remove/debtor/menu/item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItem.Req_MenuItem_Remove",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Remove_Debtor_Menu_Item_Product_Async",
+    "RelativePath": "api/Menu/remove/debtor/menu/item/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItemProduct.Req_MenuItemProduct_Remove",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Remove_Menu_Item_Async",
+    "RelativePath": "api/Menu/remove/menu/item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItem.Req_MenuItem_Remove",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Remove_Menu_Item_Product_Async",
+    "RelativePath": "api/Menu/remove/menu/item/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.MenuItemProduct.Req_MenuItemProduct_Remove",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Update_Debtor_Menu_Async",
+    "RelativePath": "api/Menu/update/debtor/menu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "POS_MenuID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_DebtorID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_CostCenterID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "MenuName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsActive",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ValidFrom",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ValidTo",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Update_Debtor_Menu_Item_Async",
+    "RelativePath": "api/Menu/update/debtor/menu/item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "POS_MenuItemID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_MenuID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Item",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_POS_MenuItemID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Update_Debtor_Menu_Printer_Async",
+    "RelativePath": "api/Menu/update/debtor/menu/printer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.MenuController.DebtorMenuPrinter.Req_DebtorMenuPrinter_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Update_Menu_Async",
+    "RelativePath": "api/Menu/update/menu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "POS_MenuID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "MenuName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsActive",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.MenuController",
+    "Method": "Update_Menu_Item_Async",
+    "RelativePath": "api/Menu/update/menu/item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "POS_MenuItemID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_MenuID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Item",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FK_POS_MenuItemID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Add_Cost_Center_Product_Async",
+    "RelativePath": "api/Stock/add/cost/center/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.CostCenterProduct.Req_CostCenterProduct_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Add_Debtor_Product_Async",
+    "RelativePath": "api/Stock/add/debtor/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.DebtorProduct.Req_DebtorProduct_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Add_Debtor_Product_Price_Async",
+    "RelativePath": "api/Stock/add/debtor/product/price",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.DebtorProductPrice.Req_DebtorProductPrice_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Add_Price_Code_Async",
+    "RelativePath": "api/Stock/add/price/code",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.PriceCode.Req_PriceCode_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Add_Supplier_Product_Async",
+    "RelativePath": "api/Stock/add/supplier/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.SupplierProduct.Req_SupplierProduct_Add",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "List_Cost_Center_Products_Async",
+    "RelativePath": "api/Stock/list/cost/center/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.CostCenterProduct.Req_CostCenterProduct_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "List_Debtor_Product_Prices_Async",
+    "RelativePath": "api/Stock/list/debtor/product/prices",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.DebtorProductPrice.Req_DebtorProductPrice_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "List_Debtor_Products_Async",
+    "RelativePath": "api/Stock/list/debtor/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.DebtorProduct.Req_DebtorProduct_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "List_Price_Codes_Async",
+    "RelativePath": "api/Stock/list/price/codes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "List_Supplier_Products_Async",
+    "RelativePath": "api/Stock/list/supplier/products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.SupplierProduct.Req_SupplierProduct_List",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Update_Cost_Center_Product_Async",
+    "RelativePath": "api/Stock/update/cost/center/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.CostCenterProduct.Req_CostCenterProduct_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Update_Debtor_Product_Async",
+    "RelativePath": "api/Stock/update/debtor/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.DebtorProduct.Req_DebtorProduct_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Update_Debtor_Product_Price_Async",
+    "RelativePath": "api/Stock/update/debtor/product/price",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.DebtorProductPrice.Req_DebtorProductPrice_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Update_Price_Code_Async",
+    "RelativePath": "api/Stock/update/price/code",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.PriceCode.Req_PriceCode_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.StockController",
+    "Method": "Update_Supplier_Product_Async",
+    "RelativePath": "api/Stock/update/supplier/product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.StockController.SupplierProduct.Req_SupplierProduct_Update",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "Get_Image_Bytes_Async",
+    "RelativePath": "api/Sync/image/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.FileContentResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "POS_Common.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "POS_Common.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "POS_Common.Models.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Booking_Guests_Async",
+    "RelativePath": "api/Sync/list/booking/guests",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Booking_Headers_Async",
+    "RelativePath": "api/Sync/list/bookings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Cost_Center_Printers_Async",
+    "RelativePath": "api/Sync/list/cost/center/printers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Cost_Center_Products_Async",
+    "RelativePath": "api/Sync/list/cost/center/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Cost_Centers_Async",
+    "RelativePath": "api/Sync/list/cost/centers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Currencies_Async",
+    "RelativePath": "api/Sync/list/currencies",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Debtor_Product_Prices_Async",
+    "RelativePath": "api/Sync/list/debtor/product/prices",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Exchange_Rates_Async",
+    "RelativePath": "api/Sync/list/exchange/rates",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Global_Settings_Async",
+    "RelativePath": "api/Sync/list/global/settings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Guests_Async",
+    "RelativePath": "api/Sync/list/guests",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Image_Categories_Async",
+    "RelativePath": "api/Sync/list/image/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Images_Async",
+    "RelativePath": "api/Sync/list/images",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Location_Currencies_Async",
+    "RelativePath": "api/Sync/list/location/currencies",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Location_Products_Async",
+    "RelativePath": "api/Sync/list/location/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Locations_Async",
+    "RelativePath": "api/Sync/list/locations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Menu_Item_Product_Printers_Async",
+    "RelativePath": "api/Sync/list/menu/item/product/printers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Menu_Item_Products_Async",
+    "RelativePath": "api/Sync/list/menu/item/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Menu_Items_Async",
+    "RelativePath": "api/Sync/list/menu/items",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Menu_Printers_Async",
+    "RelativePath": "api/Sync/list/menu/printers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Menus_Async",
+    "RelativePath": "api/Sync/list/menus",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Payment_Type_Icons_Async",
+    "RelativePath": "api/Sync/list/payment/type/icons",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Payment_Types_Async",
+    "RelativePath": "api/Sync/list/payment/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Price_Codes_Async",
+    "RelativePath": "api/Sync/list/price/codes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Product_Combinations_Async",
+    "RelativePath": "api/Sync/list/product/combinations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Product_Extra_Categories_Async",
+    "RelativePath": "api/Sync/list/product/extra/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Product_Extras_Async",
+    "RelativePath": "api/Sync/list/product/extras",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Product_Preparation_Async",
+    "RelativePath": "api/Sync/list/product/preparation",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Product_Preparation_Methods_Async",
+    "RelativePath": "api/Sync/list/product/preparation/methods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Product_Substitutions_Async",
+    "RelativePath": "api/Sync/list/product/subtitutions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Products_Async",
+    "RelativePath": "api/Sync/list/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Served_As_Async",
+    "RelativePath": "api/Sync/list/served/as",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Served_As_Products_Async",
+    "RelativePath": "api/Sync/list/served/as/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Settings_Async",
+    "RelativePath": "api/Sync/list/settings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Slip_Printers_Async",
+    "RelativePath": "api/Sync/list/slip/printers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Slip_Types_Async",
+    "RelativePath": "api/Sync/list/sliptypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Tax_Types_Async",
+    "RelativePath": "api/Sync/list/tax/types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Units_Async",
+    "RelativePath": "api/Sync/list/units",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "Notify_Result_Async",
+    "RelativePath": "api/Sync/notify-result",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.Models.Sync.Req_Notify_Result",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Account_Guests_Async",
+    "RelativePath": "api/Sync/sync/account/guests",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_AccountGuest_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Accounts_Async",
+    "RelativePath": "api/Sync/sync/accounts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_Account_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Arrivals_Async",
+    "RelativePath": "api/Sync/sync/arrivals",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_Arrival_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Booking_Guests_Async",
+    "RelativePath": "api/Sync/sync/booking/guests",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_BookingGuest_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Booking_Headers_Async",
+    "RelativePath": "api/Sync/sync/bookings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_BookingHeader_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_CashUp_Headers_Async",
+    "RelativePath": "api/Sync/sync/cashup/headers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_CashUpHeader_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_CashUp_Lines_Async",
+    "RelativePath": "api/Sync/sync/cashup/lines",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_CashUpLine_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Guests_Async",
+    "RelativePath": "api/Sync/sync/guests",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_Guest_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Invoice_Headers_Async",
+    "RelativePath": "api/Sync/sync/invoice/headers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_InvoiceHeader_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Invoice_Lines_Async",
+    "RelativePath": "api/Sync/sync/invoice/lines",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_InvoiceLine_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Invoice_Payments_Async",
+    "RelativePath": "api/Sync/sync/invoice/payments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_InvoicePayment_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Invoice_Tabs_Async",
+    "RelativePath": "api/Sync/sync/invoice/tabs",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_InvoiceTab_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_TabLine_Combinations_Async",
+    "RelativePath": "api/Sync/sync/tab/line/combinations",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_TabLineCombination_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_TabLine_Extras_Async",
+    "RelativePath": "api/Sync/sync/tab/line/extras",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_TabLineExtra_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_TabLine_Guests_Async",
+    "RelativePath": "api/Sync/sync/tab/line/guests",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_TabLineGuest_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_TabLine_Preparation_Methods_Async",
+    "RelativePath": "api/Sync/sync/tab/line/preparation/methods",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_TabLinePreparationMethod_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Tabline_Substitutes_Async",
+    "RelativePath": "api/Sync/sync/tab/line/substitutes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_TablineSubstitute_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Tab_Lines_Async",
+    "RelativePath": "api/Sync/sync/tab/lines",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_TabLine_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Tabs_Async",
+    "RelativePath": "api/Sync/sync/tabs",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_Tab_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "POS_Webservice.Controllers.SyncController",
+    "Method": "List_Void_Logs_Async",
+    "RelativePath": "api/Sync/sync/void/logs",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "POS_Common.ModelsDto.SyncController.FromServer.Req_VoidLog_Sync",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

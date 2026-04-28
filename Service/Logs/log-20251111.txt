@@ -1,0 +1,281 @@
+2025-11-11 19:48:32.751 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 19:48:32.907 +02:00 [INF] BcSyncHostedService initial delay 5s
+2025-11-11 19:48:33.675 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 19:48:33.675 +02:00 [INF] Hosting environment: Development
+2025-11-11 19:48:33.675 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 19:48:33.804 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 19:48:34.205 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 411.2533ms
+2025-11-11 19:48:34.228 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 19:48:34.304 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 77.0315ms
+2025-11-11 19:48:34.381 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui-standalone-preset.js - null null
+2025-11-11 19:48:34.381 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui-bundle.js - null null
+2025-11-11 19:48:34.381 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 19:48:34.386 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 3.733ms
+2025-11-11 19:48:34.387 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 19:48:34.406 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - null null
+2025-11-11 19:48:34.417 +02:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-11-11 19:48:34.417 +02:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-11-11 19:48:34.469 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - 200 143943 text/css 63.3813ms
+2025-11-11 19:48:34.474 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui-standalone-preset.js - 200 339486 text/javascript 92.8714ms
+2025-11-11 19:48:34.565 +02:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-11-11 19:48:34.776 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 389.4097ms
+2025-11-11 19:48:34.797 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui-bundle.js - 200 1096145 text/javascript 415.6235ms
+2025-11-11 19:48:34.990 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - null null
+2025-11-11 19:48:34.992 +02:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2025-11-11 19:48:34.992 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - 200 665 image/png 1.7882ms
+2025-11-11 19:48:35.042 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 19:48:35.134 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 95.8199ms
+2025-11-11 19:48:38.120 +02:00 [INF] BcSyncHostedService running every 300s
+2025-11-11 19:48:53.762 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies
+2025-11-11 19:48:53.772 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 19:48:53.773 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 19:48:54.521 +02:00 [INF] Received HTTP response headers after 743.9026ms - 200
+2025-11-11 19:48:54.522 +02:00 [INF] End processing HTTP request after 750.3154ms - 200
+2025-11-11 19:48:54.531 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 19:48:54.531 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies
+2025-11-11 19:48:55.368 +02:00 [INF] Received HTTP response headers after 836.612ms - 200
+2025-11-11 19:48:55.368 +02:00 [INF] End processing HTTP request after 1610.8147ms - 200
+2025-11-11 19:48:58.834 +02:00 [INF] BC ping OK
+2025-11-11 19:51:34.824 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 19:51:34.905 +02:00 [INF] BcSyncHostedService initial delay 5s
+2025-11-11 19:51:35.086 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 19:51:35.200 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 19:51:35.200 +02:00 [INF] Hosting environment: Development
+2025-11-11 19:51:35.200 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 19:51:35.447 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 374.2439ms
+2025-11-11 19:51:35.449 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 19:51:35.510 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 60.9514ms
+2025-11-11 19:51:35.811 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 19:51:35.811 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 19:51:35.816 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 7.7123ms
+2025-11-11 19:51:35.819 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - null null
+2025-11-11 19:51:35.840 +02:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-11-11 19:51:35.840 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - 499 143943 text/css 23.8517ms
+2025-11-11 19:51:35.950 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 138.2466ms
+2025-11-11 19:51:35.954 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 19:51:36.043 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 89.0542ms
+2025-11-11 19:51:40.072 +02:00 [INF] BcSyncHostedService running every 300s
+2025-11-11 19:52:27.462 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 19:52:27.560 +02:00 [WRN] BusinessCentralSync config is deprecated. Please use BusinessCentral:HostedService:Enabled instead.
+2025-11-11 19:52:27.709 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 19:52:27.844 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 19:52:27.844 +02:00 [INF] Hosting environment: Development
+2025-11-11 19:52:27.844 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 19:52:28.117 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 417.3238ms
+2025-11-11 19:52:28.137 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 19:52:28.220 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 83.7223ms
+2025-11-11 19:52:28.482 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 19:52:28.483 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 19:52:28.487 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 21.4185ms
+2025-11-11 19:52:28.488 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - null null
+2025-11-11 19:52:28.508 +02:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-11-11 19:52:28.508 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - 499 143943 text/css 20.4485ms
+2025-11-11 19:52:28.581 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 97.398ms
+2025-11-11 19:52:28.630 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 19:52:28.758 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 127.9952ms
+2025-11-11 19:52:39.477 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/ping - null null
+2025-11-11 19:52:39.604 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.Ping (POS_Webservice)'
+2025-11-11 19:52:39.634 +02:00 [INF] Route matched with {action = "Ping", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Ping() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 19:53:04.578 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies
+2025-11-11 19:53:04.594 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 19:53:04.595 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 19:53:05.440 +02:00 [INF] Received HTTP response headers after 843.181ms - 200
+2025-11-11 19:53:05.440 +02:00 [INF] End processing HTTP request after 846.5959ms - 200
+2025-11-11 19:53:05.447 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 19:53:05.447 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies
+2025-11-11 19:53:06.330 +02:00 [INF] Received HTTP response headers after 883.1856ms - 200
+2025-11-11 19:53:06.331 +02:00 [INF] End processing HTTP request after 1754.6361ms - 200
+2025-11-11 19:53:23.213 +02:00 [INF] BC ping OK
+2025-11-11 19:53:24.671 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`1[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-11-11 19:53:24.686 +02:00 [INF] Executed action POS_Webservice.Controllers.BusinessCentralController.Ping (POS_Webservice) in 45046.1039ms
+2025-11-11 19:53:24.686 +02:00 [INF] Executed endpoint 'POS_Webservice.Controllers.BusinessCentralController.Ping (POS_Webservice)'
+2025-11-11 19:53:24.689 +02:00 [INF] HTTP GET /api/bc/ping responded 200 in 45205.4595 ms
+2025-11-11 19:53:24.691 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/api/bc/ping - 200 null application/json; charset=utf-8 45214.1814ms
+2025-11-11 19:59:39.921 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 19:59:40.020 +02:00 [WRN] BusinessCentralSync config is deprecated. Please use BusinessCentral:HostedService:Enabled instead.
+2025-11-11 19:59:40.158 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 19:59:40.265 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 19:59:40.265 +02:00 [INF] Hosting environment: Development
+2025-11-11 19:59:40.265 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 19:59:40.381 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 232.9531ms
+2025-11-11 19:59:40.406 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 19:59:40.526 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 120.5361ms
+2025-11-11 19:59:40.810 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - null null
+2025-11-11 19:59:40.810 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 19:59:40.825 +02:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-11-11 19:59:40.826 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 19:59:40.826 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - 499 143943 text/css 15.5931ms
+2025-11-11 19:59:40.829 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 3.0966ms
+2025-11-11 19:59:40.884 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 73.5655ms
+2025-11-11 19:59:40.937 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 19:59:41.064 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 127.792ms
+2025-11-11 19:59:45.941 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/debtors - null null
+2025-11-11 19:59:46.036 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 19:59:46.070 +02:00 [INF] Route matched with {action = "GetDebtors", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetDebtors() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 19:59:53.445 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 19:59:53.448 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 19:59:54.067 +02:00 [INF] Received HTTP response headers after 617.1383ms - 200
+2025-11-11 19:59:54.068 +02:00 [INF] End processing HTTP request after 624.6872ms - 200
+2025-11-11 19:59:54.077 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 19:59:57.758 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 19:59:57.760 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 19:59:58.872 +02:00 [INF] Received HTTP response headers after 1111.7355ms - 200
+2025-11-11 19:59:58.872 +02:00 [INF] End processing HTTP request after 1113.8043ms - 200
+2025-11-11 20:00:08.965 +02:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[POS_Api.Services.BusinessCentral.BusinessCentralCustomer, POS_Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-11-11 20:00:08.973 +02:00 [INF] Executed action POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice) in 22898.1907ms
+2025-11-11 20:00:08.973 +02:00 [INF] Executed endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:00:08.975 +02:00 [INF] HTTP GET /api/bc/debtors responded 200 in 23022.2716 ms
+2025-11-11 20:00:08.978 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/api/bc/debtors - 200 null application/json; charset=utf-8 23036.2975ms
+2025-11-11 20:00:28.972 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/debtors - null null
+2025-11-11 20:00:28.977 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:00:28.977 +02:00 [INF] Route matched with {action = "GetDebtors", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetDebtors() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 20:00:34.718 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:00:34.718 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:00:35.256 +02:00 [INF] Received HTTP response headers after 537.5349ms - 200
+2025-11-11 20:00:35.256 +02:00 [INF] End processing HTTP request after 538.2093ms - 200
+2025-11-11 20:03:05.319 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 20:03:05.401 +02:00 [WRN] BusinessCentralSync config is deprecated. Please use BusinessCentral:HostedService:Enabled instead.
+2025-11-11 20:03:05.593 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 20:03:05.676 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 20:03:05.676 +02:00 [INF] Hosting environment: Development
+2025-11-11 20:03:05.676 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 20:03:05.932 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 347.9062ms
+2025-11-11 20:03:05.940 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 20:03:05.995 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 55.037ms
+2025-11-11 20:03:06.255 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 20:03:06.258 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 20:03:06.270 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 12.0721ms
+2025-11-11 20:03:06.423 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - null null
+2025-11-11 20:03:06.544 +02:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2025-11-11 20:03:06.544 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - 499 665 image/png 121.2277ms
+2025-11-11 20:03:06.545 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 289.7308ms
+2025-11-11 20:03:06.594 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 20:03:06.674 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 79.8411ms
+2025-11-11 20:03:11.684 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/debtors - null null
+2025-11-11 20:03:11.967 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:03:11.998 +02:00 [INF] Route matched with {action = "GetDebtors", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetDebtors() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 20:03:16.181 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:03:16.184 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:03:16.764 +02:00 [INF] Received HTTP response headers after 578.0998ms - 200
+2025-11-11 20:03:16.765 +02:00 [INF] End processing HTTP request after 585.5673ms - 200
+2025-11-11 20:03:16.771 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 20:03:16.773 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:03:16.775 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:03:17.911 +02:00 [INF] Received HTTP response headers after 1135.8531ms - 200
+2025-11-11 20:03:17.911 +02:00 [INF] End processing HTTP request after 1137.8317ms - 200
+2025-11-11 20:03:22.458 +02:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[POS_Api.Services.BusinessCentral.BusinessCentralCustomer, POS_Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-11-11 20:03:22.468 +02:00 [INF] Executed action POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice) in 10466.4094ms
+2025-11-11 20:03:22.468 +02:00 [INF] Executed endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:03:22.472 +02:00 [INF] HTTP GET /api/bc/debtors responded 200 in 10756.8241 ms
+2025-11-11 20:03:22.474 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/api/bc/debtors - 200 null application/json; charset=utf-8 10790.2498ms
+2025-11-11 20:06:44.152 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 20:06:44.230 +02:00 [WRN] BusinessCentralSync config is deprecated. Please use BusinessCentral:HostedService:Enabled instead.
+2025-11-11 20:06:44.439 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 20:06:44.481 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 20:06:44.481 +02:00 [INF] Hosting environment: Development
+2025-11-11 20:06:44.481 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 20:06:44.869 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 466.4881ms
+2025-11-11 20:06:44.917 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 20:06:45.003 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 86.3198ms
+2025-11-11 20:06:45.103 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 20:06:45.108 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 20:06:45.112 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 8.3044ms
+2025-11-11 20:06:45.124 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - null null
+2025-11-11 20:06:45.137 +02:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-11-11 20:06:45.138 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - 499 143943 text/css 13.2459ms
+2025-11-11 20:06:45.319 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 210.6389ms
+2025-11-11 20:06:45.327 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - null null
+2025-11-11 20:06:45.328 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 20:06:45.330 +02:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2025-11-11 20:06:45.330 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - 499 665 image/png 2.6009ms
+2025-11-11 20:06:45.399 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 71.7963ms
+2025-11-11 20:06:51.936 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/debtors - null null
+2025-11-11 20:06:52.044 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:06:52.075 +02:00 [INF] Route matched with {action = "GetDebtors", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetDebtors() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 20:06:54.237 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:06:54.243 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:06:55.094 +02:00 [INF] Received HTTP response headers after 848.5087ms - 200
+2025-11-11 20:06:55.097 +02:00 [INF] End processing HTTP request after 862.3276ms - 200
+2025-11-11 20:06:55.106 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 20:06:55.108 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:06:55.110 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:06:56.243 +02:00 [INF] Received HTTP response headers after 1133.1164ms - 200
+2025-11-11 20:06:56.243 +02:00 [INF] End processing HTTP request after 1135.1469ms - 200
+2025-11-11 20:06:58.041 +02:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[POS_Common.Models.BusinessCentral.BusinessCentralCustomer, POS_Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-11-11 20:06:58.065 +02:00 [INF] Executed action POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice) in 5985.6387ms
+2025-11-11 20:06:58.066 +02:00 [INF] Executed endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:06:58.069 +02:00 [INF] HTTP GET /api/bc/debtors responded 200 in 6123.6170 ms
+2025-11-11 20:06:58.071 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/api/bc/debtors - 200 null application/json; charset=utf-8 6135.3683ms
+2025-11-11 20:13:53.133 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 20:13:53.201 +02:00 [WRN] BusinessCentralSync config is deprecated. Please use BusinessCentral:HostedService:Enabled instead.
+2025-11-11 20:13:53.359 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 20:13:53.490 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 20:13:53.491 +02:00 [INF] Hosting environment: Development
+2025-11-11 20:13:53.494 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 20:13:53.724 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 373.7665ms
+2025-11-11 20:13:53.731 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 20:13:53.788 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 58.0203ms
+2025-11-11 20:13:53.955 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 20:13:53.981 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 20:13:54.001 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - null null
+2025-11-11 20:13:54.011 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 30.0257ms
+2025-11-11 20:13:54.014 +02:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-11-11 20:13:54.014 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/swagger-ui.css - 499 143943 text/css 12.5573ms
+2025-11-11 20:13:54.094 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 134.6378ms
+2025-11-11 20:13:54.096 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - null null
+2025-11-11 20:13:54.100 +02:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2025-11-11 20:13:54.100 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - 499 665 image/png 4.2447ms
+2025-11-11 20:13:54.164 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 20:13:54.341 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 176.6026ms
+2025-11-11 20:14:00.633 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/creditors - null null
+2025-11-11 20:14:00.721 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetCreditors (POS_Webservice)'
+2025-11-11 20:14:00.748 +02:00 [INF] Route matched with {action = "GetCreditors", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCreditors() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 20:14:00.808 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:14:00.814 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:14:01.505 +02:00 [INF] Received HTTP response headers after 688.0194ms - 200
+2025-11-11 20:14:01.506 +02:00 [INF] End processing HTTP request after 700.0557ms - 200
+2025-11-11 20:14:01.512 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 20:14:01.513 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/vendors
+2025-11-11 20:14:01.515 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/vendors
+2025-11-11 20:14:02.728 +02:00 [INF] Received HTTP response headers after 1213.0065ms - 200
+2025-11-11 20:14:02.728 +02:00 [INF] End processing HTTP request after 1214.7357ms - 200
+2025-11-11 20:14:02.954 +02:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[POS_Common.Models.BusinessCentral.BusinessCentralCreditor, POS_Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-11-11 20:14:02.984 +02:00 [INF] Executed action POS_Webservice.Controllers.BusinessCentralController.GetCreditors (POS_Webservice) in 2232.8414ms
+2025-11-11 20:14:02.984 +02:00 [INF] Executed endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetCreditors (POS_Webservice)'
+2025-11-11 20:14:02.987 +02:00 [INF] HTTP GET /api/bc/creditors responded 200 in 2346.7282 ms
+2025-11-11 20:14:02.992 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/api/bc/creditors - 200 null application/json; charset=utf-8 2359.4703ms
+2025-11-11 20:27:43.524 +02:00 [INF] User profile is available. Using 'C:\Users\Carl\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 20:27:43.646 +02:00 [WRN] BusinessCentralSync config is deprecated. Please use BusinessCentral:HostedService:Enabled instead.
+2025-11-11 20:27:43.908 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger - null null
+2025-11-11 20:27:44.247 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 20:27:44.247 +02:00 [INF] Hosting environment: Development
+2025-11-11 20:27:44.247 +02:00 [INF] Content root path: C:\Sandbox\POS\POS\Service
+2025-11-11 20:27:44.481 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger - 301 null null 587.9922ms
+2025-11-11 20:27:44.483 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/index.html - null null
+2025-11-11 20:27:44.544 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/index.html - 200 null text/html;charset=utf-8 61.5699ms
+2025-11-11 20:27:44.745 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 20:27:44.750 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_framework/aspnetcore-browser-refresh.js - 200 16513 application/javascript; charset=utf-8 4.8951ms
+2025-11-11 20:27:44.751 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/_vs/browserLink - null null
+2025-11-11 20:27:44.822 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/_vs/browserLink - 200 null text/javascript; charset=UTF-8 71.0735ms
+2025-11-11 20:27:44.823 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - null null
+2025-11-11 20:27:44.853 +02:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2025-11-11 20:27:44.853 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/favicon-16x16.png - 499 665 image/png 30.279ms
+2025-11-11 20:27:44.888 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - null null
+2025-11-11 20:27:44.952 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 63.8701ms
+2025-11-11 20:27:50.095 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44392/api/bc/debtors - null null
+2025-11-11 20:27:50.208 +02:00 [INF] Executing endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:27:50.245 +02:00 [INF] Route matched with {action = "GetDebtors", controller = "BusinessCentral"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetDebtors() on controller POS_Webservice.Controllers.BusinessCentralController (POS_Webservice).
+2025-11-11 20:27:53.407 +02:00 [INF] Start processing HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:27:53.409 +02:00 [INF] Sending HTTP request POST https://login.microsoftonline.com/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/oauth2/v2.0/token
+2025-11-11 20:27:54.028 +02:00 [INF] Received HTTP response headers after 616.891ms - 200
+2025-11-11 20:27:54.029 +02:00 [INF] End processing HTTP request after 623.0624ms - 200
+2025-11-11 20:27:54.035 +02:00 [INF] BC OAuth token acquired. Cached for 3509 seconds
+2025-11-11 20:27:54.038 +02:00 [INF] Start processing HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:27:54.038 +02:00 [INF] Sending HTTP request GET https://api.businesscentral.dynamics.com/v2.0/8c4f5298-3fe1-49f2-8ef8-67d1ad7a08c9/Production/api/v2.0/companies(8696eb76-e856-f011-8eeb-6045bde9b6de)/customers
+2025-11-11 20:27:55.200 +02:00 [INF] Received HTTP response headers after 1161.5868ms - 200
+2025-11-11 20:27:55.200 +02:00 [INF] End processing HTTP request after 1162.8963ms - 200
+2025-11-11 20:27:55.418 +02:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[POS_Common.Models.BusinessCentral.BusinessCentralDebtor, POS_Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-11-11 20:27:55.437 +02:00 [INF] Executed action POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice) in 5188.0856ms
+2025-11-11 20:27:55.438 +02:00 [INF] Executed endpoint 'POS_Webservice.Controllers.BusinessCentralController.GetDebtors (POS_Webservice)'
+2025-11-11 20:27:55.441 +02:00 [INF] HTTP GET /api/bc/debtors responded 200 in 5330.6618 ms
+2025-11-11 20:27:55.443 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44392/api/bc/debtors - 200 null application/json; charset=utf-8 5349.0598ms

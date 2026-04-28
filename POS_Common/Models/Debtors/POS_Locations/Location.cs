@@ -1,0 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace POS_Common.Models.Debtors.POS_Locations
+{
+   public class Location : Location_Base
+    {
+        #region Additional Properties
+        
+        // Add your additional properties here.
+        #endregion
+    }
+}
