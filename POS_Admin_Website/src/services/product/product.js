@@ -44,7 +44,12 @@ export const syncAllProducts = async () => {
 
 export const newProduct = async (data) => {
   try {
-    const response = await api.post("/inventory/add/product", toFormData(data));
+    // Explicit multipart header overrides posAPI's instance-level
+    // 'application/json' default. axios sees the FormData body and
+    // appends the correct boundary to this Content-Type automatically.
+    const response = await api.post("/inventory/add/product", toFormData(data), {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     const payload = response?.data;
 
@@ -87,7 +92,9 @@ export const newProduct = async (data) => {
 
 export const updateProduct = async (data) => {
     try {
-        const response = await api.post('/inventory/update/product', toFormData(data));
+        const response = await api.post('/inventory/update/product', toFormData(data), {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
         console.log("response", response.data);
         return response.data;
     } catch (error) {
