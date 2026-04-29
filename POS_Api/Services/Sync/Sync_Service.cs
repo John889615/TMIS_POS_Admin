@@ -1883,16 +1883,18 @@ namespace POS_Api.Services.Sync
                         new List<string> { $"Image {imageId} not found" }, 404);
                 }
 
-                // FileSystemPath is stored templated (e.g. "{Path}\{TenantID}\..."); resolve via
-                // GlobalSettings.Image_Admin_Server_Path filtered by Environment before any File.* call.
+                // FileSystemPath stores the templated root only (e.g. "{Path}\{TenantID}"); the actual file
+                // lives at <expanded root>\<RelativePath>\<ImageName>. Expand via GlobalSettings.Image_Admin_Server_Path
+                // (filtered by Environment) before any File.* call.
                 var globalSettings = (_cacheService.GetCacheAsync(_userContext.TenantID).Result.GlobalSettings)
                                     .Where(x => x.Environment == _configuration["Environment"]).ToList();
                 var adminImagePath = globalSettings.FirstOrDefault(x => x.Key == "Image_Admin_Server_Path")?.Value ?? "";
-                var resolvedPath = (image.FileSystemPath ?? "")
+                var resolvedRoot = (image.FileSystemPath ?? "")
                     .Replace("{Path}", adminImagePath)
                     .Replace("{TenantID}", _userContext.TenantID.ToString());
+                var resolvedPath = Path.Combine(resolvedRoot, image.RelativePath ?? "", image.ImageName ?? "");
 
-                if (string.IsNullOrWhiteSpace(resolvedPath) || !File.Exists(resolvedPath))
+                if (string.IsNullOrWhiteSpace(image.FileSystemPath) || !File.Exists(resolvedPath))
                 {
                     _logger.LogService($"Get_Image_Bytes: file missing on disk for imageId={imageId}, path={resolvedPath}");
                     return ApiResponse.Fail<ImageBytesResult>(AppErrorCode.NotFound,
