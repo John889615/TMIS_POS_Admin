@@ -1,0 +1,24 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# .NET build artefacts
+**/bin/
+**/obj/
+**/out/
+
+# Visual Studio
+**/.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# Legacy NuGet packages folder (pre-PackageReference; should be empty post-net8 migration)
+**/packages/
+
+# Logs
+**/Logs/
+*.log
+
+# Misc
+.DS_Store
+Thumbs.db
