@@ -1,0 +1,17 @@
+C:\Sandbox\TMIS_POS_Admin\POS_Common\bin\Debug\net8.0\POS_Common.deps.json
+C:\Sandbox\TMIS_POS_Admin\POS_Common\bin\Debug\net8.0\POS_Common.dll
+C:\Sandbox\TMIS_POS_Admin\POS_Common\bin\Debug\net8.0\POS_Common.pdb
+C:\Sandbox\TMIS_POS_Admin\POS_Common\bin\Debug\net8.0\TMIS_Common.dll
+C:\Sandbox\TMIS_POS_Admin\POS_Common\bin\Debug\net8.0\TMIS_Common.pdb
+C:\Sandbox\TMIS_POS_Admin\POS_Common\bin\Debug\net8.0\TMIS_Common.dll.config
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.csproj.AssemblyReference.cache
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.AssemblyInfoInputs.cache
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.AssemblyInfo.cs
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.csproj.CoreCompileInputs.cache
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.sourcelink.json
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.csproj.Up2Date
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.dll
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\refint\POS_Common.dll
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\POS_Common.pdb
+C:\Sandbox\TMIS_POS_Admin\POS_Common\obj\Debug\net8.0\ref\POS_Common.dll

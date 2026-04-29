@@ -14,7 +14,7 @@ namespace POS_Common.ModelsDto.Authenticate
 
         public string Password { get; set; }
 
-        public string StaffCode { get; set; }
+        public string? StaffCode { get; set; }
 
         public int? Pin { get; set; }
         #endregion

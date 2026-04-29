@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("POS_Webservice")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e88972dc5995e10dcbb28aabb513dac4cbe1b0c6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c77dabe92dc2e7dbbfa2e6b2ce00e553a528c67a")]
 [assembly: System.Reflection.AssemblyProductAttribute("POS_Webservice")]
 [assembly: System.Reflection.AssemblyTitleAttribute("POS_Webservice")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

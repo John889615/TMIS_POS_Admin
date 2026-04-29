@@ -163,7 +163,6 @@ C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.AspNetCore.Authenti
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.Bcl.Cryptography.dll
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
-C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
@@ -256,7 +255,6 @@ C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\TMIS_Common.pdb
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\TMIS_Common.dll.config
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\POS_Api.pdb
 C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\POS_Common.pdb
-C:\Sandbox\TMIS_POS_Admin\Service\bin\Debug\net8.0\POS_Common.dll.config
 C:\Sandbox\TMIS_POS_Admin\Service\obj\Debug\net8.0\POS_Webservice.csproj.AssemblyReference.cache
 C:\Sandbox\TMIS_POS_Admin\Service\obj\Debug\net8.0\rpswa.dswa.cache.json
 C:\Sandbox\TMIS_POS_Admin\Service\obj\Debug\net8.0\POS_Webservice.GeneratedMSBuildEditorConfig.editorconfig

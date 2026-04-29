@@ -13,8 +13,6 @@
         "packagesPath": "C:\\Users\\Carl\\.nuget\\packages\\",
         "outputPath": "C:\\Sandbox\\TMIS_Authenticate\\TMIS_Authenticate\\TMIS_Common\\obj\\",
         "projectStyle": "PackageReference",
-        "skipContentFileWrite": true,
-        "UsingMicrosoftNETSdk": false,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
@@ -24,25 +22,33 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net48"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net48": {
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net48": {
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Azure.Core": {
               "target": "Package",
@@ -51,78 +57,6 @@
             "Azure.Identity": {
               "target": "Package",
               "version": "[1.11.4, )"
-            },
-            "Microsoft.AspNet.WebApi.Client": {
-              "target": "Package",
-              "version": "[6.0.0, )"
-            },
-            "Microsoft.AspNet.WebApi.Core": {
-              "target": "Package",
-              "version": "[5.3.0, )"
-            },
-            "Microsoft.AspNetCore.Authentication.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Authentication.Core": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Authorization": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Authorization.Policy": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Hosting.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Hosting.Server.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Http": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Http.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Http.Extensions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Http.Features": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Mvc.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Mvc.Core": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.ResponseCaching.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Routing": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.Routing.Abstractions": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
-            "Microsoft.AspNetCore.WebUtilities": {
-              "target": "Package",
-              "version": "[2.3.0, )"
             },
             "Microsoft.Bcl.AsyncInterfaces": {
               "target": "Package",
@@ -135,14 +69,6 @@
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[6.0.1, )"
-            },
-            "Microsoft.Data.SqlClient.SNI": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "Microsoft.DotNet.PlatformAbstractions": {
-              "target": "Package",
-              "version": "[2.1.0, )"
             },
             "Microsoft.Extensions.Caching.Abstractions": {
               "target": "Package",
@@ -163,10 +89,6 @@
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
               "target": "Package",
               "version": "[8.0.2, )"
-            },
-            "Microsoft.Extensions.DependencyModel": {
-              "target": "Package",
-              "version": "[2.1.0, )"
             },
             "Microsoft.Extensions.Diagnostics.Abstractions": {
               "target": "Package",
@@ -236,10 +158,6 @@
               "target": "Package",
               "version": "[7.5.0, )"
             },
-            "Microsoft.Net.Http.Headers": {
-              "target": "Package",
-              "version": "[2.3.0, )"
-            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.1, )"
@@ -264,53 +182,9 @@
               "target": "Package",
               "version": "[4.2.0, )"
             },
-            "System.Buffers": {
-              "target": "Package",
-              "version": "[4.6.0, )"
-            },
-            "System.ClientModel": {
-              "target": "Package",
-              "version": "[1.0.0, )"
-            },
-            "System.Diagnostics.DiagnosticSource": {
-              "target": "Package",
-              "version": "[8.0.1, )"
-            },
-            "System.IO.FileSystem.AccessControl": {
-              "target": "Package",
-              "version": "[5.0.0, )"
-            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[7.5.0, )"
-            },
-            "System.Memory": {
-              "target": "Package",
-              "version": "[4.5.5, )"
-            },
-            "System.Memory.Data": {
-              "target": "Package",
-              "version": "[1.0.2, )"
-            },
-            "System.Net.Http.Json": {
-              "target": "Package",
-              "version": "[8.0.1, )"
-            },
-            "System.Numerics.Vectors": {
-              "target": "Package",
-              "version": "[4.5.0, )"
-            },
-            "System.Runtime.CompilerServices.Unsafe": {
-              "target": "Package",
-              "version": "[6.1.0, )"
-            },
-            "System.Runtime.InteropServices.RuntimeInformation": {
-              "target": "Package",
-              "version": "[4.0.0, )"
-            },
-            "System.Security.AccessControl": {
-              "target": "Package",
-              "version": "[5.0.0, )"
             },
             "System.Security.Cryptography.Pkcs": {
               "target": "Package",
@@ -319,10 +193,6 @@
             "System.Security.Cryptography.ProtectedData": {
               "target": "Package",
               "version": "[8.0.0, )"
-            },
-            "System.Security.Principal.Windows": {
-              "target": "Package",
-              "version": "[5.0.0, )"
             },
             "System.Text.Encodings.Web": {
               "target": "Package",
@@ -335,30 +205,28 @@
             "System.Threading.Channels": {
               "target": "Package",
               "version": "[8.0.0, )"
-            },
-            "System.Threading.Tasks.Extensions": {
-              "target": "Package",
-              "version": "[4.6.0, )"
-            },
-            "System.ValueTuple": {
-              "target": "Package",
-              "version": "[4.5.0, )"
             }
-          }
-        }
-      },
-      "runtimes": {
-        "win": {
-          "#import": []
-        },
-        "win-arm64": {
-          "#import": []
-        },
-        "win-x64": {
-          "#import": []
-        },
-        "win-x86": {
-          "#import": []
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -485,8 +353,6 @@
         "packagesPath": "C:\\Users\\Carl\\.nuget\\packages\\",
         "outputPath": "C:\\Sandbox\\TMIS_POS_Admin\\POS_Common\\obj\\",
         "projectStyle": "PackageReference",
-        "skipContentFileWrite": true,
-        "UsingMicrosoftNETSdk": false,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
@@ -496,14 +362,15 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net48"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net48": {
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {
               "C:\\Sandbox\\TMIS_Authenticate\\TMIS_Authenticate\\TMIS_Common\\TMIS_Common.csproj": {
                 "projectPath": "C:\\Sandbox\\TMIS_Authenticate\\TMIS_Authenticate\\TMIS_Common\\TMIS_Common.csproj"
@@ -511,14 +378,21 @@
             }
           }
         },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net48": {
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.Bcl.AsyncInterfaces": {
               "target": "Package",
@@ -564,29 +438,13 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
-            "System.Buffers": {
-              "target": "Package",
-              "version": "[4.6.0, )"
-            },
             "System.Diagnostics.DiagnosticSource": {
               "target": "Package",
               "version": "[8.0.1, )"
             },
-            "System.Memory": {
-              "target": "Package",
-              "version": "[4.5.5, )"
-            },
             "System.Net.Http.Json": {
               "target": "Package",
               "version": "[8.0.1, )"
-            },
-            "System.Numerics.Vectors": {
-              "target": "Package",
-              "version": "[4.5.0, )"
-            },
-            "System.Runtime.CompilerServices.Unsafe": {
-              "target": "Package",
-              "version": "[6.1.0, )"
             },
             "System.Text.Encodings.Web": {
               "target": "Package",
@@ -595,30 +453,25 @@
             "System.Text.Json": {
               "target": "Package",
               "version": "[8.0.5, )"
-            },
-            "System.Threading.Tasks.Extensions": {
-              "target": "Package",
-              "version": "[4.6.0, )"
-            },
-            "System.ValueTuple": {
-              "target": "Package",
-              "version": "[4.5.0, )"
             }
-          }
-        }
-      },
-      "runtimes": {
-        "win": {
-          "#import": []
-        },
-        "win-arm64": {
-          "#import": []
-        },
-        "win-x64": {
-          "#import": []
-        },
-        "win-x86": {
-          "#import": []
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
