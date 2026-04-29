@@ -20,13 +20,9 @@ using POS_Common.ModelsDto.EntityDataController.SlipPrinter;
 using POS_Common.ModelsDto.EntityDataController.SlipType;
 using POS_Common.ModelsDto.EntityDataController.TaxType;
 using POS_Common.ModelsDto.EntityDataController.Timezone;
-using TMIS_Common.ModelsDto.AuthController.AddUsers;
 using TMIS_Common.ModelsDto.AuthController.Authenticate;
 using TMIS_Common.ModelsDto.AuthController.PasswordReset;
 using TMIS_Common.ModelsDto.AuthController.RefreshToken;
-using TMIS_Common.ModelsDto.AuthController.RolePermissions;
-using TMIS_Common.ModelsDto.AuthController.Roles;
-using TMIS_Common.ModelsDto.AuthController.Users;
 
 namespace POS_Webservice.Controllers
 {

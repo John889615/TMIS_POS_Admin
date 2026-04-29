@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TMIS_Common.ModelsDto.AuthController.AddUsers;
-using TMIS_Common.ModelsDto.AuthController.Users;
 
 namespace POS_Api.ServiceInterfaces.EntityData
 {
