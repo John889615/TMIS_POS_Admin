@@ -1883,19 +1883,28 @@ namespace POS_Api.Services.Sync
                         new List<string> { $"Image {imageId} not found" }, 404);
                 }
 
-                if (string.IsNullOrWhiteSpace(image.FileSystemPath) || !File.Exists(image.FileSystemPath))
+                // FileSystemPath is stored templated (e.g. "{Path}\{TenantID}\..."); resolve via
+                // GlobalSettings.Image_Admin_Server_Path filtered by Environment before any File.* call.
+                var globalSettings = (_cacheService.GetCacheAsync(_userContext.TenantID).Result.GlobalSettings)
+                                    .Where(x => x.Environment == _configuration["Environment"]).ToList();
+                var adminImagePath = globalSettings.FirstOrDefault(x => x.Key == "Image_Admin_Server_Path")?.Value ?? "";
+                var resolvedPath = (image.FileSystemPath ?? "")
+                    .Replace("{Path}", adminImagePath)
+                    .Replace("{TenantID}", _userContext.TenantID.ToString());
+
+                if (string.IsNullOrWhiteSpace(resolvedPath) || !File.Exists(resolvedPath))
                 {
-                    _logger.LogService($"Get_Image_Bytes: file missing on disk for imageId={imageId}, path={image.FileSystemPath}");
+                    _logger.LogService($"Get_Image_Bytes: file missing on disk for imageId={imageId}, path={resolvedPath}");
                     return ApiResponse.Fail<ImageBytesResult>(AppErrorCode.NotFound,
                         new List<string> { $"Image {imageId} file missing on disk" }, 404);
                 }
 
-                var bytes = await File.ReadAllBytesAsync(image.FileSystemPath, cancellationToken);
+                var bytes = await File.ReadAllBytesAsync(resolvedPath, cancellationToken);
                 var contentType = MapContentType(image.FileExtension);
 
                 var lastModified = image.DateUpdated
                                    ?? image.DateCreated
-                                   ?? File.GetLastWriteTimeUtc(image.FileSystemPath);
+                                   ?? File.GetLastWriteTimeUtc(resolvedPath);
 
                 // Ensure DateTimeKind.Utc so "R" format produces correct "GMT" timezone marker.
                 lastModified = lastModified.Kind switch
