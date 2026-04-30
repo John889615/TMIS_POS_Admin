@@ -1,8 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace POS_Common.ModelsDto.StockController.StockRequest
 {
@@ -10,15 +7,33 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
     {
         #region Properties
 
+        [Required]
         public string RefNumber { get; set; }
 
+        [Required]
         public int? FK_FromDebtorID { get; set; }
 
+        [Required]
         public int? FK_ToDebtorID { get; set; }
 
         public string Notes { get; set; }
 
+        [MinLength(1, ErrorMessage = "At least one line is required.")]
+        public List<Req_StockRequest_Add_Line> Lines { get; set; }
+
         public bool? IsSubmitted { get; set; }
         #endregion
+    }
+
+    public class Req_StockRequest_Add_Line
+    {
+        [Required]
+        public int? FK_ProductID { get; set; }
+
+        [Required]
+        [Range(typeof(decimal), "0.0001", "9999999999")]
+        public decimal? Quantity { get; set; }
+
+        public string Notes { get; set; }
     }
 }

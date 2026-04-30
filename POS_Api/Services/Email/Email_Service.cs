@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using POS_Api.Models.Email;
 using POS_Api.ServiceInterfaces.Email;
 using POS_Api.ServiceInterfaces.Logging;
+using System.Text;
 
 namespace POS_Api.Services.Email;
 
@@ -49,6 +50,85 @@ Last seen: {lastSeen}
 Hours since last sync: {since}
 
 The site has not contacted the central admin in over 2 hours. Investigate connectivity / FE service state.
+";
+        await SendAsync(email.To, subject, body);
+    }
+
+    public async Task Send_Stock_Request_Approval_Email(StockRequestApprovalEmail email)
+    {
+        if (email?.To == null || email.To.Count == 0) return;
+
+        var subject = $"[Stock Request] {email.RefNumber} awaiting approval";
+
+        var lineLines = new StringBuilder();
+        foreach (var line in email.Lines)
+        {
+            lineLines.Append("  - ").Append(line.ProductName)
+                     .Append(" x ").Append(line.Quantity?.ToString("0.####") ?? "?");
+            if (!string.IsNullOrWhiteSpace(line.Notes))
+                lineLines.Append("  (note: ").Append(line.Notes).Append(')');
+            lineLines.AppendLine();
+        }
+
+        var body = $@"A stock request needs your approval.
+
+Ref         : {email.RefNumber}
+From        : {email.FromDebtorName}
+To          : {email.ToDebtorName}
+Submitted by: {email.CreatedBy}
+Notes       : {(string.IsNullOrWhiteSpace(email.Notes) ? "(none)" : email.Notes)}
+
+Lines requested:
+{lineLines}
+Open the Stock Request approval page in the admin site to approve, partially approve, or decline.
+";
+        await SendAsync(email.To, subject, body);
+    }
+
+    public async Task Send_Stock_Request_Decided_Email(StockRequestDecidedEmail email)
+    {
+        if (email?.To == null || email.To.Count == 0) return;
+
+        var subjectTag = email.Outcome switch
+        {
+            "Approved"          => "Approved",
+            "PartiallyApproved" => "Partially Approved",
+            "Declined"          => "Declined",
+            _                   => email.Outcome
+        };
+
+        var subject = $"[Stock Request] {email.RefNumber} - {subjectTag}";
+
+        var lineLines = new StringBuilder();
+        foreach (var line in email.Lines)
+        {
+            var status = line.IsDeclined == true
+                ? "DECLINED"
+                : (line.ApprovedQuantity ?? 0) < (line.Quantity ?? 0)
+                    ? $"PARTIAL: approved {line.ApprovedQuantity?.ToString("0.####") ?? "0"} of {line.Quantity?.ToString("0.####")}"
+                    : $"approved {line.ApprovedQuantity?.ToString("0.####") ?? line.Quantity?.ToString("0.####")}";
+
+            lineLines.Append("  - ").Append(line.ProductName).Append("  [").Append(status).Append(']');
+            if (!string.IsNullOrWhiteSpace(line.ManagerNotes))
+                lineLines.Append("  (manager: ").Append(line.ManagerNotes).Append(')');
+            lineLines.AppendLine();
+        }
+
+        var nextStep = email.Outcome == "Declined"
+            ? "No order required."
+            : "Please raise the corresponding Purchase Order in Business Central using the approved quantities below.";
+
+        var body = $@"Stock request {email.RefNumber} has been {subjectTag.ToLower()}.
+
+Ref         : {email.RefNumber}
+From        : {email.FromDebtorName}
+To          : {email.ToDebtorName}
+Decided by  : {email.DecidedBy}
+Manager note: {(string.IsNullOrWhiteSpace(email.ManagerNotes) ? "(none)" : email.ManagerNotes)}
+
+Lines:
+{lineLines}
+{nextStep}
 ";
         await SendAsync(email.To, subject, body);
     }

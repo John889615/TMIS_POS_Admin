@@ -1512,311 +1512,247 @@ namespace POS_Webservice.Controllers
         //}
         //#endregion
 
-        //#region Stock Request
+        #region Stock Request
 
-        //[HttpPost("list/stock/requests")]
-        //public async Task<IActionResult> List_Stock_Requests_Async([FromBody] Req_StockRequest_List request)
-        //{
-        //    // ✅ Validate Request
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var errors = ModelState.Values
-        //            .SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage)
-        //            .ToList();
+        [HttpPost("list/stock/requests")]
+        public async Task<IActionResult> List_Stock_Requests_Async([FromBody] Req_StockRequest_List request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_StockRequest_List>(AppErrorCode.ValidationError, errors));
+            }
 
-        //        _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+            ApiResponse<List<Res_StockRequest_List>> result;
 
-        //        return BadRequest(ApiResponse.Fail<Req_StockRequest_List>(
-        //            AppErrorCode.ValidationError,
-        //            errors
-        //        ));
-        //    }
+            try
+            {
+                result = await _stockService.List_Stock_Requests(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<List<Res_StockRequest_List>>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
 
-        //    // ✅ Log Incoming Request
-        //    //_logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, ""));
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response"));
+                return StatusCode(500, ApiResponse.Fail<Res_StockRequest_List>(AppErrorCode.UnknownError, new List<string> { "response was null" }, 500));
+            }
 
-        //    ApiResponse<List<Res_StockRequest_List>> result;
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
 
-        //    try
-        //    {
-        //        result = await _stockService.List_Stock_Requests(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List succeeded", result.Data));
+            return Ok(result);
+        }
 
-        //        result = ApiResponse.Fail<List<Res_StockRequest_List>>(
-        //            AppErrorCode.ServerError,
-        //            new List<string> { ex.Message },
-        //            500
-        //        );
-        //    }
+        [HttpPost("add/stock/request")]
+        public async Task<IActionResult> Add_Stock_Request_Async([FromBody] Req_StockRequest_Add request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_StockRequest_Add>(AppErrorCode.ValidationError, errors));
+            }
 
-        //    if (result == null)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response"));
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
 
-        //        return StatusCode(500, ApiResponse.Fail<Res_StockRequest_List>(
-        //            AppErrorCode.UnknownError,
-        //            new List<string> { "response was null" },
-        //            500
-        //        ));
-        //    }
+            ApiResponse<object> result;
 
-        //    if (!result.Success)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List failed", result));
-        //        return StatusCode(result.StatusCode ?? 400, result);
-        //    }
+            try
+            {
+                result = await _stockService.Add_Stock_Request(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
 
-        //    _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List succeeded", result.Data));
-        //    return Ok(result);
-        //}
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from Stock_Service"));
+                return StatusCode(500, ApiResponse.Fail<object>(AppErrorCode.UnknownError, new List<string> { "Add response was null" }, 500));
+            }
 
-        //[HttpPost("add/stock/request")]
-        //public async Task<IActionResult> Add_Stock_Request_Async([FromBody] Req_StockRequest_Add request)
-        //{
-        //    // ✅ Validate Request
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var errors = ModelState.Values
-        //            .SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage)
-        //            .ToList();
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Add failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
 
-        //        _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Add succeeded", result.Data));
+            return Ok(result);
+        }
 
-        //        return BadRequest(ApiResponse.Fail<Req_StockRequest_Add>(
-        //            AppErrorCode.ValidationError,
-        //            errors
-        //        ));
-        //    }
+        [HttpPost("update/stock/request")]
+        public async Task<IActionResult> Update_Stock_Request_Async([FromBody] Req_StockRequest_Update request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_StockRequest_Update>(AppErrorCode.ValidationError, errors));
+            }
 
-        //    // ✅ Log Incoming Request
-        //    _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
 
-        //    ApiResponse<object> result;
+            ApiResponse<object> result;
 
-        //    try
-        //    {
-        //        result = await _stockService.Add_Stock_Request(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+            try
+            {
+                result = await _stockService.Update_Stock_Request(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
 
-        //        result = ApiResponse.Fail<object>(
-        //            AppErrorCode.ServerError,
-        //            new List<string> { ex.Message },
-        //            500
-        //        );
-        //    }
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from Stock_Service"));
+                return StatusCode(500, ApiResponse.Fail<object>(AppErrorCode.UnknownError, new List<string> { "Update response was null" }, 500));
+            }
 
-        //    if (result == null)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from _authService.Authenticate"));
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Update failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
 
-        //        return StatusCode(500, ApiResponse.Fail<object>(
-        //            AppErrorCode.UnknownError,
-        //            new List<string> { "Authentication response was null" },
-        //            500
-        //        ));
-        //    }
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Update succeeded", result.Data));
+            return Ok(result);
+        }
 
-        //    if (!result.Success)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication failed", result));
-        //        return StatusCode(result.StatusCode ?? 400, result);
-        //    }
+        [HttpPost("submit/stock/request")]
+        public async Task<IActionResult> Submit_Stock_Request_Async([FromBody] Req_StockRequest_Submit request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_StockRequest_Submit>(AppErrorCode.ValidationError, errors));
+            }
 
-        //    _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication succeeded", result.Data));
-        //    return Ok(result);
-        //}
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
 
-        //[HttpPost("update/stock/request")]
-        //public async Task<IActionResult> Update_Stock_Request_Async([FromBody] Req_StockRequest_Update request)
-        //{
-        //    // ✅ Validate Request
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var errors = ModelState.Values
-        //            .SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage)
-        //            .ToList();
+            ApiResponse<object> result;
 
-        //        _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+            try
+            {
+                result = await _stockService.Submit_Stock_Request(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
 
-        //        return BadRequest(ApiResponse.Fail<Req_StockRequest_Update>(
-        //            AppErrorCode.ValidationError,
-        //            errors
-        //        ));
-        //    }
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from Stock_Service"));
+                return StatusCode(500, ApiResponse.Fail<object>(AppErrorCode.UnknownError, new List<string> { "Submit response was null" }, 500));
+            }
 
-        //    // ✅ Log Incoming Request
-        //    _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Submit failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
 
-        //    ApiResponse<object> result;
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Submit succeeded", result.Data));
+            return Ok(result);
+        }
 
-        //    try
-        //    {
-        //        result = await _stockService.Update_Stock_Request(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+        [HttpPost("approve/stock/request")]
+        public async Task<IActionResult> Approve_Stock_Request_Async([FromBody] Req_StockRequest_Approve request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_StockRequest_Approve>(AppErrorCode.ValidationError, errors));
+            }
 
-        //        result = ApiResponse.Fail<object>(
-        //            AppErrorCode.ServerError,
-        //            new List<string> { ex.Message },
-        //            500
-        //        );
-        //    }
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
 
-        //    if (result == null)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from _authService.Authenticate"));
+            ApiResponse<object> result;
 
-        //        return StatusCode(500, ApiResponse.Fail<object>(
-        //            AppErrorCode.UnknownError,
-        //            new List<string> { "Authentication response was null" },
-        //            500
-        //        ));
-        //    }
+            try
+            {
+                result = await _stockService.Approve_Stock_Request(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
 
-        //    if (!result.Success)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication failed", result));
-        //        return StatusCode(result.StatusCode ?? 400, result);
-        //    }
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from Stock_Service"));
+                return StatusCode(500, ApiResponse.Fail<object>(AppErrorCode.UnknownError, new List<string> { "Approve response was null" }, 500));
+            }
 
-        //    _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication succeeded", result.Data));
-        //    return Ok(result);
-        //}
-        //#endregion
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Approve failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
 
-        //#region Stock Request Lines
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Approve succeeded", result.Data));
+            return Ok(result);
+        }
+        #endregion
 
-        //[HttpPost("list/stock/request/lines")]
-        //public async Task<IActionResult> List_Stock_Request_Lines_Async([FromBody] Req_StockRequestLine_List request)
-        //{
-        //    // ✅ Validate Request
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var errors = ModelState.Values
-        //            .SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage)
-        //            .ToList();
+        #region Stock Request Lines
 
-        //        _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+        [HttpPost("list/stock/request/lines")]
+        public async Task<IActionResult> List_Stock_Request_Lines_Async([FromBody] Req_StockRequestLine_List request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_StockRequestLine_List>(AppErrorCode.ValidationError, errors));
+            }
 
-        //        return BadRequest(ApiResponse.Fail<Req_StockRequestLine_List>(
-        //            AppErrorCode.ValidationError,
-        //            errors
-        //        ));
-        //    }
+            ApiResponse<List<Res_StockRequestLine_List>> result;
 
-        //    // ✅ Log Incoming Request
-        //    //_logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, ""));
+            try
+            {
+                result = await _stockService.List_Stock_Request_Lines(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<List<Res_StockRequestLine_List>>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
 
-        //    ApiResponse<List<Res_StockRequestLine_List>> result;
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response"));
+                return StatusCode(500, ApiResponse.Fail<Res_StockRequestLine_List>(AppErrorCode.UnknownError, new List<string> { "response was null" }, 500));
+            }
 
-        //    try
-        //    {
-        //        result = await _stockService.List_Stock_Request_Lines(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
 
-        //        result = ApiResponse.Fail<List<Res_StockRequestLine_List>>(
-        //            AppErrorCode.ServerError,
-        //            new List<string> { ex.Message },
-        //            500
-        //        );
-        //    }
-
-        //    if (result == null)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response"));
-
-        //        return StatusCode(500, ApiResponse.Fail<Res_StockRequestLine_List>(
-        //            AppErrorCode.UnknownError,
-        //            new List<string> { "response was null" },
-        //            500
-        //        ));
-        //    }
-
-        //    if (!result.Success)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List failed", result));
-        //        return StatusCode(result.StatusCode ?? 400, result);
-        //    }
-
-        //    _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List succeeded", result.Data));
-        //    return Ok(result);
-        //}
-
-        //[HttpPost("add/stock/request/line")]
-        //public async Task<IActionResult> Add_Stock_Request_Line_Async([FromBody] Req_StockRequestLine_Add request)
-        //{
-        //    // ✅ Validate Request
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var errors = ModelState.Values
-        //            .SelectMany(v => v.Errors)
-        //            .Select(e => e.ErrorMessage)
-        //            .ToList();
-
-        //        _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
-
-        //        return BadRequest(ApiResponse.Fail<Req_StockRequestLine_Add>(
-        //            AppErrorCode.ValidationError,
-        //            errors
-        //        ));
-        //    }
-
-        //    // ✅ Log Incoming Request
-        //    _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
-
-        //    ApiResponse<object> result;
-
-        //    try
-        //    {
-        //        result = await _stockService.Add_Stock_Request_Line(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
-
-        //        result = ApiResponse.Fail<object>(
-        //            AppErrorCode.ServerError,
-        //            new List<string> { ex.Message },
-        //            500
-        //        );
-        //    }
-
-        //    if (result == null)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from _authService.Authenticate"));
-
-        //        return StatusCode(500, ApiResponse.Fail<object>(
-        //            AppErrorCode.UnknownError,
-        //            new List<string> { "Authentication response was null" },
-        //            500
-        //        ));
-        //    }
-
-        //    if (!result.Success)
-        //    {
-        //        _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication failed", result));
-        //        return StatusCode(result.StatusCode ?? 400, result);
-        //    }
-
-        //    _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication succeeded", result.Data));
-        //    return Ok(result);
-        //}
-        //#endregion
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "List succeeded", result.Data));
+            return Ok(result);
+        }
+        #endregion
 
         //#region Stock Transfer
 

@@ -1,4 +1,4 @@
-﻿using POS_Common.Models;
+using POS_Common.Models;
 using POS_Common.ModelsDto.StockController.CostCenterProduct;
 using POS_Common.ModelsDto.StockController.DebtorProduct;
 using POS_Common.ModelsDto.StockController.DebtorProductPrice;
@@ -41,28 +41,13 @@ namespace POS_Api.ServiceInterfaces.Stock
         Task<ApiResponse<object>> Add_Supplier_Product(Req_SupplierProduct_Add request);
         Task<ApiResponse<object>> Update_Supplier_Product(Req_SupplierProduct_Update request);
 
-        //Task<ApiResponse<List<Res_PurchaseOrder_List>>> List_Purchase_Orders(Req_PurchaseOrder_List request);
-        //Task<ApiResponse<object>> Add_Purchase_Order(Req_PurchaseOrder_Add request);
-        //Task<ApiResponse<object>> Update_Purchase_Order(Req_PurchaseOrder_Update request);
+        // ----- Stock Requests -----
+        Task<ApiResponse<List<Res_StockRequest_List>>> List_Stock_Requests(Req_StockRequest_List request);
+        Task<ApiResponse<object>> Add_Stock_Request(Req_StockRequest_Add request);
+        Task<ApiResponse<object>> Update_Stock_Request(Req_StockRequest_Update request);
+        Task<ApiResponse<object>> Submit_Stock_Request(Req_StockRequest_Submit request);
+        Task<ApiResponse<object>> Approve_Stock_Request(Req_StockRequest_Approve request);
 
-        //Task<ApiResponse<List<Res_PurchaseOrderLine_List>>> List_Purchase_Order_Lines(Req_PurchaseOrderLine_List request);
-        //Task<ApiResponse<object>> Add_Purchase_Order_Line(Req_PurchaseOrderLine_Add request);
-
-        //Task<ApiResponse<List<Res_SubmittedPurchaseOrder_List>>> List_Submitted_Purchase_Orders();
-        //Task<ApiResponse<object>> Update_Purchase_Order_Status(Req_PurchaseOrderStatus_Update request);
-
-        //Task<ApiResponse<List<Res_SubmittedPurchaseOrderLines_List>>> List_Submitted_Purchase_Order_Lines(Req_SubmittedPurchaseOrderLines_List request);
-        //Task<ApiResponse<object>> Update_Purchase_Order_Line_Status(Req_PurchaseOrderLineStatus_Update request);
-
-        //Task<ApiResponse<List<Res_StockRequest_List>>> List_Stock_Requests(Req_StockRequest_List request);
-        //Task<ApiResponse<object>> Add_Stock_Request(Req_StockRequest_Add request);
-        //Task<ApiResponse<object>> Update_Stock_Request(Req_StockRequest_Update request);
-
-        //Task<ApiResponse<List<Res_StockRequestLine_List>>> List_Stock_Request_Lines(Req_StockRequestLine_List request);
-        //Task<ApiResponse<object>> Add_Stock_Request_Line(Req_StockRequestLine_Add request);
-
-        //Task<ApiResponse<List<Res_StockTransfer_List>>> List_Stock_Transfers(Req_StockTransfer_List request);
-        //Task<ApiResponse<object>> Add_Stock_Transfer(Req_StockTransfer_Add request);
-        //Task<ApiResponse<object>> Update_Stock_Transfer(Req_StockTransfer_Update request);
+        Task<ApiResponse<List<Res_StockRequestLine_List>>> List_Stock_Request_Lines(Req_StockRequestLine_List request);
     }
 }
