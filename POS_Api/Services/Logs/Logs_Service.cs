@@ -13,6 +13,7 @@ using TMIS_Common.Models;
 
 using POS_Common.Models.Logs.POS_Logs;
 using POS_Api.ServicesInterfaces;
+using POS_Api.ServiceInterfaces.Logs;
 
 namespace POS_Api.Services
 {
