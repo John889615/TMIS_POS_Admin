@@ -50,6 +50,7 @@ namespace POS_Api.ServiceInterfaces.Menu
 
         Task<ApiResponse<object>> Add_Debtor_Menu_Printer(Req_DebtorMenuPrinter_Add request);
         Task<ApiResponse<object>> Update_Debtor_Menu_Printer(Req_DebtorMenuPrinter_Update request);
+        Task<ApiResponse<object>> Delete_Debtor_Menu_Printer(Req_DebtorMenuPrinter_Delete request);
 
         Task<ApiResponse<List<Res_DebtorMenuPrinter_List>>> List_Debtor_Menu_Printers(Req_DebtorMenuPrinter_List request);
 

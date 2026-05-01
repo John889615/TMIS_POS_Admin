@@ -604,6 +604,57 @@ namespace POS_Api.Services.Debtors
             }
         }
 
+        public static async Task<CostCenterPrinter> POS_CostCenterPrinters_Delete(CostCenterPrinter item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_CostCenterPrinters_Delete(item, sqlConn);
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom delete code");
+                return default;
+            }
+        }
+
+        public static async Task<CostCenterPrinter> POS_CostCenterPrinters_Delete(CostCenterPrinter item, SqlConnection sqlConn)
+        {
+            try
+            {
+                CostCenterPrinter resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                        sqlConn,
+                        "POS_CostCenterPrinters_delete",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@CostCenterPrinterID", Value = item.CostCenterPrinterID }))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<CostCenterPrinter>(Debtors_Translator.Translate_CostCenterPrinter);
+                        Log.Information("CostCenterPrinter deleted: CostCenterPrinterID={CostCenterPrinterID}", resultItem.CostCenterPrinterID);
+
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Information("CostCenterPrinter delete returned no rows (CostCenterPrinterID={CostCenterPrinterID}).", item.CostCenterPrinterID);
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom delete code");
+                return default;
+            }
+        }
+
         #endregion
         #endregion
     }

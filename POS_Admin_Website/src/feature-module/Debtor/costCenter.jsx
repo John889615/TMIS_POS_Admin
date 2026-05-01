@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import Swal from "sweetalert2";
 import {
     getAllCostCenter,
     getAllCostCenterTypes,
@@ -7,6 +8,7 @@ import {
     getCostCenterPrinters,
     newCostCenterPrinter,
     updateCostCenterPrinter,
+    deleteCostCenterPrinter,
     } from "../../services/debtors/costCenter";
     import { getAllDebtors } from "../../services/debtors/debtors";
     import { getAllStatus } from "../../services/entityData/status";
@@ -294,6 +296,48 @@ const tabSlipTypeOptions = useMemo(() => {
         }
     };
 
+    const handleDeletePrinter = async (row) => {
+        const result = await Swal.fire({
+            title: "Delete printer link?",
+            text: "This cost center printer link will be removed.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#d33",
+        });
+        if (!result.isConfirmed) return;
+
+        try {
+            const response = await deleteCostCenterPrinter({
+                CostCenterPrinterID: Number(row?.CostCenterPrinterID),
+            });
+
+            if (response?.Success === false) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Delete failed",
+                    text:
+                        response?.Messages?.[0] ||
+                        response?.Errors?.[0] ||
+                        "Could not delete cost center printer.",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            await loadCostCenterPrinters(selectedCostCenter.CostCenterID);
+        } catch (err) {
+            console.error("Failed to delete cost center printer:", err);
+            await Swal.fire({
+                icon: "error",
+                title: "Delete failed",
+                text: "Unexpected error while deleting.",
+                confirmButtonText: "OK",
+            });
+        }
+    };
+
     const getPrinterName = (row) => {
     const match = printerMasterList.find(
         (x) =>
@@ -515,6 +559,14 @@ const getTabSlipCode = (row) => {
                             title="Edit Printer Link"
                         >
                             <i className="feather-edit"></i>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleDeletePrinter(item)}
+                            className="btn btn-sm btn-danger"
+                            title="Delete Printer Link"
+                        >
+                            <i className="feather-trash-2"></i>
                         </button>
                     </div>
                 </td>

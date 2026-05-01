@@ -41,6 +41,7 @@ namespace POS_Api.ServiceInterfaces.Debtors
         Task<ApiResponse<List<Res_CostCenterPrinter_List>>> List_CostCenter_Printers(Req_CostCenterPrinter_List request);
         Task<ApiResponse<object>> Add_CostCenter_Printer(Req_CostCenterPrinter_Add request);
         Task<ApiResponse<object>> Update_CostCenter_Printer(Req_CostCenterPrinter_Update request);
+        Task<ApiResponse<object>> Delete_CostCenter_Printer(Req_CostCenterPrinter_Delete request);
 
         Task<ApiResponse<CostCenterPrinter>> Switch_CostCenter_Printer_Link(Req_CostCenterPrinter_Switch request);
     }

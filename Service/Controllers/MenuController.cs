@@ -1496,6 +1496,66 @@ namespace POS_Webservice.Controllers
             _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication succeeded", result.Data));
             return Ok(result);
         }
+
+        [HttpPost("delete/debtor/menu/printer")]
+        public async Task<IActionResult> Delete_Debtor_Menu_Printer_Async([FromBody] Req_DebtorMenuPrinter_Delete request)
+        {
+            // ✅ Validate Request
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+
+                return BadRequest(ApiResponse.Fail<Req_DebtorMenuPrinter_Delete>(
+                    AppErrorCode.ValidationError,
+                    errors
+                ));
+            }
+
+            // ✅ Log Incoming Request
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
+
+            ApiResponse<object> result;
+
+            try
+            {
+                result = await _menuService.Delete_Debtor_Menu_Printer(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+
+                result = ApiResponse.Fail<object>(
+                    AppErrorCode.ServerError,
+                    new List<string> { ex.Message },
+                    500
+                );
+            }
+
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response"));
+
+                return StatusCode(500, ApiResponse.Fail<object>(
+                    AppErrorCode.UnknownError,
+                    new List<string> { "response was null" },
+                    500
+                ));
+            }
+
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Delete failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Delete succeeded", result.Data));
+            return Ok(result);
+        }
         #endregion
 
         #endregion

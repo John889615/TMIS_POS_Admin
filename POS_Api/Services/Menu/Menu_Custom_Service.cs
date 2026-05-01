@@ -2,6 +2,7 @@
 using POS_Api.Translators;
 using POS_Common.Models.Menu.POS_DebtorMenuItemProducts;
 using POS_Common.Models.Menu.POS_DebtorMenuItems;
+using POS_Common.Models.Menu.POS_DebtorMenuPrinters;
 using POS_Common.Models.Menu.POS_DebtorMenus;
 using POS_Common.Models.Menu.POS_MenuItemProducts;
 using POS_Common.Models.Menu.POS_MenuItems;
@@ -1237,6 +1238,57 @@ namespace POS_Api.Services.Menu
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DebtorMenuPrinter> POS_DebtorMenuPrinters_Delete(DebtorMenuPrinter item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DebtorMenuPrinters_Delete(item, sqlConn);
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom delete code");
+                return default;
+            }
+        }
+
+        public static async Task<DebtorMenuPrinter> POS_DebtorMenuPrinters_Delete(DebtorMenuPrinter item, SqlConnection sqlConn)
+        {
+            try
+            {
+                DebtorMenuPrinter resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                        sqlConn,
+                        "POS_DebtorMenuPrinters_delete",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DebtorMenuPrinterID", Value = item.DebtorMenuPrinterID }))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<DebtorMenuPrinter>(Menu_Translator.Translate_DebtorMenuPrinter);
+                        Log.Information("DebtorMenuPrinter deleted: DebtorMenuPrinterID={DebtorMenuPrinterID}", resultItem.DebtorMenuPrinterID);
+
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Information("DebtorMenuPrinter delete returned no rows (DebtorMenuPrinterID={DebtorMenuPrinterID}).", item.DebtorMenuPrinterID);
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom delete code");
                 return default;
             }
         }

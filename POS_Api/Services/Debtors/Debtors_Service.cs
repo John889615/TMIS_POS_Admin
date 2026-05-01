@@ -899,6 +899,44 @@ namespace POS_Api.Services
             }
         }
 
+        public async Task<ApiResponse<object>> Delete_CostCenter_Printer(Req_CostCenterPrinter_Delete request)
+        {
+            try
+            {
+                _logger.LogService("Starting Cost Center Printer Delete", request);
+
+                var existingLink = await POS_CostCenterPrinters_Select_Single(new CostCenterPrinter()
+                {
+                    CostCenterPrinterID = request.CostCenterPrinterID
+                }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+
+                if (existingLink == null)
+                {
+                    return ApiResponse.Fail<object>(
+                        AppErrorCode.ValidationError,
+                        new List<string> { "Cost center printer link not found." },
+                        404
+                    );
+                }
+
+                await POS_CostCenterPrinters_Delete(new CostCenterPrinter()
+                {
+                    CostCenterPrinterID = request.CostCenterPrinterID
+                }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+
+                return ApiResponse.Success(new object());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Cost Center Printer delete", ex);
+                return ApiResponse.Fail<object>(
+                    AppErrorCode.ServerError,
+                    new List<string> { ex.Message },
+                    500
+                );
+            }
+        }
+
         public async Task<ApiResponse<CostCenterPrinter>> Switch_CostCenter_Printer_Link(Req_CostCenterPrinter_Switch request)
         {
             try

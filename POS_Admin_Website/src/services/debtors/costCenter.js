@@ -93,3 +93,13 @@ export const toggleCostCenterPrinter = async (data) => {
         return error.response?.data;
     }
 };
+
+export const deleteCostCenterPrinter = async (data) => {
+    try {
+        const response = await api.post("/Debtor/delete/cost/center/printer", data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data;
+    }
+};

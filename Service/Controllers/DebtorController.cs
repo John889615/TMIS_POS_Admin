@@ -957,6 +957,64 @@ namespace POS_Webservice.Controllers
             return Ok(result);
         }
 
+        [HttpPost("delete/cost/center/printer")]
+        public async Task<IActionResult> Delete_CostCenter_Printer_Async([FromBody] Req_CostCenterPrinter_Delete request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+
+                return BadRequest(ApiResponse.Fail<Req_CostCenterPrinter_Delete>(
+                    AppErrorCode.ValidationError,
+                    errors
+                ));
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
+
+            ApiResponse<object> result;
+
+            try
+            {
+                result = await _debtorsService.Delete_CostCenter_Printer(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+
+                result = ApiResponse.Fail<object>(
+                    AppErrorCode.ServerError,
+                    new List<string> { ex.Message },
+                    500
+                );
+            }
+
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response"));
+
+                return StatusCode(500, ApiResponse.Fail<object>(
+                    AppErrorCode.UnknownError,
+                    new List<string> { "response was null" },
+                    500
+                ));
+            }
+
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Delete failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Delete succeeded", result.Data));
+            return Ok(result);
+        }
+
         [HttpPost("cost/center/printer/toggle")]
         public async Task<IActionResult> Switch_CostCenter_Printer_Link_Async([FromBody] Req_CostCenterPrinter_Switch request)
         {

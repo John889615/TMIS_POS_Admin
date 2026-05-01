@@ -10,6 +10,7 @@ import {
   addDebtorMenuPrinter,
   updateDebtorMenuPrinter,
   getDebtorMenuPrinters,
+  deleteDebtorMenuPrinter,
 } from "../../services/menu/menuService";
 import { getAllSlipPrinter, getAllSlipTypes } from "../../services/entityData/slipPrinter";
 import { getAllDebtors } from "../../services/debtors/debtors";
@@ -506,6 +507,48 @@ const handleOpenEditPrinterModal = (row) => {
   }
 };
 
+  const handleDeleteMenuPrinter = async (row) => {
+    const result = await Swal.fire({
+      title: "Delete printer link?",
+      text: "This menu printer link will be removed.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+    });
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await deleteDebtorMenuPrinter({
+        DebtorMenuPrinterID: Number(row?.DebtorMenuPrinterID),
+      });
+
+      if (response?.Success === false) {
+        await Swal.fire({
+          icon: "error",
+          title: "Delete failed",
+          text:
+            response?.Messages?.[0] ||
+            response?.Errors?.[0] ||
+            "Could not delete menu printer.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      await loadMenuPrinters(selectedMenu);
+    } catch (err) {
+      console.error("Failed to delete menu printer:", err);
+      await Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: err?.message || "Unexpected error while deleting.",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
   return (
     <div className="page-wrapper">
       <div className="content">
@@ -733,6 +776,14 @@ const handleOpenEditPrinterModal = (row) => {
             title="Edit Menu Printer"
           >
             <i className="feather-edit"></i>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDeleteMenuPrinter(item)}
+            className="btn btn-sm btn-danger"
+            title="Delete Menu Printer"
+          >
+            <i className="feather-trash-2"></i>
           </button>
         </td>
       </tr>

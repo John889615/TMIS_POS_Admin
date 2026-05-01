@@ -1519,6 +1519,42 @@ namespace POS_Api.Services
             }
         }
 
+        public async Task<ApiResponse<object>> Delete_Debtor_Menu_Printer(Req_DebtorMenuPrinter_Delete request)
+        {
+            try
+            {
+                _logger.LogService("Starting Debtor Menu Printer Delete", request);
+
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(_configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()))))
+                {
+                    await sqlConn.OpenAsync();
+
+                    var debtorMenuPrinterResponse = await POS_DebtorMenuPrinters_Select_Single(new DebtorMenuPrinter()
+                    {
+                        DebtorMenuPrinterID = request.DebtorMenuPrinterID
+                    }, sqlConn);
+
+                    if (debtorMenuPrinterResponse == null)
+                    {
+                        _logger.LogService("Debtor Menu Printer not found", request.DebtorMenuPrinterID);
+                        return ApiResponse.Fail<object>(AppErrorCode.ValidationError, new List<string> { "Debtor menu printer link not found." }, 404);
+                    }
+
+                    var debtorMenuPrinterDelete = await POS_DebtorMenuPrinters_Delete(new DebtorMenuPrinter()
+                    {
+                        DebtorMenuPrinterID = request.DebtorMenuPrinterID
+                    }, sqlConn);
+                }
+
+                return ApiResponse.Success(new object());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Debtor Menu Printer delete", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
+
         public async Task<ApiResponse<List<Res_DebtorMenuPrinter_List>>> List_Debtor_Menu_Printers(Req_DebtorMenuPrinter_List request)
         {
             try

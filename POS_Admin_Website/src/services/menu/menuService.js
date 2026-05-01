@@ -160,3 +160,13 @@ export const getDebtorMenuPrinters = async (debtorMenuId) => {
         return [];
     }
 };
+
+export const deleteDebtorMenuPrinter = async (data) => {
+    try {
+        const response = await api.post('/Menu/delete/debtor/menu/printer', data);
+        console.log("response", response.data);
+        return response.data;
+    } catch (error) {
+        return error.response?.data;
+    }
+};
