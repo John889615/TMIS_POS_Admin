@@ -140,6 +140,7 @@ namespace POS_Api.Translators
             ManagerNotes = row["ManagerNotes"].GetType() != typeof(DBNull) ? (string)row["ManagerNotes"] : null,
             IsDeclined = (bool?)row["IsDeclined"],
             ApprovedQuantity = row["ApprovedQuantity"].GetType() != typeof(DBNull) ? (decimal?)row["ApprovedQuantity"] : null,
+            FK_UnitID = row["FK_UnitID"].GetType() != typeof(DBNull) ? (int?)row["FK_UnitID"] : null,
          };
       }
 

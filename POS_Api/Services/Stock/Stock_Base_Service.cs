@@ -1575,7 +1575,7 @@ namespace POS_Api.Services.Stock
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequestLine>(Stock_Translator.Translate_StockRequestLine);
-                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity);
+                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}, FK_UnitID={FK_UnitID}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity, resultItem.FK_UnitID);
                         return resultItem;
                     }
                     else
@@ -1645,12 +1645,13 @@ namespace POS_Api.Services.Stock
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Notes", Value = item.Notes }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ManagerNotes", Value = item.ManagerNotes }
                         , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsDeclined", Value = item.IsDeclined }
-                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@ApprovedQuantity", Value = item.ApprovedQuantity }                ))
+                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@ApprovedQuantity", Value = item.ApprovedQuantity }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UnitID", Value = item.FK_UnitID }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequestLine>(Stock_Translator.Translate_StockRequestLine);
-                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity);
+                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}, FK_UnitID={FK_UnitID}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity, resultItem.FK_UnitID);
                         return resultItem;
                     }
                     else
@@ -1790,12 +1791,13 @@ namespace POS_Api.Services.Stock
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Notes", Value = item.Notes }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ManagerNotes", Value = item.ManagerNotes }
                         , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsDeclined", Value = item.IsDeclined }
-                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@ApprovedQuantity", Value = item.ApprovedQuantity }                ))
+                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@ApprovedQuantity", Value = item.ApprovedQuantity }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UnitID", Value = item.FK_UnitID }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequestLine>(Stock_Translator.Translate_StockRequestLine);
-                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity);
+                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}, FK_UnitID={FK_UnitID}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity, resultItem.FK_UnitID);
                         return resultItem;
                     }
                     else

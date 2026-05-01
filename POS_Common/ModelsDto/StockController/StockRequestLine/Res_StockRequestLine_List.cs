@@ -12,6 +12,12 @@ namespace POS_Common.ModelsDto.StockController.StockRequestLine
 
         public string ProductName { get; set; }
 
+        public int? FK_UnitID { get; set; }
+
+        public string Unit { get; set; }
+
+        public string Symbol { get; set; }
+
         public decimal? Quantity { get; set; }
 
         public string Notes { get; set; }

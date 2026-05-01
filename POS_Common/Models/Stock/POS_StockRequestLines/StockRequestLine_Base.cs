@@ -25,6 +25,8 @@ namespace POS_Common.Models.Stock.POS_StockRequestLines
       public bool? IsDeclined { get; set; }
 
       public decimal? ApprovedQuantity { get; set; }
+
+      public int? FK_UnitID { get; set; }
        #endregion
   }
 }

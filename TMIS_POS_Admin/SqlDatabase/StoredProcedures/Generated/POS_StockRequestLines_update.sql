@@ -14,7 +14,8 @@ CREATE PROCEDURE dbo.POS_StockRequestLines_update
     @Notes VARCHAR(255) = NULL,
     @ManagerNotes VARCHAR(255) = NULL,
     @IsDeclined BIT,
-    @ApprovedQuantity DECIMAL (18, 4) = NULL
+    @ApprovedQuantity DECIMAL (18, 4) = NULL,
+    @FK_UnitID INT = NULL
 AS
 BEGIN
     UPDATE POS_StockRequestLines
@@ -24,7 +25,8 @@ BEGIN
     Notes = @Notes,
     ManagerNotes = @ManagerNotes,
     IsDeclined = @IsDeclined,
-    ApprovedQuantity = @ApprovedQuantity
+    ApprovedQuantity = @ApprovedQuantity,
+    FK_UnitID = @FK_UnitID
     WHERE StockRequestLineID = @StockRequestLineID;
 
     SELECT *

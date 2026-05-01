@@ -1,26 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { getAllStockRequest, newStockRequest, updateStockRequest } from "../../services/stock/stockRequestService";
+import {
+    getAllStockRequest,
+    newStockRequest,
+    updateStockRequest,
+    submitStockRequest,
+    approveStockRequest,
+} from "../../services/stock/stockRequestService";
+import { getAllStockRequestLine } from "../../services/stock/stockRequestLineService";
+import { getAllProducts } from "../../services/product/product";
+import { getAllUnits } from "../../services/product/units";
 
 
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
     PlusCircle,
+    Send,
+    Check,
 } from "react-feather";
 import StockRequestForm from "../../core/modals/stocks/stockRequestFormModel";
+import StockRequestApprovalForm from "../../core/modals/stocks/stockRequestApprovalFormModel";
 import { useSelector } from 'react-redux';
 
 
 
 const StockRequestPage = () => {
     const [listData, setListData] = useState([]);
+    const [productList, setProductList] = useState([]);
+    const [unitList, setUnitList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [showModel, setModelShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+    const [showApprovalModel, setApprovalModelShow] = useState(false);
+    const [approvalData, setApprovalData] = useState(null);
+    const [approvalLines, setApprovalLines] = useState([]);
     const debtorId = useSelector((state) => state.selectedDebtorStore);
 
     useEffect(() => {
         fetchStockRequest();
+        fetchProducts();
+        fetchUnits();
     }, [debtorId]);
 
     const fetchStockRequest = async () => {
@@ -28,7 +47,25 @@ const StockRequestPage = () => {
             const data = await getAllStockRequest(debtorId == null ? 1 : debtorId);
             setListData(data);
         } catch (err) {
-            console.error("Failed to load addresses:", err.message);
+            console.error("Failed to load stock requests:", err.message);
+        }
+    }
+
+    const fetchProducts = async () => {
+        try {
+            const data = await getAllProducts();
+            setProductList(data);
+        } catch (err) {
+            console.error("Failed to load products:", err.message);
+        }
+    }
+
+    const fetchUnits = async () => {
+        try {
+            const data = await getAllUnits();
+            setUnitList(data);
+        } catch (err) {
+            console.error("Failed to load units:", err.message);
         }
     }
 
@@ -48,33 +85,72 @@ const StockRequestPage = () => {
 
     const handleClose = () => setModelShow(false);
     const handleAddProduct = async (data) => {
-        console.log("Data : ", data);
         try {
+            let response;
             if (data.POS_StockRequestID) {
-                await updateStockRequest(data);
+                response = await updateStockRequest(data);
             }
             else {
-                const response = await newStockRequest(data);
-
-                // Check if API responded with success = false
-                if (!response.Success) {
-                    // Optional: Show toast, alert, or set error state
-                    console.warn("API Error:", response.Messages?.[0] || "Unknown error");
-                    alert(response.Messages?.[0] || "Something went wrong.");
-                    return; // Stop further execution
-                }
+                response = await newStockRequest(data);
             }
+
+            if (response && response.Success === false) {
+                alert(response.Messages?.[0] || "Something went wrong.");
+                return;
+            }
+
             await fetchStockRequest();
             setModelShow(false);
         } catch (err) {
-            console.error("Error creating user:", err.message);
+            console.error("Error saving stock request:", err.message);
         }
     };
 
-    const handleEditProduct = (record) => {
+    const handleEditRecord = (record) => {
         setSelectedData(record);
         setModelShow(true);
     };
+
+    const handleSubmitDraft = async (record) => {
+        try {
+            const response = await submitStockRequest({ POS_StockRequestID: record.POS_StockRequestID });
+            if (response && response.Success === false) {
+                alert(response.Messages?.[0] || "Something went wrong.");
+                return;
+            }
+            await fetchStockRequest();
+        } catch (err) {
+            console.error("Error submitting stock request:", err.message);
+        }
+    };
+
+    const handleApprove = async (record) => {
+        try {
+            const lines = await getAllStockRequestLine(record.POS_StockRequestID);
+            setApprovalData(record);
+            setApprovalLines(lines || []);
+            setApprovalModelShow(true);
+        } catch (err) {
+            console.error("Failed to load lines for approval:", err.message);
+        }
+    };
+
+    const handleApprovalSubmit = async (data) => {
+        try {
+            const response = await approveStockRequest(data);
+            if (response && response.Success === false) {
+                alert(response.Messages?.[0] || "Something went wrong.");
+                return;
+            }
+            setApprovalModelShow(false);
+            await fetchStockRequest();
+        } catch (err) {
+            console.error("Error approving stock request:", err.message);
+        }
+    };
+
+    const isDraft = (item) => (item.OrderStatus || '').toLowerCase() === 'draft';
+    const isPending = (item) => (item.OrderStatus || '').toLowerCase() === 'pending';
 
     return (
         <div className="page-wrapper">
@@ -137,11 +213,30 @@ const StockRequestPage = () => {
                                                 <td>{item.Notes || "N/A"}</td>
                                                 <td>{item.ManagerNotes || "N/A"}</td>
                                                 <td>
-                                                    <button type='button'
-                                                        onClick={() => handleEditProduct(item)}
-                                                        className="btn btn-sm btn-primary me-2">
-                                                        <i className="feather-edit"></i>
-                                                    </button>
+                                                    {isDraft(item) && (
+                                                        <>
+                                                            <button type='button'
+                                                                onClick={() => handleEditRecord(item)}
+                                                                title="Edit"
+                                                                className="btn btn-sm btn-primary me-2">
+                                                                <i className="feather-edit"></i>
+                                                            </button>
+                                                            <button type='button'
+                                                                onClick={() => handleSubmitDraft(item)}
+                                                                title="Submit for approval"
+                                                                className="btn btn-sm btn-info me-2">
+                                                                <Send size={14} />
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    {isPending(item) && (
+                                                        <button type='button'
+                                                            onClick={() => handleApprove(item)}
+                                                            title="Approve"
+                                                            className="btn btn-sm btn-success me-2">
+                                                            <Check size={14} />
+                                                        </button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))
@@ -163,6 +258,15 @@ const StockRequestPage = () => {
                 showModel={showModel}
                 handleClose={handleClose}
                 data={selectedData}
+                productList={productList}
+                unitList={unitList}
+            />
+            <StockRequestApprovalForm
+                onSubmit={handleApprovalSubmit}
+                showModel={showApprovalModel}
+                handleClose={() => setApprovalModelShow(false)}
+                data={approvalData}
+                lines={approvalLines}
             />
         </div>
     );

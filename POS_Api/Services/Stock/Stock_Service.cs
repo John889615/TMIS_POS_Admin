@@ -1567,14 +1567,21 @@ namespace POS_Api.Services
 
                     foreach (var line in request.Lines)
                     {
-                        await POS_StockRequestLines_Insert(new StockRequestLine()
+                        var insertedLine = await POS_StockRequestLines_Insert(new StockRequestLine()
                         {
                             FK_StockRequestID = newId,
                             FK_ProductID      = line.FK_ProductID,
+                            FK_UnitID         = line.FK_UnitID,
                             Quantity          = line.Quantity,
                             Notes             = line.Notes,
                             IsDeclined        = false
                         }, sqlConn);
+
+                        if (insertedLine?.StockRequestLineID == null)
+                        {
+                            _logger.LogService("Failed to insert Stock Request line", line);
+                            return ApiResponse.Fail<object>(AppErrorCode.DatabaseError, new List<string> { "Failed to create Stock Request lines." }, 500);
+                        }
                     }
 
                     scope.Complete();
@@ -1813,6 +1820,9 @@ namespace POS_Api.Services
                             FK_StockRequestID      = l.FK_StockRequestID,
                             FK_ProductID           = l.FK_ProductID,
                             ProductName            = l.ProductName,
+                            FK_UnitID              = l.FK_UnitID,
+                            Unit                   = l.Unit,
+                            Symbol                 = l.Symbol,
                             Quantity               = l.Quantity,
                             Notes                  = l.Notes,
                             ManagerNotes           = l.ManagerNotes,
