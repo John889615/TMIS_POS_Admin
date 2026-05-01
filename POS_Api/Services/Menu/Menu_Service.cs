@@ -1544,6 +1544,21 @@ namespace POS_Api.Services
                     {
                         DebtorMenuPrinterID = request.DebtorMenuPrinterID
                     }, sqlConn);
+
+                    var verifyLink = await POS_DebtorMenuPrinters_Select_Single(new DebtorMenuPrinter()
+                    {
+                        DebtorMenuPrinterID = request.DebtorMenuPrinterID
+                    }, sqlConn);
+
+                    if (verifyLink != null)
+                    {
+                        _logger.LogService("Debtor Menu Printer delete did not remove the row", request.DebtorMenuPrinterID);
+                        return ApiResponse.Fail<object>(
+                            AppErrorCode.ServerError,
+                            new List<string> { "Delete did not remove the debtor menu printer link. Verify the POS_DebtorMenuPrinters_delete stored procedure exists and runs without errors." },
+                            500
+                        );
+                    }
                 }
 
                 return ApiResponse.Success(new object());

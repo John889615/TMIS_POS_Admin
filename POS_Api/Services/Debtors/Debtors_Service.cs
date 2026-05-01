@@ -905,10 +905,12 @@ namespace POS_Api.Services
             {
                 _logger.LogService("Starting Cost Center Printer Delete", request);
 
+                var connectionString = _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()));
+
                 var existingLink = await POS_CostCenterPrinters_Select_Single(new CostCenterPrinter()
                 {
                     CostCenterPrinterID = request.CostCenterPrinterID
-                }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+                }, connectionString);
 
                 if (existingLink == null)
                 {
@@ -922,7 +924,22 @@ namespace POS_Api.Services
                 await POS_CostCenterPrinters_Delete(new CostCenterPrinter()
                 {
                     CostCenterPrinterID = request.CostCenterPrinterID
-                }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+                }, connectionString);
+
+                var verifyLink = await POS_CostCenterPrinters_Select_Single(new CostCenterPrinter()
+                {
+                    CostCenterPrinterID = request.CostCenterPrinterID
+                }, connectionString);
+
+                if (verifyLink != null)
+                {
+                    _logger.LogService("Cost Center Printer delete did not remove the row", request.CostCenterPrinterID);
+                    return ApiResponse.Fail<object>(
+                        AppErrorCode.ServerError,
+                        new List<string> { "Delete did not remove the cost center printer link. Verify the POS_CostCenterPrinters_delete stored procedure exists and runs without errors." },
+                        500
+                    );
+                }
 
                 return ApiResponse.Success(new object());
             }
