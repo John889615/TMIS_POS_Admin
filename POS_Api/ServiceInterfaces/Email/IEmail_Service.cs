@@ -6,4 +6,6 @@ public interface IEmail_Service
 {
     Task Send_Sync_Failure_Email(SyncFailureEmail email);
     Task Send_Site_Silent_Email(SiteSilentEmail email);
+    Task Send_Stock_Request_Approval_Email(StockRequestApprovalEmail email);
+    Task Send_Stock_Request_Decided_Email(StockRequestDecidedEmail email);
 }

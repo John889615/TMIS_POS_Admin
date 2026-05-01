@@ -50,6 +50,10 @@ using POS_Common.ModelsDto.StockController.PriceCode;
 using POS_Common.Models.Stock.POS_PriceCodes;
 using POS_Common.ModelsDto.StockController.DebtorProductPrice;
 using POS_Common.Models.Stock.POS_DebtorProductPrices;
+using POS_Api.ServiceInterfaces.Email;
+using POS_Api.Models.Email;
+using POS_Common.Models.Stock.POS_StockRequestReviewers;
+using StockRequestLine = POS_Common.Models.Stock.POS_StockRequestLines.StockRequestLine;
 
 namespace POS_Api.Services
 {
@@ -62,6 +66,7 @@ namespace POS_Api.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserContext _userContext;
         private readonly ICache_Service _cacheService;
+        private readonly IEmail_Service _emailService;
         #endregion
 
         #region Properties
@@ -71,13 +76,15 @@ namespace POS_Api.Services
         #region Constructors
 
         public Stock_Service(IConfiguration configuration, ILogging_Service logger
-            , IHttpContextAccessor httpContextAccessor, IUserContext userContext, ICache_Service cacheService)
+            , IHttpContextAccessor httpContextAccessor, IUserContext userContext, ICache_Service cacheService
+            , IEmail_Service emailService)
         {
             _configuration = configuration;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _userContext = userContext;
             _cacheService = cacheService;
+            _emailService = emailService;
 
             Current_User_Management();
         }
@@ -1457,240 +1464,499 @@ namespace POS_Api.Services
         //}
         //#endregion
 
-        //#region Stock Requests
+        #region Stock Requests
 
-        //public async Task<ApiResponse<List<Res_StockRequest_List>>> List_Stock_Requests(Req_StockRequest_List request)
-        //{
-        //    try
-        //    {
-        //        _logger.LogService("Starting Stock Request List");
+        public async Task<ApiResponse<List<Res_StockRequest_List>>> List_Stock_Requests(Req_StockRequest_List request)
+        {
+            try
+            {
+                _logger.LogService("Starting Stock Request List", request);
 
-        //        var stockRequestResponse = await StockRequests_Select_All_StockRequests(new POS_StockRequest()
-        //        {
-        //            FK_ToDebtorID = request.ToDebtorID,
-        //        }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+                var stockRequestResponse = await StockRequests_Select_All_StockRequests(new StockRequest()
+                {
+                    FK_ToDebtorID    = request.ToDebtorID,
+                    FK_FromDebtorID  = request.FromDebtorID,
+                    FK_OrderStatusID = request.OrderStatusID
+                }, GetConnectionString());
 
+                var response = new List<Res_StockRequest_List>();
 
-        //        var response = new List<Res_StockRequest_List>();
+                if (stockRequestResponse != null && stockRequestResponse.Any())
+                {
+                    foreach (var sr in stockRequestResponse)
+                    {
+                        response.Add(new Res_StockRequest_List()
+                        {
+                            POS_StockRequestID  = sr.StockRequestID,
+                            RefNumber           = sr.RefNumber,
+                            FK_FromDebtorID     = sr.FK_FromDebtorID,
+                            FromDebtorName      = sr.FromDebtorName,
+                            FK_ToDebtorID       = sr.FK_ToDebtorID,
+                            ToDebtorName        = sr.ToDebtorName,
+                            FK_OrderStatusID    = sr.FK_OrderStatusID,
+                            OrderStatus         = sr.OrderStatus,
+                            CreatedBy           = sr.CreatedBy,
+                            ManagerNotes        = sr.ManagerNotes,
+                            Notes               = sr.Notes,
+                            DateOrdered         = sr.DateOrdered,
+                            DateUpdated         = sr.DateUpdated,
+                            FK_ApprovedByUserID = sr.FK_ApprovedByUserID,
+                            DateApproved        = sr.DateApproved
+                        });
+                    }
+                }
 
-        //        if (stockRequestResponse != null && stockRequestResponse.Any())
-        //        {
-        //            foreach (var stockRequest in stockRequestResponse)
-        //            {
+                return ApiResponse.Success(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Stock Request list", ex);
+                return ApiResponse.Fail<List<Res_StockRequest_List>>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
 
-        //                response.Add(new Res_StockRequest_List()
-        //                {
-        //                    POS_StockRequestID = stockRequest.POS_StockRequestID,
-        //                    RefNumber = stockRequest.RefNumber,
-        //                    FK_FromDebtorID = stockRequest.FK_FromDebtorID,
-        //                    FromDebtorName = stockRequest.FromDebtorName,
-        //                    FK_ToDebtorID = stockRequest.FK_ToDebtorID,
-        //                    ToDebtorName = stockRequest.ToDebtorName,
-        //                    FK_OrderStatusID = stockRequest.FK_OrderStatusID,
-        //                    OrderStatus = stockRequest.OrderStatus,
-        //                    CreatedBy = stockRequest.CreatedBy,
-        //                    ManagerNotes = stockRequest.ManagerNotes,
-        //                    Notes = stockRequest.Notes
-        //                });
-        //            }
-        //        }
+        public async Task<ApiResponse<object>> Add_Stock_Request(Req_StockRequest_Add request)
+        {
+            try
+            {
+                _logger.LogService("Starting Stock Request Add", request);
 
-        //        return ApiResponse.Success(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogService("Exception during address list", ex);
-        //        return ApiResponse.Fail<List<Res_StockRequest_List>>(AppErrorCode.ServerError, new List<string> { ex.Message
-        //        }, 500);
-        //    }
-        //}
+                if (request.Lines == null || request.Lines.Count == 0)
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestEmpty, new List<string> { "At least one line is required." }, 400);
 
-        //public async Task<ApiResponse<object>> Add_Stock_Request(Req_StockRequest_Add request)
-        //{
-        //    try
-        //    {
-        //        _logger.LogService("Starting Stock Request Add", request);
+                var connectionString = GetConnectionString();
 
-        //        var stockRequestResponse = await StockRequest_Select_Single_Number(new POS_StockRequest()
-        //        {
-        //            RefNumber = request.RefNumber
-        //        }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+                var existing = await StockRequest_Select_Single_Number(new StockRequest()
+                {
+                    RefNumber = request.RefNumber
+                }, connectionString);
 
-        //        if (stockRequestResponse != null)
-        //        {
-        //            _logger.LogService("Stock Request already exists", request.RefNumber);
-        //            return ApiResponse.Fail<object>(AppErrorCode.StockRequestExists, new List<string> { "Stock Request already exists." }, 400);
-        //        }
+                if (existing != null)
+                {
+                    _logger.LogService("Stock Request already exists", request.RefNumber);
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestExists, new List<string> { "Stock Request already exists." }, 400);
+                }
 
-        //        using (SqlConnection sqlConn = SqlClient.CreateInstance(_configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()))))
-        //        {
-        //            await sqlConn.OpenAsync();
+                int statusId = request.IsSubmitted == true ? (int)StockRequestStatus.Pending : (int)StockRequestStatus.Draft;
+                int newId;
 
-        //            int statusId = request.IsSubmitted == true ? 1 : 5;
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
 
-        //            var stockRequestInsert = await POS_StockRequests_Insert(new POS_StockRequest()
-        //            {
-        //                RefNumber = request.RefNumber,
-        //                FK_FromDebtorID = request.FK_FromDebtorID,
-        //                FK_ToDebtorID = request.FK_ToDebtorID,
-        //                FK_OrderStatusID = statusId,
-        //                FK_UserID = 1,
-        //                Notes = request.Notes,
-        //                DateOrdered = DateTime.Now,
-        //                DateUpdated = DateTime.Now
-        //            }, sqlConn);
-        //        }
+                    var inserted = await POS_StockRequests_Insert(new StockRequest()
+                    {
+                        RefNumber        = request.RefNumber,
+                        FK_FromDebtorID  = request.FK_FromDebtorID,
+                        FK_ToDebtorID    = request.FK_ToDebtorID,
+                        FK_OrderStatusID = statusId,
+                        FK_UserID        = _userContext.UserID,
+                        Notes            = request.Notes,
+                        DateOrdered      = DateTime.Now,
+                        DateUpdated      = DateTime.Now
+                    }, sqlConn);
 
-        //        return ApiResponse.Success(new object());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogService("Exception during Stock Request add", ex);
-        //        return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message
-        //        }, 500);
-        //    }
-        //}
+                    if (inserted?.StockRequestID == null)
+                    {
+                        _logger.LogService("Failed to insert Stock Request header", request);
+                        return ApiResponse.Fail<object>(AppErrorCode.DatabaseError, new List<string> { "Failed to create Stock Request." }, 500);
+                    }
 
-        //public async Task<ApiResponse<object>> Update_Stock_Request(Req_StockRequest_Update request)
-        //{
-        //    try
-        //    {
-        //        _logger.LogService("Starting Stock request Update", request);
+                    newId = inserted.StockRequestID.Value;
 
-        //        var stockRequestResponse = await POS_StockRequests_Select_Single(new POS_StockRequest()
-        //        {
-        //            POS_StockRequestID = request.POS_StockRequestID
-        //        }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+                    foreach (var line in request.Lines)
+                    {
+                        await POS_StockRequestLines_Insert(new StockRequestLine()
+                        {
+                            FK_StockRequestID = newId,
+                            FK_ProductID      = line.FK_ProductID,
+                            Quantity          = line.Quantity,
+                            Notes             = line.Notes,
+                            IsDeclined        = false
+                        }, sqlConn);
+                    }
 
-        //        if (stockRequestResponse == null)
-        //        {
-        //            _logger.LogService("Stock request not found", request.POS_StockRequestID);
-        //            return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotFound, new List<string> { "Stock request not found." }, 400);
-        //        }
+                    scope.Complete();
+                }
 
-        //        using (SqlConnection sqlConn = SqlClient.CreateInstance(_configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()))))
-        //        {
-        //            await sqlConn.OpenAsync();
+                if (request.IsSubmitted == true)
+                {
+                    await Send_Stock_Request_Approval_Email_Async(newId, connectionString);
+                }
 
-        //            int statusId = request.IsSubmitted == true ? 1 : 5;
+                return ApiResponse.Success<object>(new { POS_StockRequestID = newId });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Stock Request Add", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
 
-        //            var stockRequestInsert = await POS_StockRequests_Update(new POS_StockRequest()
-        //            {
-        //                POS_StockRequestID = request.POS_StockRequestID,
-        //                RefNumber = request.RefNumber ?? stockRequestResponse.RefNumber,
-        //                FK_FromDebtorID = request.FK_FromDebtorID ?? stockRequestResponse.FK_FromDebtorID,
-        //                FK_ToDebtorID = request.FK_ToDebtorID ?? stockRequestResponse.FK_ToDebtorID,
-        //                FK_OrderStatusID = statusId,
-        //                FK_UserID = 1,
-        //                Notes = request.Notes ?? stockRequestResponse.Notes,
-        //                DateOrdered = DateTime.Now,
-        //                DateUpdated = DateTime.Now
-        //            }, sqlConn);
-        //        }
+        public async Task<ApiResponse<object>> Update_Stock_Request(Req_StockRequest_Update request)
+        {
+            try
+            {
+                _logger.LogService("Starting Stock Request Update", request);
 
-        //        return ApiResponse.Success(new object());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogService("Exception during Purchase Order add", ex);
-        //        return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message
-        //        }, 500);
-        //    }
-        //}
-        //#endregion
+                var connectionString = GetConnectionString();
 
-        //#region Stock Request Lines
+                var existing = await POS_StockRequests_Select_Single(new StockRequest()
+                {
+                    StockRequestID = request.POS_StockRequestID
+                }, connectionString);
 
-        //public async Task<ApiResponse<List<Res_StockRequestLine_List>>> List_Stock_Request_Lines(Req_StockRequestLine_List request)
-        //{
-        //    try
-        //    {
-        //        _logger.LogService("Starting Stock Request Line List");
+                if (existing == null)
+                {
+                    _logger.LogService("Stock Request not found", request.POS_StockRequestID);
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotFound, new List<string> { "Stock Request not found." }, 400);
+                }
 
-        //        var stockRequestLineResponse = await StockRequestLines_Select_All_StockRequestLines(new POS_StockRequestLine()
-        //        {
-        //            FK_StockRequestID = request.StockRequestID,
-        //        }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+                if (existing.FK_OrderStatusID != (int)StockRequestStatus.Draft)
+                {
+                    _logger.LogService("Stock Request not in Draft", existing.FK_OrderStatusID);
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotInDraft, new List<string> { "Only Draft requests can be edited." }, 400);
+                }
 
+                int statusId = request.IsSubmitted == true ? (int)StockRequestStatus.Pending : (int)StockRequestStatus.Draft;
 
-        //        var response = new List<Res_StockRequestLine_List>();
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
 
-        //        if (stockRequestLineResponse != null && stockRequestLineResponse.Any())
-        //        {
-        //            foreach (var stockRequestLine in stockRequestLineResponse)
-        //            {
-        //                response.Add(new Res_StockRequestLine_List()
-        //                {
-        //                    POS_StockRequestLineID = stockRequestLine.POS_StockRequestLineID,
-        //                    FK_StockRequestID = stockRequestLine.FK_StockRequestID,
-        //                    FK_ProductID = stockRequestLine.FK_ProductID,
-        //                    ProductName = stockRequestLine.ProductName,
-        //                    Quantity = stockRequestLine.Quantity,
-        //                    Notes = stockRequestLine.Notes,
-        //                    IsDeclined = stockRequestLine.IsDeclined,
-        //                    ManagerNotes = stockRequestLine.ManagerNotes
-        //                });
-        //            }
-        //        }
+                    await POS_StockRequests_Update(new StockRequest()
+                    {
+                        StockRequestID      = existing.StockRequestID,
+                        RefNumber           = request.RefNumber       ?? existing.RefNumber,
+                        FK_FromDebtorID     = request.FK_FromDebtorID ?? existing.FK_FromDebtorID,
+                        FK_ToDebtorID       = request.FK_ToDebtorID   ?? existing.FK_ToDebtorID,
+                        FK_OrderStatusID    = statusId,
+                        FK_UserID           = existing.FK_UserID,
+                        ManagerNotes        = existing.ManagerNotes,
+                        Notes               = request.Notes ?? existing.Notes,
+                        DateOrdered         = existing.DateOrdered,
+                        DateUpdated         = DateTime.Now,
+                        FK_ApprovedByUserID = existing.FK_ApprovedByUserID,
+                        DateApproved        = existing.DateApproved
+                    }, sqlConn);
+                }
 
-        //        return ApiResponse.Success(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogService("Exception during Stock Request Line list", ex);
-        //        return ApiResponse.Fail<List<Res_StockRequestLine_List>>(AppErrorCode.ServerError, new List<string> { ex.Message
-        //        }, 500);
-        //    }
-        //}
+                if (request.IsSubmitted == true)
+                {
+                    await Send_Stock_Request_Approval_Email_Async(existing.StockRequestID.Value, connectionString);
+                }
 
-        //public async Task<ApiResponse<object>> Add_Stock_Request_Line(Req_StockRequestLine_Add request)
-        //{
-        //    try
-        //    {
-        //        foreach (var line in request.StockRequestLines)
-        //        {
-        //            _logger.LogService("Starting Stock Request List Add", request);
+                return ApiResponse.Success(new object());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Stock Request Update", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
 
-        //            using (SqlConnection sqlConn = SqlClient.CreateInstance(_configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()))))
-        //            {
-        //                await sqlConn.OpenAsync();
+        public async Task<ApiResponse<object>> Submit_Stock_Request(Req_StockRequest_Submit request)
+        {
+            try
+            {
+                _logger.LogService("Starting Stock Request Submit", request);
 
-        //                if (line.POS_StockRequestLineID == null)
-        //                {
-        //                    var stockRequestLineInsert = await POS_StockRequestLines_Insert(new POS_StockRequestLine()
-        //                    {
-        //                        FK_StockRequestID = line.FK_StockRequestID,
-        //                        FK_ProductID = line.FK_ProductID,
-        //                        Quantity = line.Quantity,
-        //                        Notes = line.Notes,
-        //                        IsDeclined = false
-        //                    }, sqlConn);
-        //                }
+                var connectionString = GetConnectionString();
 
-        //                else
-        //                {
-        //                    var stockRequestLineUpdate = await POS_StockRequestLines_Update(new POS_StockRequestLine()
-        //                    {
-        //                        POS_StockRequestLineID = line.POS_StockRequestLineID,
-        //                        FK_StockRequestID = line.FK_StockRequestID,
-        //                        FK_ProductID = line.FK_ProductID,
-        //                        Quantity = line.Quantity,
-        //                        Notes = line.Notes,
-        //                        IsDeclined = false
-        //                    }, sqlConn);
-        //                }
-        //            }
-        //        }
+                var existing = await POS_StockRequests_Select_Single(new StockRequest()
+                {
+                    StockRequestID = request.POS_StockRequestID
+                }, connectionString);
 
-        //        return ApiResponse.Success(new object());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogService("Exception during Stock Request add", ex);
-        //        return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
-        //    }
-        //}
-        //#endregion
+                if (existing == null)
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotFound, new List<string> { "Stock Request not found." }, 400);
+
+                if (existing.FK_OrderStatusID != (int)StockRequestStatus.Draft)
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotInDraft, new List<string> { "Only Draft requests can be submitted." }, 400);
+
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    existing.FK_OrderStatusID = (int)StockRequestStatus.Pending;
+                    existing.DateUpdated      = DateTime.Now;
+                    await POS_StockRequests_Update(existing, sqlConn);
+                }
+
+                await Send_Stock_Request_Approval_Email_Async(existing.StockRequestID.Value, connectionString);
+
+                return ApiResponse.Success(new object());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Stock Request Submit", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
+
+        public async Task<ApiResponse<object>> Approve_Stock_Request(Req_StockRequest_Approve request)
+        {
+            try
+            {
+                _logger.LogService("Starting Stock Request Approve", request);
+
+                var connectionString = GetConnectionString();
+
+                var existing = await POS_StockRequests_Select_Single(new StockRequest()
+                {
+                    StockRequestID = request.POS_StockRequestID
+                }, connectionString);
+
+                if (existing == null)
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotFound, new List<string> { "Stock Request not found." }, 400);
+
+                if (existing.FK_OrderStatusID != (int)StockRequestStatus.Pending)
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestAlreadyDecided, new List<string> { "Stock Request is not awaiting approval." }, 400);
+
+                var lines = await StockRequestLines_Select_All_StockRequestLines(new StockRequestLine()
+                {
+                    FK_StockRequestID = existing.StockRequestID
+                }, connectionString) ?? new List<StockRequestLine>();
+
+                var lineById = lines.ToDictionary(l => l.StockRequestLineID ?? 0, l => l);
+
+                foreach (var d in request.LineDecisions)
+                {
+                    if (d.POS_StockRequestLineID == null || !lineById.ContainsKey(d.POS_StockRequestLineID.Value))
+                        return ApiResponse.Fail<object>(AppErrorCode.StockRequestLineMismatch, new List<string> { $"Line {d.POS_StockRequestLineID} does not belong to this request." }, 400);
+                }
+
+                int approvedCount = 0;
+                int declinedCount = 0;
+                int partialCount  = 0;
+
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+
+                    foreach (var d in request.LineDecisions)
+                    {
+                        var line = lineById[d.POS_StockRequestLineID.Value];
+
+                        bool isDeclined = d.IsDeclined == true || (d.ApprovedQuantity ?? 0m) <= 0m;
+                        decimal approvedQty = isDeclined ? 0m : Math.Min(d.ApprovedQuantity ?? line.Quantity ?? 0m, line.Quantity ?? 0m);
+
+                        if (isDeclined)                        declinedCount++;
+                        else if (approvedQty < (line.Quantity ?? 0m)) partialCount++;
+                        else                                   approvedCount++;
+
+                        await POS_StockRequestLines_Update(new StockRequestLine()
+                        {
+                            StockRequestLineID = line.StockRequestLineID,
+                            FK_StockRequestID  = line.FK_StockRequestID,
+                            FK_ProductID       = line.FK_ProductID,
+                            Quantity           = line.Quantity,
+                            Notes              = line.Notes,
+                            ManagerNotes       = string.IsNullOrWhiteSpace(d.ManagerNotes) ? line.ManagerNotes : d.ManagerNotes,
+                            IsDeclined         = isDeclined,
+                            ApprovedQuantity   = approvedQty
+                        }, sqlConn);
+                    }
+
+                    int overallStatus =
+                        declinedCount == request.LineDecisions.Count                ? (int)StockRequestStatus.Cancelled :
+                        partialCount > 0 || declinedCount > 0                       ? (int)StockRequestStatus.PartiallyApproved :
+                                                                                      (int)StockRequestStatus.Approved;
+
+                    existing.FK_OrderStatusID    = overallStatus;
+                    existing.FK_ApprovedByUserID = _userContext.UserID;
+                    existing.DateApproved        = DateTime.Now;
+                    existing.DateUpdated         = DateTime.Now;
+                    if (!string.IsNullOrWhiteSpace(request.ManagerNotes))
+                        existing.ManagerNotes = request.ManagerNotes;
+
+                    await POS_StockRequests_Update(existing, sqlConn);
+
+                    scope.Complete();
+                }
+
+                await Send_Stock_Request_Decided_Email_Async(existing.StockRequestID.Value, connectionString);
+
+                return ApiResponse.Success(new object());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Stock Request Approve", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
+        #endregion
+
+        #region Stock Request Lines
+
+        public async Task<ApiResponse<List<Res_StockRequestLine_List>>> List_Stock_Request_Lines(Req_StockRequestLine_List request)
+        {
+            try
+            {
+                _logger.LogService("Starting Stock Request Lines List", request);
+
+                var lines = await StockRequestLines_Select_All_StockRequestLines(new StockRequestLine()
+                {
+                    FK_StockRequestID = request.StockRequestID
+                }, GetConnectionString());
+
+                var response = new List<Res_StockRequestLine_List>();
+
+                if (lines != null && lines.Any())
+                {
+                    foreach (var l in lines)
+                    {
+                        response.Add(new Res_StockRequestLine_List()
+                        {
+                            POS_StockRequestLineID = l.StockRequestLineID,
+                            FK_StockRequestID      = l.FK_StockRequestID,
+                            FK_ProductID           = l.FK_ProductID,
+                            ProductName            = l.ProductName,
+                            Quantity               = l.Quantity,
+                            Notes                  = l.Notes,
+                            ManagerNotes           = l.ManagerNotes,
+                            IsDeclined             = l.IsDeclined,
+                            ApprovedQuantity       = l.ApprovedQuantity
+                        });
+                    }
+                }
+
+                return ApiResponse.Success(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Stock Request Lines list", ex);
+                return ApiResponse.Fail<List<Res_StockRequestLine_List>>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
+        #endregion
+
+        #region Stock Request - email helpers
+
+        private string GetConnectionString() =>
+            _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()));
+
+        private async Task<StockRequest> Load_Stock_Request_With_Names(int stockRequestID, string connectionString)
+        {
+            var bare = await POS_StockRequests_Select_Single(new StockRequest() { StockRequestID = stockRequestID }, connectionString);
+            if (bare?.FK_ToDebtorID == null) return null;
+
+            var enriched = await StockRequests_Select_All_StockRequests(new StockRequest()
+            {
+                FK_ToDebtorID = bare.FK_ToDebtorID
+            }, connectionString);
+
+            return enriched?.FirstOrDefault(x => x.StockRequestID == stockRequestID);
+        }
+
+        private async Task Send_Stock_Request_Approval_Email_Async(int stockRequestID, string connectionString)
+        {
+            try
+            {
+                var sr = await Load_Stock_Request_With_Names(stockRequestID, connectionString);
+                if (sr == null) return;
+
+                var lines = await StockRequestLines_Select_All_StockRequestLines(new StockRequestLine() { FK_StockRequestID = stockRequestID }, connectionString)
+                            ?? new List<StockRequestLine>();
+
+                var approvers = await POS_StockRequestReviewers_Select_By_Debtor_Role(sr.FK_ToDebtorID ?? 0, "Approver", connectionString)
+                                ?? new List<StockRequestReviewer>();
+
+                if (approvers.Count == 0)
+                {
+                    _logger.LogService($"No approvers configured for ToDebtorID={sr.FK_ToDebtorID}; approval email skipped");
+                    return;
+                }
+
+                await _emailService.Send_Stock_Request_Approval_Email(new StockRequestApprovalEmail
+                {
+                    StockRequestID = sr.StockRequestID ?? 0,
+                    RefNumber      = sr.RefNumber ?? string.Empty,
+                    FromDebtorName = sr.FromDebtorName ?? string.Empty,
+                    ToDebtorName   = sr.ToDebtorName ?? string.Empty,
+                    CreatedBy      = sr.CreatedBy ?? string.Empty,
+                    Notes          = sr.Notes ?? string.Empty,
+                    To             = approvers.Select(a => a.Email).Where(e => !string.IsNullOrWhiteSpace(e)).Distinct().ToList(),
+                    Lines          = lines.Select(l => new StockRequestEmailLine
+                    {
+                        ProductName  = l.ProductName ?? string.Empty,
+                        Quantity     = l.Quantity,
+                        Notes        = l.Notes ?? string.Empty,
+                        ManagerNotes = l.ManagerNotes ?? string.Empty
+                    }).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Approval email send failed (non-fatal)", ex);
+            }
+        }
+
+        private async Task Send_Stock_Request_Decided_Email_Async(int stockRequestID, string connectionString)
+        {
+            try
+            {
+                var sr = await Load_Stock_Request_With_Names(stockRequestID, connectionString);
+                if (sr == null) return;
+
+                var lines = await StockRequestLines_Select_All_StockRequestLines(new StockRequestLine() { FK_StockRequestID = stockRequestID }, connectionString)
+                            ?? new List<StockRequestLine>();
+
+                var outcome = sr.FK_OrderStatusID switch
+                {
+                    (int)StockRequestStatus.Approved          => "Approved",
+                    (int)StockRequestStatus.PartiallyApproved => "PartiallyApproved",
+                    (int)StockRequestStatus.Cancelled         => "Declined",
+                    _                                         => sr.OrderStatus ?? string.Empty
+                };
+
+                var buyers = await POS_StockRequestReviewers_Select_By_Debtor_Role(sr.FK_ToDebtorID ?? 0, "Buyer", connectionString)
+                             ?? new List<StockRequestReviewer>();
+
+                if (buyers.Count == 0)
+                {
+                    _logger.LogService($"No buyers configured for ToDebtorID={sr.FK_ToDebtorID}; buyer email skipped");
+                    return;
+                }
+
+                if (outcome == "Declined")
+                {
+                    _logger.LogService($"Stock Request {sr.RefNumber} declined; buyer email suppressed");
+                    return;
+                }
+
+                var decidedBy = LTRIM_RTRIM($"{_userContext.Firstname} {_userContext.Lastname}");
+
+                await _emailService.Send_Stock_Request_Decided_Email(new StockRequestDecidedEmail
+                {
+                    StockRequestID = sr.StockRequestID ?? 0,
+                    RefNumber      = sr.RefNumber ?? string.Empty,
+                    FromDebtorName = sr.FromDebtorName ?? string.Empty,
+                    ToDebtorName   = sr.ToDebtorName ?? string.Empty,
+                    DecidedBy      = decidedBy,
+                    ManagerNotes   = sr.ManagerNotes ?? string.Empty,
+                    Outcome        = outcome,
+                    To             = buyers.Select(b => b.Email).Where(e => !string.IsNullOrWhiteSpace(e)).Distinct().ToList(),
+                    Lines          = lines.Where(l => l.IsDeclined != true).Select(l => new StockRequestEmailLine
+                    {
+                        ProductName      = l.ProductName ?? string.Empty,
+                        Quantity         = l.Quantity,
+                        ApprovedQuantity = l.ApprovedQuantity,
+                        IsDeclined       = l.IsDeclined,
+                        Notes            = l.Notes ?? string.Empty,
+                        ManagerNotes     = l.ManagerNotes ?? string.Empty
+                    }).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Decided email send failed (non-fatal)", ex);
+            }
+        }
+
+        private static string LTRIM_RTRIM(string s) => string.IsNullOrWhiteSpace(s) ? string.Empty : s.Trim();
+        #endregion
 
         //#region Stock Transfers
 

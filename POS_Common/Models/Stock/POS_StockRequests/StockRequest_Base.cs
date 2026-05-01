@@ -29,6 +29,10 @@ namespace POS_Common.Models.Stock.POS_StockRequests
       public DateTime? DateOrdered { get; set; }
 
       public DateTime? DateUpdated { get; set; }
+
+      public int? FK_ApprovedByUserID { get; set; }
+
+      public DateTime? DateApproved { get; set; }
        #endregion
   }
 }

@@ -74,6 +74,21 @@ namespace POS_Common.Enums
         [ErrorMessage("Stock Request not found.")]
         StockRequestNotFound,
 
+        [ErrorMessage("Stock Request can only be modified while in Draft status.")]
+        StockRequestNotInDraft,
+
+        [ErrorMessage("Stock Request has already been decided.")]
+        StockRequestAlreadyDecided,
+
+        [ErrorMessage("Stock Request must contain at least one line.")]
+        StockRequestEmpty,
+
+        [ErrorMessage("Decision references a line that does not belong to this Stock Request.")]
+        StockRequestLineMismatch,
+
+        [ErrorMessage("No reviewers configured for this destination debtor.")]
+        StockRequestRecipientsMissing,
+
         [ErrorMessage("Purchase Order Line not found.")]
         PurchaseOrderLineNotFound,
 

@@ -27,11 +27,11 @@ namespace POS_Common.ModelsDto.InventoryController.Product
 
         public int? FK_DefaultUnitID { get; set; }
 
-        public string SKU { get; set; }
+        public string? SKU { get; set; }
 
-        public string Barcode { get; set; }
+        public string? Barcode { get; set; }
 
-        public string QrCode { get; set; }
+        public string? QrCode { get; set; }
 
         public IFormFile ImageFile { get; set; }
         #endregion

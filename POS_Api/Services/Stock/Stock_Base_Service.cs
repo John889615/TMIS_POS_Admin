@@ -27,6 +27,7 @@ using POS_Common.Models.Stock.POS_DebtorProductPriceHistory;
 using POS_Common.Models.Stock.POS_CostCenterProductPriceHistory;
 using POS_Common.Models.Stock.POS_PriceCodes;
 using POS_Common.Models.Stock.POS_DebtorProductPrices;
+using POS_Common.Models.Stock.POS_OrderStatus;
 
 namespace POS_Api.Services.Stock
 {
@@ -1274,7 +1275,7 @@ namespace POS_Api.Services.Stock
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequest>(Stock_Translator.Translate_StockRequest);
-                        Log.Information("StockRequest found: StockRequestID={StockRequestID}, RefNumber={RefNumber}, FK_FromDebtorID={FK_FromDebtorID}, FK_ToDebtorID={FK_ToDebtorID}, FK_OrderStatusID={FK_OrderStatusID}, FK_UserID={FK_UserID}, ManagerNotes={ManagerNotes}, Notes={Notes}, DateOrdered={DateOrdered}, DateUpdated={DateUpdated}", resultItem.StockRequestID, resultItem.RefNumber, resultItem.FK_FromDebtorID, resultItem.FK_ToDebtorID, resultItem.FK_OrderStatusID, resultItem.FK_UserID, resultItem.ManagerNotes, resultItem.Notes, resultItem.DateOrdered, resultItem.DateUpdated);
+                        Log.Information("StockRequest found: StockRequestID={StockRequestID}, RefNumber={RefNumber}, FK_FromDebtorID={FK_FromDebtorID}, FK_ToDebtorID={FK_ToDebtorID}, FK_OrderStatusID={FK_OrderStatusID}, FK_UserID={FK_UserID}, ManagerNotes={ManagerNotes}, Notes={Notes}, DateOrdered={DateOrdered}, DateUpdated={DateUpdated}, FK_ApprovedByUserID={FK_ApprovedByUserID}, DateApproved={DateApproved}", resultItem.StockRequestID, resultItem.RefNumber, resultItem.FK_FromDebtorID, resultItem.FK_ToDebtorID, resultItem.FK_OrderStatusID, resultItem.FK_UserID, resultItem.ManagerNotes, resultItem.Notes, resultItem.DateOrdered, resultItem.DateUpdated, resultItem.FK_ApprovedByUserID, resultItem.DateApproved);
                         return resultItem;
                     }
                     else
@@ -1346,12 +1347,14 @@ namespace POS_Api.Services.Stock
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ManagerNotes", Value = item.ManagerNotes }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Notes", Value = item.Notes }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateOrdered", Value = item.DateOrdered }
-                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_ApprovedByUserID", Value = item.FK_ApprovedByUserID }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateApproved", Value = item.DateApproved }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequest>(Stock_Translator.Translate_StockRequest);
-                        Log.Information("StockRequest found: StockRequestID={StockRequestID}, RefNumber={RefNumber}, FK_FromDebtorID={FK_FromDebtorID}, FK_ToDebtorID={FK_ToDebtorID}, FK_OrderStatusID={FK_OrderStatusID}, FK_UserID={FK_UserID}, ManagerNotes={ManagerNotes}, Notes={Notes}, DateOrdered={DateOrdered}, DateUpdated={DateUpdated}", resultItem.StockRequestID, resultItem.RefNumber, resultItem.FK_FromDebtorID, resultItem.FK_ToDebtorID, resultItem.FK_OrderStatusID, resultItem.FK_UserID, resultItem.ManagerNotes, resultItem.Notes, resultItem.DateOrdered, resultItem.DateUpdated);
+                        Log.Information("StockRequest found: StockRequestID={StockRequestID}, RefNumber={RefNumber}, FK_FromDebtorID={FK_FromDebtorID}, FK_ToDebtorID={FK_ToDebtorID}, FK_OrderStatusID={FK_OrderStatusID}, FK_UserID={FK_UserID}, ManagerNotes={ManagerNotes}, Notes={Notes}, DateOrdered={DateOrdered}, DateUpdated={DateUpdated}, FK_ApprovedByUserID={FK_ApprovedByUserID}, DateApproved={DateApproved}", resultItem.StockRequestID, resultItem.RefNumber, resultItem.FK_FromDebtorID, resultItem.FK_ToDebtorID, resultItem.FK_OrderStatusID, resultItem.FK_UserID, resultItem.ManagerNotes, resultItem.Notes, resultItem.DateOrdered, resultItem.DateUpdated, resultItem.FK_ApprovedByUserID, resultItem.DateApproved);
                         return resultItem;
                     }
                     else
@@ -1493,12 +1496,14 @@ namespace POS_Api.Services.Stock
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ManagerNotes", Value = item.ManagerNotes }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Notes", Value = item.Notes }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateOrdered", Value = item.DateOrdered }
-                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_ApprovedByUserID", Value = item.FK_ApprovedByUserID }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateApproved", Value = item.DateApproved }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequest>(Stock_Translator.Translate_StockRequest);
-                        Log.Information("StockRequest found: StockRequestID={StockRequestID}, RefNumber={RefNumber}, FK_FromDebtorID={FK_FromDebtorID}, FK_ToDebtorID={FK_ToDebtorID}, FK_OrderStatusID={FK_OrderStatusID}, FK_UserID={FK_UserID}, ManagerNotes={ManagerNotes}, Notes={Notes}, DateOrdered={DateOrdered}, DateUpdated={DateUpdated}", resultItem.StockRequestID, resultItem.RefNumber, resultItem.FK_FromDebtorID, resultItem.FK_ToDebtorID, resultItem.FK_OrderStatusID, resultItem.FK_UserID, resultItem.ManagerNotes, resultItem.Notes, resultItem.DateOrdered, resultItem.DateUpdated);
+                        Log.Information("StockRequest found: StockRequestID={StockRequestID}, RefNumber={RefNumber}, FK_FromDebtorID={FK_FromDebtorID}, FK_ToDebtorID={FK_ToDebtorID}, FK_OrderStatusID={FK_OrderStatusID}, FK_UserID={FK_UserID}, ManagerNotes={ManagerNotes}, Notes={Notes}, DateOrdered={DateOrdered}, DateUpdated={DateUpdated}, FK_ApprovedByUserID={FK_ApprovedByUserID}, DateApproved={DateApproved}", resultItem.StockRequestID, resultItem.RefNumber, resultItem.FK_FromDebtorID, resultItem.FK_ToDebtorID, resultItem.FK_OrderStatusID, resultItem.FK_UserID, resultItem.ManagerNotes, resultItem.Notes, resultItem.DateOrdered, resultItem.DateUpdated, resultItem.FK_ApprovedByUserID, resultItem.DateApproved);
                         return resultItem;
                     }
                     else
@@ -1570,7 +1575,7 @@ namespace POS_Api.Services.Stock
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequestLine>(Stock_Translator.Translate_StockRequestLine);
-                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined);
+                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity);
                         return resultItem;
                     }
                     else
@@ -1639,12 +1644,13 @@ namespace POS_Api.Services.Stock
                         , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@Quantity", Value = item.Quantity }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Notes", Value = item.Notes }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ManagerNotes", Value = item.ManagerNotes }
-                        , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsDeclined", Value = item.IsDeclined }                ))
+                        , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsDeclined", Value = item.IsDeclined }
+                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@ApprovedQuantity", Value = item.ApprovedQuantity }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequestLine>(Stock_Translator.Translate_StockRequestLine);
-                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined);
+                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity);
                         return resultItem;
                     }
                     else
@@ -1783,12 +1789,13 @@ namespace POS_Api.Services.Stock
                         , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@Quantity", Value = item.Quantity }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Notes", Value = item.Notes }
                         , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ManagerNotes", Value = item.ManagerNotes }
-                        , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsDeclined", Value = item.IsDeclined }                ))
+                        , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsDeclined", Value = item.IsDeclined }
+                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@ApprovedQuantity", Value = item.ApprovedQuantity }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<StockRequestLine>(Stock_Translator.Translate_StockRequestLine);
-                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined);
+                        Log.Information("StockRequestLine found: StockRequestLineID={StockRequestLineID}, FK_StockRequestID={FK_StockRequestID}, FK_ProductID={FK_ProductID}, Quantity={Quantity}, Notes={Notes}, ManagerNotes={ManagerNotes}, IsDeclined={IsDeclined}, ApprovedQuantity={ApprovedQuantity}", resultItem.StockRequestLineID, resultItem.FK_StockRequestID, resultItem.FK_ProductID, resultItem.Quantity, resultItem.Notes, resultItem.ManagerNotes, resultItem.IsDeclined, resultItem.ApprovedQuantity);
                         return resultItem;
                     }
                     else
@@ -5048,6 +5055,286 @@ namespace POS_Api.Services.Stock
                     else
                     {
                         Log.Warning("DebtorProductPrice failed to update.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+        #endregion
+
+        #region POS_OrderStatus
+
+        public static async Task<OrderStatus> POS_OrderStatus_Select_Single_Transaction(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Select_Single(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Select_Single(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Select_Single(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Select_Single(OrderStatus item, SqlConnection sqlConn)
+        {
+            try
+            {
+                OrderStatus resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_OrderStatus_select_single",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@OrderStatusID", Value = item.OrderStatusID }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<OrderStatus>(Stock_Translator.Translate_OrderStatus);
+                        Log.Information("OrderStatus found: OrderStatusID={OrderStatusID}, OrderStatus={OrderStatus}", resultItem.OrderStatusID, resultItem.OrderStatus);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("No OrderStatus found with the given OrderStatusID.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Insert_Transaction(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Insert(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Insert(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Insert(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Insert(OrderStatus item, SqlConnection sqlConn)
+        {
+            try
+            {
+                OrderStatus resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_OrderStatus_insert",
+                        new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@OrderStatus", Value = item.OrderStatus }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<OrderStatus>(Stock_Translator.Translate_OrderStatus);
+                        Log.Information("OrderStatus found: OrderStatusID={OrderStatusID}, OrderStatus={OrderStatus}", resultItem.OrderStatusID, resultItem.OrderStatus);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("OrderStatus failed to create.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<OrderStatus>> POS_OrderStatus_Select_All_Transaction(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Select_All(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<OrderStatus>> POS_OrderStatus_Select_All(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Select_All(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<OrderStatus>> POS_OrderStatus_Select_All(OrderStatus item, SqlConnection sqlConn)
+        {
+            try
+            {
+                List<OrderStatus> resultItem = new List<OrderStatus>();
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_OrderStatus_select_all",
+                    null))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem.AddRange(await reader.TranslateAsync<OrderStatus>(Stock_Translator.Translate_OrderStatus));
+                        Log.Information("OrderStatus records found: {Count}", resultItem.Count);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("No OrderStatus records found.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Update_Transaction(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Update(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Update(OrderStatus item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_OrderStatus_Update(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<OrderStatus> POS_OrderStatus_Update(OrderStatus item, SqlConnection sqlConn)
+        {
+            try
+            {
+                OrderStatus resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_OrderStatus_update",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@OrderStatusID", Value = item.OrderStatusID }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@OrderStatus", Value = item.OrderStatus }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<OrderStatus>(Stock_Translator.Translate_OrderStatus);
+                        Log.Information("OrderStatus found: OrderStatusID={OrderStatusID}, OrderStatus={OrderStatus}", resultItem.OrderStatusID, resultItem.OrderStatus);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("OrderStatus failed to update.");
                         return default;
                     }
                 }

@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace POS_Common.ModelsDto.StockController.StockRequestLine
 {
     public class Res_StockRequestLine_List
@@ -25,6 +19,8 @@ namespace POS_Common.ModelsDto.StockController.StockRequestLine
         public string ManagerNotes { get; set; }
 
         public bool? IsDeclined { get; set; }
+
+        public decimal? ApprovedQuantity { get; set; }
         #endregion
     }
 }

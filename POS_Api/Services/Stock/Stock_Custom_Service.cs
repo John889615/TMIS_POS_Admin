@@ -10,6 +10,7 @@ using POS_Common.Models.Stock.POS_PurchaseOrderLines;
 using POS_Common.Models.Stock.POS_PurchaseOrders;
 using POS_Common.Models.Stock.POS_StockRequestLines;
 using POS_Common.Models.Stock.POS_StockRequests;
+using POS_Common.Models.Stock.POS_StockRequestReviewers;
 using POS_Common.Models.Stock.POS_StockTransfers;
 using Serilog;
 using System;
@@ -374,7 +375,9 @@ namespace POS_Api.Services.Stock
                 using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
                         sqlConn,
                         "stockRequest_select_all_stockRequest",
-                        new SqlParameter() { DbType = System.Data.DbType.Int32, Direction = System.Data.ParameterDirection.Input, ParameterName = "@FK_ToDebtorID", Value = item.FK_ToDebtorID }))
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_ToDebtorID", Value = (object)item.FK_ToDebtorID ?? DBNull.Value },
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_FromDebtorID", Value = (object)item.FK_FromDebtorID ?? DBNull.Value },
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_OrderStatusID", Value = (object)item.FK_OrderStatusID ?? DBNull.Value }))
                 {
                     if (reader.HasRows)
                     {
@@ -811,6 +814,52 @@ namespace POS_Api.Services.Stock
                         Log.Warning("No DebtorProductPriceHistory found with the given DebtorProductPriceHistoryID.");
                         return default;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+        #endregion
+
+        #region Stock Request Reviewers
+
+        public static async Task<List<StockRequestReviewer>> POS_StockRequestReviewers_Select_By_Debtor_Role(int toDebtorID, string role, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    return await POS_StockRequestReviewers_Select_By_Debtor_Role(toDebtorID, role, sqlConn);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<StockRequestReviewer>> POS_StockRequestReviewers_Select_By_Debtor_Role(int toDebtorID, string role, SqlConnection sqlConn)
+        {
+            try
+            {
+                var resultItem = new List<StockRequestReviewer>();
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                        sqlConn,
+                        "POS_StockRequestReviewers_select_by_debtor_role",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_ToDebtorID", Value = toDebtorID },
+                        new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Role", Value = role }))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem.AddRange(await reader.TranslateAsync<StockRequestReviewer>(Stock_Translator.Translate_StockRequestReviewer));
+                    }
+                    return resultItem;
                 }
             }
             catch (Exception ex)

@@ -22,6 +22,11 @@ using POS_Common.Models.Stock.POS_DebtorProductPriceHistory;
 using POS_Common.Models.Stock.POS_CostCenterProductPriceHistory;
 using POS_Common.Models.Stock.POS_PriceCodes;
 using POS_Common.Models.Stock.POS_DebtorProductPrices;
+using POS_Common.Models.Stock.POS_OrderStatus;
+using POS_Common.Models.Stock.Custom.StockRequestSelectAllStockRequest;
+using POS_Common.Models.Stock.Custom.StockRequestSelectSingleNumber;
+using POS_Common.Models.Stock.Custom.StockRequestLinesSelectAllStockRequestLines;
+using POS_Common.Models.Stock.Custom.StockRequestReviewersSelectByDebtorRole;
 
 namespace POS_Api.Translators
 {
@@ -117,6 +122,8 @@ namespace POS_Api.Translators
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             DateOrdered = (DateTime?)row["DateOrdered"],
             DateUpdated = (DateTime?)row["DateUpdated"],
+            FK_ApprovedByUserID = row["FK_ApprovedByUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_ApprovedByUserID"] : null,
+            DateApproved = row["DateApproved"].GetType() != typeof(DBNull) ? (DateTime?)row["DateApproved"] : null,
          };
       }
 
@@ -132,6 +139,7 @@ namespace POS_Api.Translators
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             ManagerNotes = row["ManagerNotes"].GetType() != typeof(DBNull) ? (string)row["ManagerNotes"] : null,
             IsDeclined = (bool?)row["IsDeclined"],
+            ApprovedQuantity = row["ApprovedQuantity"].GetType() != typeof(DBNull) ? (decimal?)row["ApprovedQuantity"] : null,
          };
       }
 
@@ -329,6 +337,16 @@ namespace POS_Api.Translators
             DateCreated = (DateTime?)row["DateCreated"],
             DateUpdated = (DateTime?)row["DateUpdated"],
             FK_DefaultUnitID = row["FK_DefaultUnitID"].GetType() != typeof(DBNull) ? (int?)row["FK_DefaultUnitID"] : null,
+         };
+      }
+
+       
+      internal static OrderStatus Translate_OrderStatus(IDataRecord row)
+      {
+         return new OrderStatus()
+         {
+            OrderStatusID = (int?)row["OrderStatusID"],
+            OrderStatus = (string)row["OrderStatus"],
          };
       }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace POS_Common.ModelsDto.StockController.StockRequest
 {
@@ -31,6 +27,14 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
         public string ManagerNotes { get; set; }
 
         public string Notes { get; set; }
+
+        public DateTime? DateOrdered { get; set; }
+
+        public DateTime? DateUpdated { get; set; }
+
+        public int? FK_ApprovedByUserID { get; set; }
+
+        public DateTime? DateApproved { get; set; }
         #endregion
     }
 }

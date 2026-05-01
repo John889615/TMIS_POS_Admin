@@ -13,6 +13,7 @@ using POS_Common.Models.Stock.POS_StockTransfers;
 using POS_Common.Models.Stock.POS_DebtorProducts;
 using POS_Common.Models.Stock.POS_CostCenterProducts;
 using POS_Common.Models.Stock.POS_DebtorProductPrices;
+using POS_Common.Models.Stock.POS_StockRequestReviewers;
 
 namespace POS_Api.Translators
 {
@@ -126,9 +127,14 @@ namespace POS_Api.Translators
                 ToDebtorName = GetNullableString(row, "ToDebtorName"),
                 FK_OrderStatusID = (int?)row["FK_OrderStatusID"],
                 OrderStatus = GetNullableString(row, "OrderStatus"),
-                CreatedBy = (string)row["CreatedBy"],
+                FK_UserID = row["FK_UserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UserID"] : null,
+                CreatedBy = GetNullableString(row, "CreatedBy"),
                 ManagerNotes = GetNullableString(row,"ManagerNotes"),
                 Notes = GetNullableString(row, "Notes"),
+                DateOrdered = row["DateOrdered"].GetType() != typeof(DBNull) ? (DateTime?)row["DateOrdered"] : null,
+                DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
+                FK_ApprovedByUserID = row["FK_ApprovedByUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_ApprovedByUserID"] : null,
+                DateApproved = row["DateApproved"].GetType() != typeof(DBNull) ? (DateTime?)row["DateApproved"] : null,
             };
         }
 
@@ -144,6 +150,22 @@ namespace POS_Api.Translators
                 Notes = GetNullableString(row, "Notes"),
                 IsDeclined = GetNullableBool(row, "IsDeclined"),
                 ManagerNotes = GetNullableString(row, "ManagerNotes"),
+                ApprovedQuantity = row["ApprovedQuantity"].GetType() != typeof(DBNull) ? (decimal?)row["ApprovedQuantity"] : null,
+            };
+        }
+
+        internal static StockRequestReviewer Translate_StockRequestReviewer(IDataRecord row)
+        {
+            return new StockRequestReviewer()
+            {
+                POS_StockRequestReviewerID = (int?)row["POS_StockRequestReviewerID"],
+                FK_ToDebtorID = (int?)row["FK_ToDebtorID"],
+                FK_UserID = row["FK_UserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UserID"] : null,
+                Email = (string)row["Email"],
+                DisplayName = GetNullableString(row, "DisplayName"),
+                Role = (string)row["Role"],
+                IsActive = (bool?)row["IsActive"],
+                DateCreated = row["DateCreated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateCreated"] : null,
             };
         }
 

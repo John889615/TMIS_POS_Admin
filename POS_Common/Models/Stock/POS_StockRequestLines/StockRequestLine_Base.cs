@@ -23,6 +23,8 @@ namespace POS_Common.Models.Stock.POS_StockRequestLines
       public string ManagerNotes { get; set; }
 
       public bool? IsDeclined { get; set; }
+
+      public decimal? ApprovedQuantity { get; set; }
        #endregion
   }
 }
