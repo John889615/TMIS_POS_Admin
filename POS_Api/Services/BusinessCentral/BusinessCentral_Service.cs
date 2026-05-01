@@ -994,8 +994,7 @@ namespace POS_Api.Services.BusinessCentral
                 var distinctItems = payload2.value
                     .Where(x =>
                         !string.IsNullOrWhiteSpace(x.itemNo) &&
-                        !string.IsNullOrWhiteSpace(x.variantCode)
-                        && x.itemNo == "100576")
+                        !string.IsNullOrWhiteSpace(x.variantCode))
                     .Select(x => new
                     {
                         ItemNo = x.itemNo.Trim(),
