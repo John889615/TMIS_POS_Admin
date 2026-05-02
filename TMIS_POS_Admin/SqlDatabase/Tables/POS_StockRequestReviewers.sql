@@ -1,11 +1,11 @@
--- ============================================================
--- Table: POS_StockRequestReviewers
--- Purpose: Routes stock-request emails. Each row maps a recipient
---          (user or group inbox) to a ToDebtor + Role combination.
---          Approvers receive the "needs approval" email.
---          Buyers receive the "approved, please order" email.
--- ============================================================
-CREATE TABLE [dbo].[POS_StockRequestReviewers] (
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_StockRequestReviewers', 'U') IS NOT NULL
+	DROP TABLE POS_StockRequestReviewers
+GO
+
+CREATE TABLE POS_StockRequestReviewers (
     [POS_StockRequestReviewerID] INT             IDENTITY(1,1) NOT NULL,
     [FK_ToDebtorID]              INT             NOT NULL,
     [FK_UserID]                  INT             NULL,

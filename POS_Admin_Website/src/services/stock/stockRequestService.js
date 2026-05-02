@@ -2,11 +2,10 @@ import api from '../posAPI';
 
 
 export const getAllStockRequest = async (debtorID) => {
-    console.log("Debtor Id:", debtorID);
     try {
         const response = await api.post('/Stock/list/stock/requests', { ToDebtorID: debtorID });
         if (response.data && Array.isArray(response.data.Data)) {
-            return response.data.Data;  
+            return response.data.Data;
         } else {
             throw new Error("Unexpected response format");
         }
@@ -21,8 +20,7 @@ export const getAllStockRequest = async (debtorID) => {
 
 export const newStockRequest = async (data) => {
     try {
-        const response = await api.post('/Stock/add/stock/request', data); // Use POST
-        console.log("response", response.data);
+        const response = await api.post('/Stock/add/stock/request', data);
         return response.data;
     } catch (error) {
         return error.response.data;
@@ -32,8 +30,27 @@ export const newStockRequest = async (data) => {
 
 export const updateStockRequest = async (data) => {
     try {
-        const response = await api.post('/Stock/update/stock/request', data); // Use POST
-        console.log("response", response.data);
+        const response = await api.post('/Stock/update/stock/request', data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
+
+export const submitStockRequest = async (data) => {
+    try {
+        const response = await api.post('/Stock/submit/stock/request', data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+};
+
+
+export const approveStockRequest = async (data) => {
+    try {
+        const response = await api.post('/Stock/approve/stock/request', data);
         return response.data;
     } catch (error) {
         return error.response.data;

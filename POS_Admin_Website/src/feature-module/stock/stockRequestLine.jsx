@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { getAllProducts } from "../../services/product/product";
+import React, { useState, useEffect, useMemo } from "react";
 import { getAllStockRequest } from "../../services/stock/stockRequestService";
-import { getAllStockRequestLine, newStockRequestLine } from "../../services/stock/stockRequestLineService";
+import { getAllStockRequestLine } from "../../services/stock/stockRequestLineService";
 
 
-import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {
-    PlusCircle,
-} from "react-feather";
-import StockRequestLineForm from "../../core/modals/stocks/stockRequestLineFormModel";
+import Select from "react-select";
 import { useSelector } from 'react-redux';
 
 
@@ -17,45 +12,37 @@ import { useSelector } from 'react-redux';
 const StockRequestLinePage = () => {
     const [listData, setListData] = useState([]);
     const [stockRequestList, setStockRequestList] = useState([]);
-    const [productList, setProductList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [showModel, setModelShow] = useState(false);
-    const [selectedData, setSelectedData] = useState(null);
     const debtorId = useSelector((state) => state.selectedDebtorStore);
-    const [selectedStockRequest, setSelectedStockRequest] = useState(0);
+
     useEffect(() => {
-        fetchPurchaseOrder();
-        fetchRecords();
+        fetchStockRequest();
     }, [debtorId]);
 
-    const fetchPurchaseOrder = async () => {
+    const fetchStockRequest = async () => {
         try {
             const data = await getAllStockRequest(debtorId == null ? 1 : debtorId);
             setStockRequestList(data);
         } catch (err) {
-            console.error("Failed to load addresses:", err.message);
+            console.error("Failed to load stock requests:", err.message);
         }
     }
 
-    const fetchRecords = async () => {
-        try {
-            const type = await getAllProducts();
-            setProductList(type);
-        } catch (err) {
-            console.error("Failed to load addresses:", err.message);
-        }
-    };
+    const stockRequestOptions = useMemo(
+        () => (stockRequestList || []).map(item => ({
+            value: item.POS_StockRequestID,
+            label: item.RefNumber,
+        })),
+        [stockRequestList]
+    );
 
-    const handlePurchaseOrder = async (e) => {
-        const selectedId = e.target.value;
-        if (selectedId == "") {
+    const handleStockRequestChange = async (option) => {
+        if (!option) {
             setListData([]);
+            return;
         }
-        else {
-            setSelectedStockRequest(selectedId);
-            const data = await getAllStockRequestLine(selectedId);
-            setListData(data);
-        }
+        const data = await getAllStockRequestLine(option.value);
+        setListData(data);
     };
 
     const filteredData = listData.filter((item) =>
@@ -66,30 +53,6 @@ const StockRequestLinePage = () => {
         )
     );
 
-    const handleShow = () => {
-        setSelectedData(null);
-        setModelShow(true)
-    };
-
-    const handleClose = () => setModelShow(false);
-    const handlePurchaseOrderLine = async (data) => {
-        console.log("Data : ", data);
-        try {
-            await newStockRequestLine(data);
-            setListData([]);
-            const list = await getAllStockRequestLine(selectedStockRequest);
-            setListData(list);
-            setModelShow(false);
-        } catch (err) {
-            console.error("Error creating user:", err.message);
-        }
-    };
-
-    // const handleEditProduct = (record) => {
-    //     setSelectedData(record);
-    //     setModelShow(true);
-    // };
-
     return (
         <div className="page-wrapper">
             <div className="content">
@@ -97,14 +60,8 @@ const StockRequestLinePage = () => {
                     <div className="add-item d-flex">
                         <div className="page-title">
                             <h4>Stock Request Line</h4>
-                            <h6>Manage Your Stock Line</h6>
+                            <h6>View Stock Request Lines</h6>
                         </div>
-                    </div>
-                    <div className="page-btn">
-                        <Button variant="none" className="btn btn-added" onClick={handleShow}>
-                            <PlusCircle className="me-2" />
-                            Add New Request Line
-                        </Button>
                     </div>
                 </div>
                 <div className="card table-list-card">
@@ -127,15 +84,16 @@ const StockRequestLinePage = () => {
                             </div>
 
                             {/* Select Dropdown - Right Side */}
-                            <div className="form-group mb-0">
-                                <select className="form-select" onChange={handlePurchaseOrder}>
-                                    <option value="">Filter by Stock Request</option>
-                                    {stockRequestList.map((item, index) => (
-                                        <option key={index} value={item.POS_StockRequestID}>
-                                            {item.RefNumber}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div className="form-group mb-0" style={{ minWidth: 260 }}>
+                                <Select
+                                    classNamePrefix="react-select"
+                                    options={stockRequestOptions}
+                                    onChange={handleStockRequestChange}
+                                    placeholder="Filter by Stock Request"
+                                    isClearable
+                                    isSearchable
+                                    noOptionsMessage={() => "No requests found"}
+                                />
                             </div>
                         </div>
 
@@ -145,6 +103,7 @@ const StockRequestLinePage = () => {
                                     <tr>
                                         <th>Product Name</th>
                                         <th>Quantity</th>
+                                        <th>Approved Quantity</th>
                                         <th>Notes</th>
                                         <th>IsDeclined</th>
                                         <th>Manager Notes</th>
@@ -155,7 +114,8 @@ const StockRequestLinePage = () => {
                                         filteredData.map((item, index) => (
                                             <tr key={index}>
                                                 <td>{item.ProductName || "N/A"}</td>
-                                                <td>{item.Quantity || "N/A"}</td>
+                                                <td>{item.Quantity ?? "N/A"}</td>
+                                                <td>{item.ApprovedQuantity ?? "N/A"}</td>
                                                 <td>{item.Notes || "N/A"}</td>
                                                 <td>{item.IsDeclined ? "Yes" : "No"}</td>
                                                 <td>{item.ManagerNotes || "N/A"}</td>
@@ -163,7 +123,7 @@ const StockRequestLinePage = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" className="text-center">
+                                            <td colSpan="6" className="text-center">
                                                 No records found - Please select Stock Request
                                             </td>
                                         </tr>
@@ -174,14 +134,6 @@ const StockRequestLinePage = () => {
                     </div>
                 </div>
             </div>
-            <StockRequestLineForm
-                onSubmit={handlePurchaseOrderLine}
-                showModel={showModel}
-                handleClose={handleClose}
-                data={selectedData}
-                productList={productList}
-                stockRequestList={stockRequestList}
-            />
         </div>
     );
 };

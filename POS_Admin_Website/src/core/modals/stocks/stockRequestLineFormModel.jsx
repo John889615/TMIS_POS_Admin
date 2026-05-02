@@ -50,7 +50,7 @@ const StockRequestLineForm = ({
         <Modal show={showModel} onHide={handleClose} centered dialogClassName="custom-modal-two">
             <form onSubmit={handleSubmit} ref={formRef}>
                 <Modal.Header closeButton className="custom-modal-header border-0">
-                    <Modal.Title>Purchase Order Line</Modal.Title>
+                    <Modal.Title>Stock Request Line</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="custom-modal-body">
                     <div className="row">

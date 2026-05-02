@@ -9,8 +9,12 @@ namespace POS_Common.Models.Stock.POS_StockRequestLines
    public class StockRequestLine : StockRequestLine_Base
     {
         #region Additional Properties
-        
+
         public string ProductName { get; set; }
+
+        public string Unit { get; set; }
+
+        public string Symbol { get; set; }
         #endregion
     }
 }

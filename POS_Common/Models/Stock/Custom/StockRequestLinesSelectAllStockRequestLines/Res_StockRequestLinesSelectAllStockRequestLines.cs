@@ -27,6 +27,21 @@ namespace POS_Common.Models.Stock.Custom.StockRequestLinesSelectAllStockRequestL
         public string ProductName { get; set; }
 
         /// <summary>
+        /// Maps to FK_UnitID
+        /// </summary>
+        public int? FKUnitID { get; set; }
+
+        /// <summary>
+        /// Maps to Unit
+        /// </summary>
+        public string Unit { get; set; }
+
+        /// <summary>
+        /// Maps to Symbol
+        /// </summary>
+        public string Symbol { get; set; }
+
+        /// <summary>
         /// Maps to Quantity
         /// </summary>
         public decimal? Quantity { get; set; }
