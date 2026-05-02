@@ -504,6 +504,22 @@ namespace POS_Api.Services.Stock
                 return default;
             }
         }
+
+        public static async Task StockRequestLines_Delete_By_Stock_Request(int stockRequestID, SqlConnection sqlConn)
+        {
+            try
+            {
+                await SqlClient.ExecuteNonQueryStoredProcedureAsync(
+                    sqlConn,
+                    "stockRequestLines_delete_by_stock_request",
+                    new SqlParameter() { DbType = System.Data.DbType.Int32, Direction = System.Data.ParameterDirection.Input, ParameterName = "@FK_StockRequestID", Value = stockRequestID });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                throw;
+            }
+        }
         #endregion
 
         #region Stock Transfers
@@ -853,6 +869,48 @@ namespace POS_Api.Services.Stock
                         sqlConn,
                         "POS_StockRequestReviewers_select_by_debtor_role",
                         new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_ToDebtorID", Value = toDebtorID },
+                        new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Role", Value = role }))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem.AddRange(await reader.TranslateAsync<StockRequestReviewer>(Stock_Translator.Translate_StockRequestReviewer));
+                    }
+                    return resultItem;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<StockRequestReviewer>> POS_StockRequestReviewers_Select_By_Role(string role, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    return await POS_StockRequestReviewers_Select_By_Role(role, sqlConn);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<StockRequestReviewer>> POS_StockRequestReviewers_Select_By_Role(string role, SqlConnection sqlConn)
+        {
+            try
+            {
+                var resultItem = new List<StockRequestReviewer>();
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                        sqlConn,
+                        "POS_StockRequestReviewers_select_by_role",
                         new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Role", Value = role }))
                 {
                     if (reader.HasRows)

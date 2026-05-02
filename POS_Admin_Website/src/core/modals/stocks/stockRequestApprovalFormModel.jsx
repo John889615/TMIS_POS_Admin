@@ -8,6 +8,7 @@ const StockRequestApprovalForm = ({
     handleClose,
     data,
     lines,
+    readOnly = false,
 }) => {
     const [decisions, setDecisions] = useState([]);
     const [managerNotes, setManagerNotes] = useState('');
@@ -21,13 +22,13 @@ const StockRequestApprovalForm = ({
                 Symbol: l.Symbol,
                 Quantity: l.Quantity,
                 Notes: l.Notes,
-                ApprovedQuantity: l.Quantity ?? 0,
-                IsDeclined: false,
-                ManagerNotes: '',
+                ApprovedQuantity: readOnly ? (l.ApprovedQuantity ?? l.Quantity ?? 0) : (l.Quantity ?? 0),
+                IsDeclined: readOnly ? !!l.IsDeclined : false,
+                ManagerNotes: readOnly ? (l.ManagerNotes || '') : '',
             })));
-            setManagerNotes('');
+            setManagerNotes(readOnly ? (data?.ManagerNotes || '') : '');
         }
-    }, [showModel, lines]);
+    }, [showModel, lines, readOnly, data]);
 
     const updateDecision = (idx, field, value) => {
         setDecisions(prev => prev.map((d, i) => {
@@ -42,6 +43,7 @@ const StockRequestApprovalForm = ({
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (readOnly) return;
         const payload = {
             POS_StockRequestID: data?.POS_StockRequestID,
             ManagerNotes: managerNotes ? managerNotes.trim() : null,
@@ -57,13 +59,14 @@ const StockRequestApprovalForm = ({
         }
     };
 
+    const titlePrefix = readOnly ? 'View Stock Request' : 'Approve Stock Request';
 
     return (
         <Modal show={showModel} onHide={handleClose} centered dialogClassName="custom-modal-two" size="lg">
             <form onSubmit={handleSubmit}>
                 <Modal.Header closeButton className="custom-modal-header border-0">
                     <Modal.Title>
-                        Approve Stock Request{data?.RefNumber ? ` - ${data.RefNumber}` : ''}
+                        {titlePrefix}{data?.RefNumber ? ` - ${data.RefNumber}` : ''}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="custom-modal-body">
@@ -102,17 +105,19 @@ const StockRequestApprovalForm = ({
                                                 <td>
                                                     <input type="number" min="0" step="0.0001"
                                                         className="form-control form-control-sm"
-                                                        disabled={d.IsDeclined}
+                                                        disabled={readOnly || d.IsDeclined}
                                                         value={d.ApprovedQuantity ?? ''}
                                                         onChange={(e) => updateDecision(idx, 'ApprovedQuantity', e.target.value)} />
                                                 </td>
                                                 <td className="text-center">
                                                     <input type="checkbox"
+                                                        disabled={readOnly}
                                                         checked={!!d.IsDeclined}
                                                         onChange={(e) => updateDecision(idx, 'IsDeclined', e.target.checked)} />
                                                 </td>
                                                 <td>
                                                     <input type="text" className="form-control form-control-sm"
+                                                        disabled={readOnly}
                                                         value={d.ManagerNotes || ''}
                                                         onChange={(e) => updateDecision(idx, 'ManagerNotes', e.target.value)} />
                                                 </td>
@@ -130,6 +135,7 @@ const StockRequestApprovalForm = ({
                             <div className="input-blocks">
                                 <label>Manager Notes (overall)</label>
                                 <textarea rows={2} className="form-control"
+                                    disabled={readOnly}
                                     value={managerNotes}
                                     onChange={(e) => setManagerNotes(e.target.value)}></textarea>
                             </div>
@@ -142,15 +148,17 @@ const StockRequestApprovalForm = ({
                         className="btn btn-cancel me-2"
                         onClick={handleClose}
                     >
-                        Cancel
+                        {readOnly ? 'Close' : 'Cancel'}
                     </button>
-                    <button
-                        type="submit"
-                        className="btn btn-submit"
-                        disabled={decisions.length === 0}
-                    >
-                        Submit Decision
-                    </button>
+                    {!readOnly && (
+                        <button
+                            type="submit"
+                            className="btn btn-submit"
+                            disabled={decisions.length === 0}
+                        >
+                            Submit Decision
+                        </button>
+                    )}
                 </Modal.Footer>
             </form>
         </Modal>
@@ -166,4 +174,5 @@ StockRequestApprovalForm.propTypes = {
     onSubmit: PropTypes.func.isRequired,
     showModel: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
+    readOnly: PropTypes.bool,
 };

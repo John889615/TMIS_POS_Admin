@@ -20,8 +20,6 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
 
         [MinLength(1, ErrorMessage = "At least one line is required.")]
         public List<Req_StockRequest_Add_Line> Lines { get; set; }
-
-        public bool? IsSubmitted { get; set; }
         #endregion
     }
 

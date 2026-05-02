@@ -1537,7 +1537,6 @@ namespace POS_Api.Services
                     return ApiResponse.Fail<object>(AppErrorCode.StockRequestExists, new List<string> { "Stock Request already exists." }, 400);
                 }
 
-                int statusId = request.IsSubmitted == true ? (int)StockRequestStatus.Pending : (int)StockRequestStatus.Draft;
                 int newId;
 
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -1550,7 +1549,7 @@ namespace POS_Api.Services
                         RefNumber        = request.RefNumber,
                         FK_FromDebtorID  = request.FK_FromDebtorID,
                         FK_ToDebtorID    = request.FK_ToDebtorID,
-                        FK_OrderStatusID = statusId,
+                        FK_OrderStatusID = (int)StockRequestStatus.Draft,
                         FK_UserID        = _userContext.UserID,
                         Notes            = request.Notes,
                         DateOrdered      = DateTime.Now,
@@ -1587,11 +1586,6 @@ namespace POS_Api.Services
                     scope.Complete();
                 }
 
-                if (request.IsSubmitted == true)
-                {
-                    await Send_Stock_Request_Approval_Email_Async(newId, connectionString);
-                }
-
                 return ApiResponse.Success<object>(new { POS_StockRequestID = newId });
             }
             catch (Exception ex)
@@ -1626,8 +1620,10 @@ namespace POS_Api.Services
                     return ApiResponse.Fail<object>(AppErrorCode.StockRequestNotInDraft, new List<string> { "Only Draft requests can be edited." }, 400);
                 }
 
-                int statusId = request.IsSubmitted == true ? (int)StockRequestStatus.Pending : (int)StockRequestStatus.Draft;
+                if (request.Lines == null || request.Lines.Count == 0)
+                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestEmpty, new List<string> { "At least one line is required." }, 400);
 
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
@@ -1638,7 +1634,7 @@ namespace POS_Api.Services
                         RefNumber           = request.RefNumber       ?? existing.RefNumber,
                         FK_FromDebtorID     = request.FK_FromDebtorID ?? existing.FK_FromDebtorID,
                         FK_ToDebtorID       = request.FK_ToDebtorID   ?? existing.FK_ToDebtorID,
-                        FK_OrderStatusID    = statusId,
+                        FK_OrderStatusID    = existing.FK_OrderStatusID,
                         FK_UserID           = existing.FK_UserID,
                         ManagerNotes        = existing.ManagerNotes,
                         Notes               = request.Notes ?? existing.Notes,
@@ -1647,11 +1643,29 @@ namespace POS_Api.Services
                         FK_ApprovedByUserID = existing.FK_ApprovedByUserID,
                         DateApproved        = existing.DateApproved
                     }, sqlConn);
-                }
 
-                if (request.IsSubmitted == true)
-                {
-                    await Send_Stock_Request_Approval_Email_Async(existing.StockRequestID.Value, connectionString);
+                    await StockRequestLines_Delete_By_Stock_Request(existing.StockRequestID.Value, sqlConn);
+
+                    foreach (var line in request.Lines)
+                    {
+                        var insertedLine = await POS_StockRequestLines_Insert(new StockRequestLine()
+                        {
+                            FK_StockRequestID = existing.StockRequestID.Value,
+                            FK_ProductID      = line.FK_ProductID,
+                            FK_UnitID         = line.FK_UnitID,
+                            Quantity          = line.Quantity,
+                            Notes             = line.Notes,
+                            IsDeclined        = false
+                        }, sqlConn);
+
+                        if (insertedLine?.StockRequestLineID == null)
+                        {
+                            _logger.LogService("Failed to insert Stock Request line during update", line);
+                            return ApiResponse.Fail<object>(AppErrorCode.DatabaseError, new List<string> { "Failed to update Stock Request lines." }, 500);
+                        }
+                    }
+
+                    scope.Complete();
                 }
 
                 return ApiResponse.Success(new object());
@@ -1867,15 +1881,18 @@ namespace POS_Api.Services
                 var sr = await Load_Stock_Request_With_Names(stockRequestID, connectionString);
                 if (sr == null) return;
 
-                var lines = await StockRequestLines_Select_All_StockRequestLines(new StockRequestLine() { FK_StockRequestID = stockRequestID }, connectionString)
-                            ?? new List<StockRequestLine>();
-
-                var approvers = await POS_StockRequestReviewers_Select_By_Debtor_Role(sr.FK_ToDebtorID ?? 0, "Approver", connectionString)
+                var approvers = await POS_StockRequestReviewers_Select_By_Role("Approver", connectionString)
                                 ?? new List<StockRequestReviewer>();
 
-                if (approvers.Count == 0)
+                var recipients = approvers
+                    .Select(a => a.Email)
+                    .Where(e => !string.IsNullOrWhiteSpace(e))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                if (recipients.Count == 0)
                 {
-                    _logger.LogService($"No approvers configured for ToDebtorID={sr.FK_ToDebtorID}; approval email skipped");
+                    _logger.LogService("No approvers configured; approval email skipped");
                     return;
                 }
 
@@ -1883,18 +1900,7 @@ namespace POS_Api.Services
                 {
                     StockRequestID = sr.StockRequestID ?? 0,
                     RefNumber      = sr.RefNumber ?? string.Empty,
-                    FromDebtorName = sr.FromDebtorName ?? string.Empty,
-                    ToDebtorName   = sr.ToDebtorName ?? string.Empty,
-                    CreatedBy      = sr.CreatedBy ?? string.Empty,
-                    Notes          = sr.Notes ?? string.Empty,
-                    To             = approvers.Select(a => a.Email).Where(e => !string.IsNullOrWhiteSpace(e)).Distinct().ToList(),
-                    Lines          = lines.Select(l => new StockRequestEmailLine
-                    {
-                        ProductName  = l.ProductName ?? string.Empty,
-                        Quantity     = l.Quantity,
-                        Notes        = l.Notes ?? string.Empty,
-                        ManagerNotes = l.ManagerNotes ?? string.Empty
-                    }).ToList()
+                    To             = recipients
                 });
             }
             catch (Exception ex)

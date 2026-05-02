@@ -46,13 +46,13 @@ BEGIN
         sr.FK_ApprovedByUserID,
         sr.DateApproved
     FROM         dbo.POS_StockRequests sr
-    INNER JOIN   dbo.Debtors           df ON df.DebtorID      = sr.FK_FromDebtorID
-    INNER JOIN   dbo.Debtors           dt ON dt.DebtorID      = sr.FK_ToDebtorID
+    INNER JOIN   dbo.POS_Locations           df ON df.LocationID      = sr.FK_FromDebtorID
+    INNER JOIN   dbo.POS_Locations           dt ON dt.LocationID      = sr.FK_ToDebtorID
     INNER JOIN   dbo.POS_OrderStatus   os ON os.OrderStatusID = sr.FK_OrderStatusID
     LEFT JOIN    dbo.Users             u  ON u.UserID         = sr.FK_UserID
-    WHERE (@FK_ToDebtorID    IS NULL OR sr.FK_ToDebtorID    = @FK_ToDebtorID)
-      AND (@FK_FromDebtorID  IS NULL OR sr.FK_FromDebtorID  = @FK_FromDebtorID)
-      AND (@FK_OrderStatusID IS NULL OR sr.FK_OrderStatusID = @FK_OrderStatusID)
+    --WHERE (@FK_ToDebtorID    IS NULL OR sr.FK_ToDebtorID    = @FK_ToDebtorID)
+    --  AND (@FK_FromDebtorID  IS NULL OR sr.FK_FromDebtorID  = @FK_FromDebtorID)
+    --  AND (@FK_OrderStatusID IS NULL OR sr.FK_OrderStatusID = @FK_OrderStatusID)
     ORDER BY sr.DateOrdered DESC;
 END
 GO
@@ -85,7 +85,7 @@ END
 GO
 
 -- =============================================================
--- 3. List lines for a given stock request (with product name + approval state)
+-- 3. List lines for a given stock request (with product name, unit, approval state)
 -- =============================================================
 CREATE OR ALTER PROCEDURE [dbo].[stockRequestLines_select_all_stockRequestLines]
     @FK_StockRequestID INT
@@ -98,6 +98,9 @@ BEGIN
         srl.FK_StockRequestID,
         srl.FK_ProductID,
         p.ProductName,
+        srl.FK_UnitID,
+        u.Unit,
+        u.Symbol,
         srl.Quantity,
         srl.Notes,
         srl.ManagerNotes,
@@ -105,6 +108,7 @@ BEGIN
         srl.ApprovedQuantity
     FROM         dbo.POS_StockRequestLines srl
     INNER JOIN   dbo.POS_Products          p   ON p.ProductID = srl.FK_ProductID
+    LEFT  JOIN   dbo.POS_Units             u   ON u.UnitID    = srl.FK_UnitID
     WHERE srl.FK_StockRequestID = @FK_StockRequestID
     ORDER BY srl.StockRequestLineID;
 END
@@ -134,5 +138,45 @@ BEGIN
     WHERE rev.FK_ToDebtorID = @FK_ToDebtorID
       AND rev.Role          = @Role
       AND rev.IsActive      = 1;
+END
+GO
+
+-- =============================================================
+-- 5. NEW: Resolve email recipients for a Role across all debtors
+--     @Role expected: 'Approver' or 'Buyer'
+-- =============================================================
+CREATE OR ALTER PROCEDURE [dbo].[POS_StockRequestReviewers_select_by_role]
+    @Role VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        rev.POS_StockRequestReviewerID,
+        rev.FK_ToDebtorID,
+        rev.FK_UserID,
+        rev.Email,
+        rev.DisplayName,
+        rev.Role,
+        rev.IsActive,
+        rev.DateCreated
+    FROM dbo.POS_StockRequestReviewers rev
+    WHERE rev.Role     = @Role
+      AND rev.IsActive = 1;
+END
+GO
+
+-- =============================================================
+-- 6. NEW: Delete all lines for a stock request
+--     Used by Update flow to full-replace the line set on a Draft.
+-- =============================================================
+CREATE OR ALTER PROCEDURE [dbo].[stockRequestLines_delete_by_stock_request]
+    @FK_StockRequestID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.POS_StockRequestLines
+    WHERE FK_StockRequestID = @FK_StockRequestID;
 END
 GO
