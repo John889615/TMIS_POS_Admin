@@ -1,0 +1,25 @@
+USE [TMIS_BlueSafaris]
+GO
+
+IF OBJECT_ID ('POS_DebtorProductPrices', 'U') IS NOT NULL
+	DROP TABLE POS_DebtorProductPrices
+GO
+
+CREATE TABLE POS_DebtorProductPrices
+(
+	DebtorProductPriceID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_DebtorProductID INT NOT NULL FOREIGN KEY REFERENCES POS_DebtorProducts (DebtorProductID),
+	FK_PriceCodeID INT NOT NULL FOREIGN KEY REFERENCES POS_PriceCodes (PriceCodeID),
+	FK_TaxID INT NOT NULL FOREIGN KEY REFERENCES POS_TaxTypes (TaxTypeID),
+	
+	ItemPrice DECIMAL(18, 4) NOT NULL,
+	Inclusive BIT NOT NULL,
+	Vat DECIMAL(18, 4) NOT NULL,
+	StartDate DATETIME NULL,
+	EndDate DATETIME NULL,
+	IsActive BIT NOT NULL,
+	FK_DefaultUnitID INT NULL FOREIGN KEY REFERENCES POS_Units(UnitID),
+	DateCreated DATETIME NOT  NULL,
+	DateUpdated DATETIME NOT NULL
+)
+

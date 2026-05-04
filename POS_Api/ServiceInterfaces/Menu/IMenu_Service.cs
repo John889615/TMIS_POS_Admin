@@ -1,6 +1,7 @@
 ﻿using POS_Common.Models;
 using POS_Common.ModelsDto.MenuController.DebtorMenu;
 using POS_Common.ModelsDto.MenuController.DebtorMenuItemProduct;
+using POS_Common.ModelsDto.MenuController.MenuItemProduct;
 using POS_Common.ModelsDto.MenuController.DebtorMenuPrinter;
 using POS_Common.ModelsDto.MenuController.Menu;
 using POS_Common.ModelsDto.MenuController.MenuItem;
@@ -33,6 +34,7 @@ namespace POS_Api.ServiceInterfaces.Menu
         Task<ApiResponse<List<Res_MenuItemProduct_List>>> List_Menu_Item_Products(Req_MenuItemProduct_List request);
         Task<ApiResponse<object>> Add_Menu_Item_Product(Req_MenuItemProduct_Add request);
         Task<ApiResponse<object>> Remove_Menu_Item_Product(Req_MenuItemProduct_Remove request);
+        Task<ApiResponse<object>> Reorder_Menu_Item_Products(Req_MenuItemProduct_Reorder request);
 
         
         //Task<ApiResponse<object>> Add_Debtor_Menu(Req_DebtorMenu_Add request);
@@ -47,6 +49,7 @@ namespace POS_Api.ServiceInterfaces.Menu
 
         Task<ApiResponse<object>> Add_Debtor_Menu_Item_Product(Req_MenuItemProduct_Add request);
         Task<ApiResponse<object>> Remove_Debtor_Menu_Item_Product(Req_MenuItemProduct_Remove request);
+        Task<ApiResponse<object>> Reorder_Debtor_Menu_Item_Products(Req_DebtorMenuItemProduct_Reorder request);
 
         Task<ApiResponse<object>> Add_Debtor_Menu_Printer(Req_DebtorMenuPrinter_Add request);
         Task<ApiResponse<object>> Update_Debtor_Menu_Printer(Req_DebtorMenuPrinter_Update request);

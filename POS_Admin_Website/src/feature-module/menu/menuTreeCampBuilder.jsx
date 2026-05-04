@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import {
   newDebtorMenuItemProduct,
   deleteDebtorMenuItemProduct,
+  reorderDebtorMenuItemProducts,
 } from "../../services/menu/menuItemProductService";
 import {
   newDebtorMenuItem,
@@ -209,10 +210,15 @@ const MenuTreeCampBuilder = () => {
   function DroppableProducts({ item, parentId, children }) {
     const { setNodeRef, isOver } = useDroppable({
       id: `menu-products-${item.ItemID}`,
-      data: { item, parentId },
+      // beforeLinkId: null => drop on the bare zone means "append at end".
+      data: { item, parentId, targetMenuItemId: item.ItemID, beforeLinkId: null },
     });
 
-    const canDrop = activeProduct && !activeProduct.fromMenuItemId;
+    // Allow drop when:
+    //   - dragging from the right-side products list (no _fromMenuItemId), OR
+    //   - dragging from a *different* menu item (move between items), OR
+    //   - dragging within the same item (reorder - drop on bare zone = move to bottom)
+    const canDrop = !!activeProduct;
 
     return (
       <div
@@ -221,6 +227,77 @@ const MenuTreeCampBuilder = () => {
       >
         {children(isOver && canDrop)}
       </div>
+    );
+  }
+
+  function DraggableLinkedProduct({ product, sourceMenuItemId, onDelete }) {
+    const menuItemProductId = getMenuItemProductId(product);
+    const productId = getProductId(product);
+    const fallbackId = `${sourceMenuItemId}-${productId}`;
+
+    const draggable = useDraggable({
+      id: `menuitem-product-${menuItemProductId ?? fallbackId}`,
+      data: { product, fromMenuItemId: sourceMenuItemId, menuItemProductId, productId },
+    });
+
+    // Each row is also a drop target: dropping on it means "insert ABOVE this row".
+    const droppable = useDroppable({
+      id: `mip-drop-${menuItemProductId ?? fallbackId}`,
+      data: { targetMenuItemId: sourceMenuItemId, beforeLinkId: menuItemProductId },
+      disabled: draggable.isDragging,
+    });
+
+    const setNodeRef = (el) => {
+      draggable.setNodeRef(el);
+      droppable.setNodeRef(el);
+    };
+
+    useEffect(() => {
+      if (draggable.isDragging) {
+        setActiveProduct({ ...product, _fromMenuItemId: sourceMenuItemId });
+      } else if (
+        activeProduct?._fromMenuItemId === sourceMenuItemId &&
+        getProductId(activeProduct) === productId
+      ) {
+        setActiveProduct(null);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [draggable.isDragging]);
+
+    const showDropIndicator =
+      droppable.isOver && activeProduct &&
+      !(activeProduct._fromMenuItemId === sourceMenuItemId &&
+        getProductId(activeProduct) === productId);
+
+    return (
+      <li
+        ref={setNodeRef}
+        {...draggable.attributes}
+        {...draggable.listeners}
+        className="mb-1 d-flex align-items-center justify-content-between"
+        style={{
+          border: "1px solid #dee2e6",
+          borderTop: showDropIndicator ? "3px solid #0d6efd" : "1px solid #dee2e6",
+          borderRadius: "5px",
+          padding: "6px 10px",
+          background: draggable.isDragging ? "#e3f2fd" : "#f9f9f9",
+          cursor: "grab",
+          opacity: draggable.isDragging ? 0.5 : 1,
+          marginTop: showDropIndicator ? 4 : 0,
+        }}
+      >
+        <span>{getProductLabel(product)}</span>
+
+        <button
+          type="button"
+          className="btn btn-sm btn-link text-danger ms-2 p-0"
+          title="Delete Product"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={onDelete}
+        >
+          <i className="bi bi-trash"></i>
+        </button>
+      </li>
     );
   }
 
@@ -431,71 +508,54 @@ const MenuTreeCampBuilder = () => {
                           const productId = getProductId(prod);
 
                           return (
-                            <li
+                            <DraggableLinkedProduct
                               key={
                                 menuItemProductId ||
                                 productId ||
                                 `${item.ItemID}-${index}`
                               }
-                              className="mb-1 d-flex align-items-center justify-content-between"
-                              style={{
-                                border: "1px solid #dee2e6",
-                                borderRadius: "5px",
-                                padding: "6px 10px",
-                                background: "#f9f9f9",
-                              }}
-                            >
-                              <span>{getProductLabel(prod)}</span>
+                              product={prod}
+                              sourceMenuItemId={item.ItemID}
+                              onDelete={async () => {
+                                const deleteId = getMenuItemProductId(prod);
 
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-link text-danger ms-2 p-0"
-                                title="Delete Product"
-                                onClick={async () => {
-                                  console.log("Delete clicked product:", prod);
+                                if (!deleteId) {
+                                  await swalError(
+                                    "Remove failed",
+                                    "No menu-item-product link ID found on this row."
+                                  );
+                                  return;
+                                }
 
-                                  const deleteId = getMenuItemProductId(prod);
+                                const ok = await swalConfirm(
+                                  "Delete product link?",
+                                  "Remove this product from the menu item?",
+                                  "Remove"
+                                );
+                                if (!ok) return;
 
-                                  if (!deleteId) {
-                                    await swalError(
-                                      "Remove failed",
-                                      "No menu-item-product link ID found on this row. Check the console log for the product object field names."
-                                    );
+                                try {
+                                  const res =
+                                    await deleteDebtorMenuItemProduct(deleteId);
+
+                                  if (res?.Success === false) {
+                                    await swalError("Remove failed", res);
                                     return;
                                   }
 
-                                  const ok = await swalConfirm(
-                                    "Delete product link?",
-                                    "Remove this product from the menu item?",
-                                    "Remove"
+                                  await fetchData();
+                                  await swalSuccess(
+                                    "Removed",
+                                    "Product removed from menu item."
                                   );
-                                  if (!ok) return;
-
-                                  try {
-                                    const res =
-                                      await deleteDebtorMenuItemProduct(deleteId);
-
-                                    if (res?.Success === false) {
-                                      await swalError("Remove failed", res);
-                                      return;
-                                    }
-
-                                    await fetchData();
-                                    await swalSuccess(
-                                      "Removed",
-                                      "Product removed from menu item."
-                                    );
-                                  } catch (err) {
-                                    await swalError(
-                                      "Remove failed",
-                                      err?.message || "Error removing product."
-                                    );
-                                  }
-                                }}
-                              >
-                                <i className="bi bi-trash"></i>
-                              </button>
-                            </li>
+                                } catch (err) {
+                                  await swalError(
+                                    "Remove failed",
+                                    err?.message || "Error removing product."
+                                  );
+                                }
+                              }}
+                            />
                           );
                         })
                       ) : (
@@ -534,22 +594,79 @@ const MenuTreeCampBuilder = () => {
     return null;
   };
 
+  // Build the new ordered list of POS_MenuItemProductIDs after dropping
+  // `draggedLinkId` either above `beforeLinkId` (insert there) or at the
+  // end (when beforeLinkId is null). Filters out the dragged ID first so
+  // reorder works for both same-context reorder and post-cross-item move.
+  const buildReorderedIds = (products, draggedLinkId, beforeLinkId) => {
+    const ids = (products || [])
+      .map((p) => getMenuItemProductId(p))
+      .filter((linkId) => linkId != null);
+    const filtered = ids.filter((linkId) => linkId !== draggedLinkId);
+    if (beforeLinkId == null) {
+      filtered.push(draggedLinkId);
+      return filtered;
+    }
+    const idx = filtered.indexOf(beforeLinkId);
+    if (idx === -1) {
+      filtered.push(draggedLinkId);
+    } else {
+      filtered.splice(idx, 0, draggedLinkId);
+    }
+    return filtered;
+  };
+
+  // After an add/move into `targetMenuItemId`, if a target position was
+  // requested, refetch the tree to discover the new link ID, then call
+  // reorder so the row lands above `beforeLinkId`. If beforeLinkId is null
+  // the new row is already at the bottom (MAX+1 from the API), so we just
+  // refresh.
+  const placeAtPositionAfterAdd = async (targetMenuItemId, addedProductId, beforeLinkId) => {
+    if (beforeLinkId == null) {
+      await fetchData();
+      return;
+    }
+    const tree = await getCampMenuTree(id);
+    setMenuData(tree);
+    const refreshedTarget = findMenuItemById(tree?.MenuItems || [], targetMenuItemId);
+    const newProduct = refreshedTarget?.Product?.find(
+      (p) => getProductId(p) === addedProductId
+    );
+    if (!newProduct) return;
+    const newLinkId = getMenuItemProductId(newProduct);
+    if (newLinkId == null) return;
+    const newOrderIds = buildReorderedIds(refreshedTarget.Product, newLinkId, beforeLinkId);
+    await reorderDebtorMenuItemProducts(targetMenuItemId, newOrderIds);
+    await fetchData();
+  };
+
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     setActiveProduct(null);
 
     if (!active || !over) return;
 
-    if (
-      active.id.startsWith("product-") &&
-      over.id.startsWith("menu-products-")
-    ) {
+    const targetMenuItemId = over.data?.current?.targetMenuItemId;
+    const beforeLinkId = over.data?.current?.beforeLinkId ?? null;
+
+    if (targetMenuItemId == null) return;
+
+    const targetMenuItem = findMenuItemById(
+      menuData?.MenuItems || [],
+      targetMenuItemId
+    );
+
+    if (!targetMenuItem) {
+      await swalError("Drag/drop failed", "Could not find target menu item.");
+      return;
+    }
+
+    // Case 1: dragging a product from the right-side products list
+    if (active.id.startsWith("product-")) {
       const match = active.id.match(/^product-(\d+)$/);
       if (!match) return;
 
       const productId = parseInt(match[1], 10);
-      const menuItemId = parseInt(over.id.replace("menu-products-", ""), 10);
-
       const draggedProduct = productList.find(
         (p) => getProductId(p) === productId
       );
@@ -559,26 +676,22 @@ const MenuTreeCampBuilder = () => {
         return;
       }
 
-      const targetMenuItem = findMenuItemById(menuData?.MenuItems || [], menuItemId);
-
-      if (!targetMenuItem) {
-        await swalError("Drag/drop failed", "Could not find target menu item.");
-        return;
-      }
-
       const alreadyExists =
         targetMenuItem.Product &&
         targetMenuItem.Product.some((p) => getProductId(p) === productId);
 
       if (alreadyExists) {
-        await swalError("Already linked", "This product is already linked to the menu item.");
+        await swalError(
+          "Already linked",
+          "This product is already linked to the menu item."
+        );
         return;
       }
 
       try {
         const res = await newDebtorMenuItemProduct({
-          FK_MenuItemID: menuItemId,
-          FK_ProductID: getProductId(draggedProduct),
+          FK_MenuItemID: targetMenuItemId,
+          FK_ProductID: productId,
         });
 
         if (res?.Success === false) {
@@ -586,11 +699,108 @@ const MenuTreeCampBuilder = () => {
           return;
         }
 
-        await fetchData();
+        await placeAtPositionAfterAdd(targetMenuItemId, productId, beforeLinkId);
       } catch (err) {
         await swalError(
           "Drag/drop failed",
           err?.message || "Could not add product to item."
+        );
+      }
+      return;
+    }
+
+    // Case 2: dragging a product that already belongs to a menu item
+    if (active.id.startsWith("menuitem-product-")) {
+      const sourceMenuItemId = active.data.current?.fromMenuItemId;
+      const productId = active.data.current?.productId;
+      const sourceLinkId = active.data.current?.menuItemProductId;
+
+      if (sourceMenuItemId == null || productId == null) {
+        await swalError("Move failed", "Could not read source data.");
+        return;
+      }
+
+      if (!sourceLinkId) {
+        await swalError(
+          "Move failed",
+          "No menu-item-product link ID found on the source row."
+        );
+        return;
+      }
+
+      // 2a: same menu item — reorder only
+      if (sourceMenuItemId === targetMenuItemId) {
+        // Dropped on its own row's drop indicator -> no-op.
+        if (beforeLinkId === sourceLinkId) return;
+
+        const newOrderIds = buildReorderedIds(
+          targetMenuItem.Product,
+          sourceLinkId,
+          beforeLinkId
+        );
+
+        // No-op if the order has not actually changed.
+        const existingIds = (targetMenuItem.Product || [])
+          .map((p) => getMenuItemProductId(p))
+          .filter((linkId) => linkId != null);
+        if (existingIds.join(",") === newOrderIds.join(",")) return;
+
+        try {
+          const res = await reorderDebtorMenuItemProducts(targetMenuItemId, newOrderIds);
+          if (res?.Success === false) {
+            await swalError("Reorder failed", res);
+            return;
+          }
+          await fetchData();
+        } catch (err) {
+          await swalError(
+            "Reorder failed",
+            err?.message || "Could not reorder products."
+          );
+        }
+        return;
+      }
+
+      // 2b: different menu item — move (add then delete), then optional reorder
+      const alreadyExists =
+        targetMenuItem.Product &&
+        targetMenuItem.Product.some((p) => getProductId(p) === productId);
+
+      if (alreadyExists) {
+        await swalError(
+          "Already linked",
+          "This product is already linked to the target menu item."
+        );
+        return;
+      }
+
+      try {
+        const addRes = await newDebtorMenuItemProduct({
+          FK_MenuItemID: targetMenuItemId,
+          FK_ProductID: productId,
+        });
+
+        if (addRes?.Success === false) {
+          await swalError("Move failed", addRes);
+          return;
+        }
+
+        const delRes = await deleteDebtorMenuItemProduct(sourceLinkId);
+
+        if (delRes?.Success === false) {
+          await swalError(
+            "Move partially failed",
+            "Added to the target item, but could not remove from the original. Please remove the duplicate manually."
+          );
+          await fetchData();
+          return;
+        }
+
+        await placeAtPositionAfterAdd(targetMenuItemId, productId, beforeLinkId);
+      } catch (err) {
+        await swalError(
+          "Move failed",
+          err?.message || "Could not move product between menu items."
         );
       }
     }

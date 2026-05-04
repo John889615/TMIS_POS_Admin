@@ -1,0 +1,19 @@
+USE [TMIS_BlueSafaris]
+GO
+
+IF OBJECT_ID ('POS_ServedAs', 'U') IS NOT NULL
+	DROP TABLE POS_ServedAs
+GO
+
+CREATE TABLE POS_ServedAs
+(
+	ServedAsID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	ServedAsType VARCHAR(20) NOT NULL, -- Food | Drink
+	[Name] VARCHAR(50) NOT NULL,
+	FK_CreatedUserID INT NOT NULL FOREIGN KEY REFERENCES Users (UserID),
+	FK_UpdatedUserID INT NULL FOREIGN KEY REFERENCES Users (UserID),
+	DateCreated DATETIME NOT NULL DEFAULT (GETDATE()),
+	DateUpdated DATETIME NULL,
+
+	CONSTRAINT unq_served_as_type_name UNIQUE (ServedAsType, [Name])
+)

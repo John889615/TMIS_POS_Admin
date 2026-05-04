@@ -1,0 +1,17 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_InternalStockTransfers', 'U') IS NOT NULL
+	DROP TABLE POS_InternalStockTransfers
+GO
+
+CREATE TABLE POS_InternalStockTransfers
+(
+	InternalStockTransferID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	RefNumber VARCHAR(50) NULL,
+	FK_DebtorID INT NOT NULL FOREIGN KEY REFERENCES Debtors(DebtorID),
+	FK_CostCenterID INT NOT NULL FOREIGN KEY REFERENCES POS_CostCenters(CostCenterID),
+	FK_UserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+	Notes VARCHAR(MAX) NULL,
+	DateTransfered DATETIME NOT NULL
+)

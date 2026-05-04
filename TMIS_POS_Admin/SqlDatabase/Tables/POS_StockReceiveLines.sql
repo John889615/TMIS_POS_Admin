@@ -1,0 +1,22 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_StockReceiveLines', 'U') IS NOT NULL
+	DROP TABLE POS_StockReceiveLines
+GO
+
+CREATE TABLE POS_StockReceiveLines
+(
+	StockReceiveLineID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_StockReceiveID INT NOT NULL FOREIGN KEY REFERENCES POS_StockReceive(StockReceiveID),
+	FK_ProductID INT NOT NULL FOREIGN KEY REFERENCES POS_Products(ProductID),
+	Quantity DECIMAL(18, 4) NOT NULL,
+	UnitCostIncl DECIMAL(18, 4) NULL,
+	UnitCostExcl DECIMAL(18, 4) NULL,
+	FK_TaxTypeID INT NULL FOREIGN KEY REFERENCES POS_TaxTypes(TaxTypeID),
+	TaxRate DECIMAL(18, 4) NULL,
+	TotalCostIncl DECIMAL(18, 4) NULL,
+	TotalCostExcl DECIMAL(18, 4) NULL,
+	Notes VARCHAR(MAX) NULL,
+	LineTotal DECIMAL(18, 4) NULL
+)

@@ -1,0 +1,17 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_Accounts', 'U') IS NOT NULL
+	DROP TABLE POS_Accounts
+GO
+
+CREATE TABLE POS_Accounts
+(
+    AccountID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	[Name] VARCHAR(50) NOT NULL,
+	FK_BookingHeaderID INT NOT NULL FOREIGN KEY REFERENCES BookingHeaders(BookingHeaderID),
+	IsClosed BIT NOT NULL,
+	FK_ResponsibleID INT NOT NULL FOREIGN KEY REFERENCES Guests (GuestID),
+    DateCreated DATETIME NOT NULL,
+    DateUpdated DATETIME NULL
+)

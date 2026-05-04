@@ -1294,6 +1294,83 @@ namespace POS_Api.Services.Menu
         }
         #endregion
 
+        #region Reorder
+
+        public static async Task<int> MenuItemProducts_Reorder(int fkMenuItemID, string orderedIDsJson, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    return await MenuItemProducts_Reorder(fkMenuItemID, orderedIDsJson, sqlConn);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom reorder code");
+                return -1;
+            }
+        }
+
+        public static async Task<int> MenuItemProducts_Reorder(int fkMenuItemID, string orderedIDsJson, SqlConnection sqlConn)
+        {
+            try
+            {
+                var rows = await SqlClient.ExecuteNonQueryStoredProcedureAsync(
+                    sqlConn,
+                    "menuItemProducts_reorder",
+                    new SqlParameter() { DbType = DbType.Int32,  Direction = ParameterDirection.Input, ParameterName = "@FK_MenuItemID", Value = fkMenuItemID },
+                    new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@OrderedIDs",    Value = orderedIDsJson });
+
+                Log.Information("menuItemProducts_reorder ran for FK_MenuItemID={FK_MenuItemID}", fkMenuItemID);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom reorder code");
+                return -1;
+            }
+        }
+
+        public static async Task<int> DebtorMenuItemProducts_Reorder(int fkDebtorMenuItemID, string orderedIDsJson, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    return await DebtorMenuItemProducts_Reorder(fkDebtorMenuItemID, orderedIDsJson, sqlConn);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom reorder code");
+                return -1;
+            }
+        }
+
+        public static async Task<int> DebtorMenuItemProducts_Reorder(int fkDebtorMenuItemID, string orderedIDsJson, SqlConnection sqlConn)
+        {
+            try
+            {
+                var rows = await SqlClient.ExecuteNonQueryStoredProcedureAsync(
+                    sqlConn,
+                    "debtorMenuItemProducts_reorder",
+                    new SqlParameter() { DbType = DbType.Int32,  Direction = ParameterDirection.Input, ParameterName = "@FK_DebtorMenuItemID", Value = fkDebtorMenuItemID },
+                    new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@OrderedIDs",          Value = orderedIDsJson });
+
+                Log.Information("debtorMenuItemProducts_reorder ran for FK_DebtorMenuItemID={FK_DebtorMenuItemID}", fkDebtorMenuItemID);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in custom reorder code");
+                return -1;
+            }
+        }
+        #endregion
+
         #endregion
     }
 }

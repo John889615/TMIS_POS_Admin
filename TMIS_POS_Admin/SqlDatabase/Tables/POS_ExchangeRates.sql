@@ -1,0 +1,16 @@
+USE [TMIS_POS_Demo]
+GO
+
+IF OBJECT_ID ('POS_ExchangeRates', 'U') IS NOT NULL
+	DROP TABLE POS_ExchangeRates
+GO
+
+CREATE TABLE POS_ExchangeRates
+(
+	ExchangeRateID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_CurrencyID INT NOT NULL FOREIGN KEY REFERENCES Currencies (CurrencyID),
+	ExchangeRate DECIMAL(18,8) NOT NULL,
+	DateCreated DATETIME NOT  NULL,
+	DateUpdated DATETIME NOT NULL
+)
+
