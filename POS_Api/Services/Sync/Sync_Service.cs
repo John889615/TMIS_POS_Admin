@@ -1061,7 +1061,8 @@ namespace POS_Api.Services.Sync
                             FK_UpdatedUserID = sync.FK_UpdatedUserID,
                             IsActive = sync.IsActive,
                             DateCreated = sync.DateCreated,
-                            DateUpdated = sync.DateUpdated
+                            DateUpdated = sync.DateUpdated,
+                            DisplayOrder = sync.DisplayOrder
                         });
                     }
                 }

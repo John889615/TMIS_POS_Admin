@@ -47,6 +47,36 @@ export const newDebtorMenuItemProduct = async (data) => {
     }
 };
 
+export const reorderMenuItemProducts = async (fkMenuItemId, orderedIds) => {
+    try {
+        const response = await api.post('/Menu/reorder/menu/item/products', {
+            FK_MenuItemID: fkMenuItemId,
+            OrderedIDs: orderedIds,
+        });
+        return response.data;
+    } catch (error) {
+        return error.response?.data || {
+            Success: false,
+            Messages: ["Failed to reorder menu item products."],
+        };
+    }
+};
+
+export const reorderDebtorMenuItemProducts = async (fkDebtorMenuItemId, orderedIds) => {
+    try {
+        const response = await api.post('/Menu/reorder/debtor/menu/item/products', {
+            FK_DebtorMenuItemID: fkDebtorMenuItemId,
+            OrderedIDs: orderedIds,
+        });
+        return response.data;
+    } catch (error) {
+        return error.response?.data || {
+            Success: false,
+            Messages: ["Failed to reorder debtor menu item products."],
+        };
+    }
+};
+
 export const deleteDebtorMenuItemProduct = async (id) => {
     console.log("deleteDebtorMenuItemProduct ID:", id);
 

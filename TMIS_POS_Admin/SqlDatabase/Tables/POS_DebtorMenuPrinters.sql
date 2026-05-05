@@ -1,0 +1,17 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_DebtorMenuPrinters', 'U') IS NOT NULL
+	DROP TABLE POS_DebtorMenuPrinters
+GO
+
+CREATE TABLE POS_DebtorMenuPrinters
+(
+	DebtorMenuPrinterID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_DebtorMenuID INT NULL FOREIGN KEY REFERENCES POS_DebtorMenus (DebtorMenuID),
+	FK_PrinterID INT NOT NULL FOREIGN KEY REFERENCES POS_SlipPrinters (SlipPrinterID),
+	FK_CreatedUserID INT NOT NULL FOREIGN KEY REFERENCES Users (UserID),
+	FK_UpdatedUserID INT NULL FOREIGN KEY REFERENCES Users (UserID),
+	DateCreated DATETIME NOT NULL,
+	DateUpdated DATETIME NOT NULL
+)

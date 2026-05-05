@@ -986,6 +986,15 @@ namespace POS_Api.Services
                 {
                     await sqlConn.OpenAsync();
 
+                    // Append at end: DisplayOrder = MAX(existing) + 1 for this menu item.
+                    int nextDisplayOrder = 0;
+                    using (var cmd = sqlConn.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT ISNULL(MAX(DisplayOrder), -1) + 1 FROM POS_MenuItemProducts WHERE FK_MenuItemID = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", request.FK_MenuItemID));
+                        nextDisplayOrder = Convert.ToInt32(await cmd.ExecuteScalarAsync() ?? 0);
+                    }
+
                     var menuItemProductInsert = await POS_MenuItemProducts_Insert(new MenuItemProduct()
                     {
                         FK_ProductID = request.FK_ProductID,
@@ -993,7 +1002,8 @@ namespace POS_Api.Services
                         DateCreated = DateTime.Now,
                         FK_CreatedUserID = _userContext.UserID,
                         DateUpdated = DateTime.Now,
-                        FK_UpdatedUserID = _userContext.UserID
+                        FK_UpdatedUserID = _userContext.UserID,
+                        DisplayOrder = nextDisplayOrder
                     }, sqlConn);
                 }
 
@@ -1004,6 +1014,39 @@ namespace POS_Api.Services
                 _logger.LogService("Exception during Menu Item Product add", ex);
                 return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message
                 }, 500);
+            }
+        }
+
+        public async Task<ApiResponse<object>> Reorder_Menu_Item_Products(Req_MenuItemProduct_Reorder request)
+        {
+            try
+            {
+                _logger.LogService("Starting Menu Item Product Reorder", request);
+
+                if (request?.FK_MenuItemID == null || request.OrderedIDs == null || request.OrderedIDs.Count == 0)
+                {
+                    return ApiResponse.Fail<object>(
+                        AppErrorCode.ValidationError,
+                        new List<string> { "FK_MenuItemID and OrderedIDs are required." },
+                        400);
+                }
+
+                var orderedIDsJson = System.Text.Json.JsonSerializer.Serialize(request.OrderedIDs);
+                var connectionString = _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()));
+
+                var rows = await MenuItemProducts_Reorder(request.FK_MenuItemID.Value, orderedIDsJson, connectionString);
+
+                if (rows < 0)
+                {
+                    return ApiResponse.Fail<object>(AppErrorCode.DatabaseError, new List<string> { "Reorder failed." }, 500);
+                }
+
+                return ApiResponse.Success<object>(new { RowsUpdated = rows });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Menu Item Product Reorder", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
             }
         }
 
@@ -1377,6 +1420,15 @@ namespace POS_Api.Services
                 {
                     await sqlConn.OpenAsync();
 
+                    // Append at end: DisplayOrder = MAX(existing) + 1 for this debtor menu item.
+                    int nextDisplayOrder = 0;
+                    using (var cmd = sqlConn.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT ISNULL(MAX(DisplayOrder), -1) + 1 FROM POS_DebtorMenuItemProducts WHERE FK_DebtorMenuItemID = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", request.FK_MenuItemID));
+                        nextDisplayOrder = Convert.ToInt32(await cmd.ExecuteScalarAsync() ?? 0);
+                    }
+
                     var menuItemProductInsert = await POS_DebtorMenuItemProducts_Insert(new DebtorMenuItemProduct()
                     {
                         FK_ProductID = request.FK_ProductID,
@@ -1385,7 +1437,8 @@ namespace POS_Api.Services
                         DateCreated = DateTime.Now,
                         FK_CreatedUserID = _userContext.UserID,
                         DateUpdated = DateTime.Now,
-                        FK_UpdatedUserID = _userContext.UserID
+                        FK_UpdatedUserID = _userContext.UserID,
+                        DisplayOrder = nextDisplayOrder
                     }, sqlConn);
                 }
 
@@ -1396,6 +1449,39 @@ namespace POS_Api.Services
                 _logger.LogService("Exception during Menu Item Product add", ex);
                 return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message
                 }, 500);
+            }
+        }
+
+        public async Task<ApiResponse<object>> Reorder_Debtor_Menu_Item_Products(Req_DebtorMenuItemProduct_Reorder request)
+        {
+            try
+            {
+                _logger.LogService("Starting Debtor Menu Item Product Reorder", request);
+
+                if (request?.FK_DebtorMenuItemID == null || request.OrderedIDs == null || request.OrderedIDs.Count == 0)
+                {
+                    return ApiResponse.Fail<object>(
+                        AppErrorCode.ValidationError,
+                        new List<string> { "FK_DebtorMenuItemID and OrderedIDs are required." },
+                        400);
+                }
+
+                var orderedIDsJson = System.Text.Json.JsonSerializer.Serialize(request.OrderedIDs);
+                var connectionString = _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString()));
+
+                var rows = await DebtorMenuItemProducts_Reorder(request.FK_DebtorMenuItemID.Value, orderedIDsJson, connectionString);
+
+                if (rows < 0)
+                {
+                    return ApiResponse.Fail<object>(AppErrorCode.DatabaseError, new List<string> { "Reorder failed." }, 500);
+                }
+
+                return ApiResponse.Success<object>(new { RowsUpdated = rows });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Exception during Debtor Menu Item Product Reorder", ex);
+                return ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
             }
         }
 

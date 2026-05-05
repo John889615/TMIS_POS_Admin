@@ -12,6 +12,7 @@ const StockRequestForm = ({
     showModel,
     handleClose,
     data,
+    existingLines,
     productList,
     unitList,
 }) => {
@@ -96,7 +97,17 @@ const StockRequestForm = ({
             formRef.current.reset();
         }
         if (showModel) {
-            setLines(isEdit ? [] : [emptyLine()]);
+            if (isEdit) {
+                const seeded = (existingLines || []).map(l => ({
+                    FK_ProductID: l.FK_ProductID ?? '',
+                    FK_UnitID:    l.FK_UnitID ?? '',
+                    Quantity:     l.Quantity ?? '',
+                    Notes:        l.Notes ?? '',
+                }));
+                setLines(seeded.length > 0 ? seeded : [emptyLine()]);
+            } else {
+                setLines([emptyLine()]);
+            }
             setFromDebtor(
                 data?.FK_FromDebtorID
                     ? debtorOptions.find(o => o.value === data.FK_FromDebtorID) || null
@@ -108,7 +119,7 @@ const StockRequestForm = ({
                     : null
             );
         }
-    }, [showModel, data, debtorOptions, isEdit]);
+    }, [showModel, data, debtorOptions, isEdit, existingLines]);
 
     const updateLine = (idx, field, value) => {
         setLines(prev => prev.map((line, i) => i === idx ? { ...line, [field]: value } : line));
@@ -117,54 +128,68 @@ const StockRequestForm = ({
     const addLine = () => setLines(prev => [...prev, emptyLine()]);
     const removeLine = (idx) => setLines(prev => prev.filter((_, i) => i !== idx));
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const form = e.target;
+    const collectAndValidate = () => {
+        const form = formRef.current;
+        if (!form) return null;
 
+        const refNumber = form.RefNumber?.value?.trim();
+        if (!refNumber) {
+            alert('Please enter a Ref Number.');
+            return null;
+        }
         if (!fromDebtor) {
             alert('Please select From Debtor.');
-            return;
+            return null;
         }
         if (!toDebtor) {
             alert('Please select To Debtor.');
-            return;
+            return null;
         }
 
         const stockData = {
-            RefNumber: form.RefNumber?.value?.trim(),
+            RefNumber: refNumber,
             FK_FromDebtorID: fromDebtor.value,
             FK_ToDebtorID: toDebtor.value,
-            Notes: form.Notes.value.trim(),
-            IsSubmitted: form.IsSubmitted ? form.IsSubmitted.checked : false,
+            Notes: form.Notes?.value?.trim() ?? '',
         };
+
+        const cleanLines = lines
+            .filter(l => l.FK_ProductID && l.Quantity)
+            .map(l => ({
+                FK_ProductID: parseInt(l.FK_ProductID),
+                FK_UnitID: l.FK_UnitID ? parseInt(l.FK_UnitID) : null,
+                Quantity: parseFloat(l.Quantity),
+                Notes: l.Notes ? l.Notes.trim() : null,
+            }));
+        if (cleanLines.length === 0) {
+            alert("Please add at least one line item with product and quantity.");
+            return null;
+        }
+        stockData.Lines = cleanLines;
 
         if (isEdit) {
             stockData.POS_StockRequestID = data.POS_StockRequestID;
-        } else {
-            const cleanLines = lines
-                .filter(l => l.FK_ProductID && l.Quantity)
-                .map(l => ({
-                    FK_ProductID: parseInt(l.FK_ProductID),
-                    FK_UnitID: l.FK_UnitID ? parseInt(l.FK_UnitID) : null,
-                    Quantity: parseFloat(l.Quantity),
-                    Notes: l.Notes ? l.Notes.trim() : null,
-                }));
-            if (cleanLines.length === 0) {
-                alert("Please add at least one line item with product and quantity.");
-                return;
-            }
-            stockData.Lines = cleanLines;
         }
 
-        if (onSubmit) {
-            onSubmit(stockData);
-        }
+        return stockData;
+    };
+
+    const handleSaveClick = () => {
+        const stockData = collectAndValidate();
+        if (!stockData) return;
+        if (onSubmit) onSubmit(stockData, false);
+    };
+
+    const handleSubmitClick = () => {
+        const stockData = collectAndValidate();
+        if (!stockData) return;
+        if (onSubmit) onSubmit(stockData, true);
     };
 
 
     return (
         <Modal show={showModel} onHide={handleClose} centered dialogClassName="custom-modal-two" size="lg">
-            <form onSubmit={handleSubmit} ref={formRef}>
+            <form onSubmit={(e) => e.preventDefault()} ref={formRef}>
                 <Modal.Header closeButton className="custom-modal-header border-0">
                     <Modal.Title>Stock Request</Modal.Title>
                 </Modal.Header>
@@ -219,16 +244,14 @@ const StockRequestForm = ({
                             </div>
                         </div>
 
-                        {!isEdit && (
-                            <>
-                                <div className="col-lg-12 mt-3">
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <h6 className="mb-0">Line Items</h6>
-                                        <button type="button" className="btn btn-sm btn-primary" onClick={addLine}>
-                                            <Plus size={14} className="me-1" /> Add Line
-                                        </button>
-                                    </div>
-                                </div>
+                        <div className="col-lg-12 mt-3">
+                            <div className="d-flex justify-content-between align-items-center">
+                                <h6 className="mb-0">Line Items</h6>
+                                <button type="button" className="btn btn-sm btn-primary" onClick={addLine}>
+                                    <Plus size={14} className="me-1" /> Add Line
+                                </button>
+                            </div>
+                        </div>
                                 <div className="col-lg-12 mt-2">
                                     <div className="table-responsive">
                                         <table className="table table-bordered table-sm align-middle">
@@ -317,16 +340,6 @@ const StockRequestForm = ({
                                         </table>
                                     </div>
                                 </div>
-                                <div className="col-lg-12">
-                                    <div className="form-check mt-2">
-                                        <input className="form-check-input" type="checkbox" name="IsSubmitted" id="IsSubmitted" defaultChecked />
-                                        <label className="form-check-label" htmlFor="IsSubmitted">
-                                            Submit for approval immediately
-                                        </label>
-                                    </div>
-                                </div>
-                            </>
-                        )}
                     </div>
 
                 </Modal.Body>
@@ -338,8 +351,11 @@ const StockRequestForm = ({
                     >
                         Cancel
                     </button>
-                    <button type="submit" className="btn btn-submit">
-                        Submit
+                    <button type="button" className="btn btn-secondary me-2" onClick={handleSaveClick}>
+                        Save
+                    </button>
+                    <button type="button" className="btn btn-submit" onClick={handleSubmitClick}>
+                        Submit for Approval
                     </button>
                 </Modal.Footer>
 
@@ -353,6 +369,7 @@ export default StockRequestForm;
 
 StockRequestForm.propTypes = {
     data: PropTypes.object,
+    existingLines: PropTypes.array,
     onSubmit: PropTypes.func.isRequired,
     showModel: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,

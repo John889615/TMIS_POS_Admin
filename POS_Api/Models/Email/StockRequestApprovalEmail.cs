@@ -4,11 +4,6 @@ public class StockRequestApprovalEmail
 {
     public int StockRequestID { get; set; }
     public string RefNumber { get; set; } = string.Empty;
-    public string FromDebtorName { get; set; } = string.Empty;
-    public string ToDebtorName { get; set; } = string.Empty;
-    public string CreatedBy { get; set; } = string.Empty;
-    public string Notes { get; set; } = string.Empty;
-    public List<StockRequestEmailLine> Lines { get; set; } = new();
     public List<string> To { get; set; } = new();
 }
 

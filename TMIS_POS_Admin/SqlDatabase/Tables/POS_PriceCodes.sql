@@ -1,0 +1,16 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID ('POS_PriceCodes', 'U') IS NOT NULL
+	DROP TABLE POS_PriceCodes
+GO
+
+CREATE TABLE POS_PriceCodes
+(
+	PriceCodeID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	PriceCode VARCHAR(20) NOT NULL,
+	[Description] VARCHAR(255) NULL,
+	IsActive BIT NOT NULL,
+	DateCreated DATETIME NOT  NULL,
+	DateUpdated DATETIME NOT NULL
+)

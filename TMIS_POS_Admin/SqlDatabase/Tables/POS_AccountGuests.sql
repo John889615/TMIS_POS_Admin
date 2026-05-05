@@ -1,0 +1,19 @@
+USE [TMIS_BlueSafaris]
+GO
+
+IF OBJECT_ID('POS_AccountGuests', 'U') IS NOT NULL
+	DROP TABLE POS_AccountGuests
+GO
+
+CREATE TABLE POS_AccountGuests
+(
+    AccountGuestID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+
+	FK_AccountID UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES POS_Accounts(AccountID),
+	FK_GuestID INT NOT NULL FOREIGN KEY REFERENCES Guests(GuestID),
+	IsResponsible BIT NOT NULL,
+
+    DateCreated DATETIME NOT NULL,
+    DateUpdated DATETIME NULL,
+	CONSTRAINT AccountGuest_admin UNIQUE (FK_AccountID, FK_GuestID)
+)

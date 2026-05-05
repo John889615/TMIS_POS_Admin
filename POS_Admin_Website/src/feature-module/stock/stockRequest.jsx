@@ -15,8 +15,8 @@ import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
     PlusCircle,
-    Send,
-    Check,
+    Eye,
+    Edit2,
 } from "react-feather";
 import StockRequestForm from "../../core/modals/stocks/stockRequestFormModel";
 import StockRequestApprovalForm from "../../core/modals/stocks/stockRequestApprovalFormModel";
@@ -31,9 +31,11 @@ const StockRequestPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [showModel, setModelShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+    const [selectedLines, setSelectedLines] = useState([]);
     const [showApprovalModel, setApprovalModelShow] = useState(false);
     const [approvalData, setApprovalData] = useState(null);
     const [approvalLines, setApprovalLines] = useState([]);
+    const [approvalReadOnly, setApprovalReadOnly] = useState(false);
     const debtorId = useSelector((state) => state.selectedDebtorStore);
 
     useEffect(() => {
@@ -80,23 +82,39 @@ const StockRequestPage = () => {
 
     const handleShow = () => {
         setSelectedData(null);
+        setSelectedLines([]);
         setModelShow(true)
     };
 
     const handleClose = () => setModelShow(false);
-    const handleAddProduct = async (data) => {
+
+    const handleSaveStockRequest = async (data, shouldSubmit) => {
         try {
             let response;
-            if (data.POS_StockRequestID) {
+            let stockRequestId = data.POS_StockRequestID;
+
+            if (stockRequestId) {
                 response = await updateStockRequest(data);
-            }
-            else {
+            } else {
                 response = await newStockRequest(data);
             }
 
             if (response && response.Success === false) {
                 alert(response.Messages?.[0] || "Something went wrong.");
                 return;
+            }
+
+            if (!stockRequestId) {
+                stockRequestId = response?.Data?.POS_StockRequestID;
+            }
+
+            if (shouldSubmit && stockRequestId) {
+                const submitResponse = await submitStockRequest({ POS_StockRequestID: stockRequestId });
+                if (submitResponse && submitResponse.Success === false) {
+                    alert(submitResponse.Messages?.[0] || "Saved, but submit for approval failed.");
+                    await fetchStockRequest();
+                    return;
+                }
             }
 
             await fetchStockRequest();
@@ -106,32 +124,26 @@ const StockRequestPage = () => {
         }
     };
 
-    const handleEditRecord = (record) => {
-        setSelectedData(record);
-        setModelShow(true);
-    };
-
-    const handleSubmitDraft = async (record) => {
+    const handleEditRecord = async (record) => {
         try {
-            const response = await submitStockRequest({ POS_StockRequestID: record.POS_StockRequestID });
-            if (response && response.Success === false) {
-                alert(response.Messages?.[0] || "Something went wrong.");
-                return;
-            }
-            await fetchStockRequest();
+            const lines = await getAllStockRequestLine(record.POS_StockRequestID);
+            setSelectedData(record);
+            setSelectedLines(lines || []);
+            setModelShow(true);
         } catch (err) {
-            console.error("Error submitting stock request:", err.message);
+            console.error("Failed to load lines for edit:", err.message);
         }
     };
 
-    const handleApprove = async (record) => {
+    const handleView = async (record) => {
         try {
             const lines = await getAllStockRequestLine(record.POS_StockRequestID);
             setApprovalData(record);
             setApprovalLines(lines || []);
+            setApprovalReadOnly(!isPending(record));
             setApprovalModelShow(true);
         } catch (err) {
-            console.error("Failed to load lines for approval:", err.message);
+            console.error("Failed to load lines for view:", err.message);
         }
     };
 
@@ -213,28 +225,18 @@ const StockRequestPage = () => {
                                                 <td>{item.Notes || "N/A"}</td>
                                                 <td>{item.ManagerNotes || "N/A"}</td>
                                                 <td>
+                                                    <button type='button'
+                                                        onClick={() => handleView(item)}
+                                                        title={isPending(item) ? 'Review for approval' : 'View'}
+                                                        className="btn btn-sm btn-outline-secondary me-2">
+                                                        <Eye size={14} />
+                                                    </button>
                                                     {isDraft(item) && (
-                                                        <>
-                                                            <button type='button'
-                                                                onClick={() => handleEditRecord(item)}
-                                                                title="Edit"
-                                                                className="btn btn-sm btn-primary me-2">
-                                                                <i className="feather-edit"></i>
-                                                            </button>
-                                                            <button type='button'
-                                                                onClick={() => handleSubmitDraft(item)}
-                                                                title="Submit for approval"
-                                                                className="btn btn-sm btn-info me-2">
-                                                                <Send size={14} />
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                    {isPending(item) && (
                                                         <button type='button'
-                                                            onClick={() => handleApprove(item)}
-                                                            title="Approve"
-                                                            className="btn btn-sm btn-success me-2">
-                                                            <Check size={14} />
+                                                            onClick={() => handleEditRecord(item)}
+                                                            title="Update"
+                                                            className="btn btn-sm btn-primary me-2">
+                                                            <Edit2 size={14} />
                                                         </button>
                                                     )}
                                                 </td>
@@ -254,10 +256,11 @@ const StockRequestPage = () => {
                 </div>
             </div>
             <StockRequestForm
-                onSubmit={handleAddProduct}
+                onSubmit={handleSaveStockRequest}
                 showModel={showModel}
                 handleClose={handleClose}
                 data={selectedData}
+                existingLines={selectedLines}
                 productList={productList}
                 unitList={unitList}
             />
@@ -267,6 +270,7 @@ const StockRequestPage = () => {
                 handleClose={() => setApprovalModelShow(false)}
                 data={approvalData}
                 lines={approvalLines}
+                readOnly={approvalReadOnly}
             />
         </div>
     );

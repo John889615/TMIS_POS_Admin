@@ -32,6 +32,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             DateUpdated = (DateTime?)row["DateUpdated"],
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
+            DisplayOrder = (int?)row["DisplayOrder"],
          };
       }
 
@@ -83,6 +84,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             DateUpdated = (DateTime?)row["DateUpdated"],
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
+            DisplayOrder = (int?)row["DisplayOrder"],
          };
       }
 

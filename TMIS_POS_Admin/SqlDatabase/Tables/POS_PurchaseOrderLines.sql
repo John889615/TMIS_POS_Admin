@@ -1,0 +1,23 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_PurchaseOrderLines', 'U') IS NOT NULL
+	DROP TABLE POS_PurchaseOrderLines
+GO
+
+CREATE TABLE POS_PurchaseOrderLines
+(
+	PurchaseOrderLineID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_PurchaseOrderID INT NOT NULL FOREIGN KEY REFERENCES POS_PurchaseOrders(PurchaseOrderID),
+	FK_ProductID INT NOT NULL FOREIGN KEY REFERENCES POS_Products(ProductID),
+	Quantity DECIMAL(18, 4) NOT NULL,
+	UnitCostIncl DECIMAL(18, 4) NOT NULL,
+	UnitCostExcl DECIMAL(18, 4) NOT NULL,
+	FK_TaxTypeID INT NOT NULL FOREIGN KEY REFERENCES POS_TaxTypes(TaxTypeID),
+	TaxRate DECIMAL(18, 4) NOT NULL,
+	TotalCostIncl DECIMAL(18, 4) NOT NULL,
+	TotalCostExcl DECIMAL(18, 4) NOT NULL,
+	Notes VARCHAR(MAX) NULL,
+	ManagerNotes VARCHAR(MAX) NULL,
+	IsDeclined BIT NOT NULL,
+)

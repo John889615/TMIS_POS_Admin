@@ -1,0 +1,16 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_StockReceive', 'U') IS NOT NULL
+	DROP TABLE POS_StockReceive
+GO
+
+CREATE TABLE POS_StockReceive
+(
+	StockReceiveID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_PurchaseOrderID INT NULL FOREIGN KEY REFERENCES POS_PurchaseOrders(PurchaseOrderID),
+	FK_StockTransferID INT NULL FOREIGN KEY REFERENCES POS_StockTransfers(StockTransferID),
+	FK_UserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+	Notes VARCHAR(MAX) NULL,
+	DateReceived DATETIME NOT NULL
+)

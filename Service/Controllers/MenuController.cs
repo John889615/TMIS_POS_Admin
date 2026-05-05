@@ -824,6 +824,46 @@ namespace POS_Webservice.Controllers
             _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication succeeded", result.Data));
             return Ok(result);
         }
+
+        [HttpPost("reorder/menu/item/products")]
+        public async Task<IActionResult> Reorder_Menu_Item_Products_Async([FromBody] Req_MenuItemProduct_Reorder request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_MenuItemProduct_Reorder>(AppErrorCode.ValidationError, errors));
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
+
+            ApiResponse<object> result;
+
+            try
+            {
+                result = await _menuService.Reorder_Menu_Item_Products(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from Reorder_Menu_Item_Products"));
+                return StatusCode(500, ApiResponse.Fail<object>(AppErrorCode.UnknownError, new List<string> { "Reorder response was null" }, 500));
+            }
+
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Reorder failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Reorder succeeded", result.Data));
+            return Ok(result);
+        }
         #endregion
 
         #region Debtor Menu
@@ -1311,6 +1351,46 @@ namespace POS_Webservice.Controllers
             }
 
             _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Authentication succeeded", result.Data));
+            return Ok(result);
+        }
+
+        [HttpPost("reorder/debtor/menu/item/products")]
+        public async Task<IActionResult> Reorder_Debtor_Menu_Item_Products_Async([FromBody] Req_DebtorMenuItemProduct_Reorder request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                _logger.LogValidation(ControllerLoggerExtensions.Format_ControllerInfo(this, "Validation failed", errors));
+                return BadRequest(ApiResponse.Fail<Req_DebtorMenuItemProduct_Reorder>(AppErrorCode.ValidationError, errors));
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_RequestInfo(this, request));
+
+            ApiResponse<object> result;
+
+            try
+            {
+                result = await _menuService.Reorder_Debtor_Menu_Item_Products(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Unhandled exception", ex));
+                result = ApiResponse.Fail<object>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+
+            if (result == null)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo<object>(this, "Null response from Reorder_Debtor_Menu_Item_Products"));
+                return StatusCode(500, ApiResponse.Fail<object>(AppErrorCode.UnknownError, new List<string> { "Reorder response was null" }, 500));
+            }
+
+            if (!result.Success)
+            {
+                _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Reorder failed", result));
+                return StatusCode(result.StatusCode ?? 400, result);
+            }
+
+            _logger.LogController(ControllerLoggerExtensions.Format_ControllerInfo(this, "Reorder succeeded", result.Data));
             return Ok(result);
         }
         #endregion

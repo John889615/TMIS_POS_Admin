@@ -59,29 +59,8 @@ The site has not contacted the central admin in over 2 hours. Investigate connec
         if (email?.To == null || email.To.Count == 0) return;
 
         var subject = $"[Stock Request] {email.RefNumber} awaiting approval";
+        var body    = $"Stock request {email.RefNumber} is awaiting your approval. Please log in to the admin site to review.";
 
-        var lineLines = new StringBuilder();
-        foreach (var line in email.Lines)
-        {
-            lineLines.Append("  - ").Append(line.ProductName)
-                     .Append(" x ").Append(line.Quantity?.ToString("0.####") ?? "?");
-            if (!string.IsNullOrWhiteSpace(line.Notes))
-                lineLines.Append("  (note: ").Append(line.Notes).Append(')');
-            lineLines.AppendLine();
-        }
-
-        var body = $@"A stock request needs your approval.
-
-Ref         : {email.RefNumber}
-From        : {email.FromDebtorName}
-To          : {email.ToDebtorName}
-Submitted by: {email.CreatedBy}
-Notes       : {(string.IsNullOrWhiteSpace(email.Notes) ? "(none)" : email.Notes)}
-
-Lines requested:
-{lineLines}
-Open the Stock Request approval page in the admin site to approve, partially approve, or decline.
-";
         await SendAsync(email.To, subject, body);
     }
 
@@ -161,6 +140,8 @@ Lines:
             msg.Body = new TextPart("plain") { Text = body };
 
             using var smtp = new SmtpClient();
+            if (bool.TryParse(_config["Smtp:AcceptAnyCertificate"], out var acceptAnyCert) && acceptAnyCert)
+                smtp.ServerCertificateValidationCallback = (_, _, _, _) => true;
             await smtp.ConnectAsync(host, port, MailKit.Security.SecureSocketOptions.StartTls);
             if (!string.IsNullOrEmpty(_config["Smtp:Username"]))
                 await smtp.AuthenticateAsync(_config["Smtp:Username"], _config["Smtp:Password"]);

@@ -8,7 +8,7 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
         [Required]
         public int? POS_StockRequestID { get; set; }
 
-        public string ManagerNotes { get; set; }
+        public string? ManagerNotes { get; set; }
 
         [Required]
         [MinLength(1, ErrorMessage = "Provide a decision for at least one line.")]
@@ -27,6 +27,6 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
 
         public bool? IsDeclined { get; set; }
 
-        public string ManagerNotes { get; set; }
+        public string? ManagerNotes { get; set; }
     }
 }

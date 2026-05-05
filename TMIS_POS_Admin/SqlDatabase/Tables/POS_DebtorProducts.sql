@@ -1,0 +1,26 @@
+USE [TMIS_BlueSafaris]
+GO
+
+IF OBJECT_ID ('POS_DebtorProducts', 'U') IS NOT NULL
+	DROP TABLE POS_DebtorProducts
+GO
+
+CREATE TABLE POS_DebtorProducts
+(
+	DebtorProductID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_ProductID INT NOT NULL FOREIGN KEY REFERENCES POS_Products (ProductID),
+	FK_LocationID INT NOT NULL FOREIGN KEY REFERENCES POS_Locations (LocationID),
+	
+	CostPrice DECIMAL(18, 4) NOT NULL,
+
+	FK_SellUnitID INT NOT NULL FOREIGN KEY REFERENCES POS_Units (UnitID),
+	QuantityOnHand DECIMAL(18, 4) NOT NULL,
+	IsAvailable BIT NOT NULL,
+	IsActive BIT NOT NULL,
+
+	FK_CreatedUserID INT NOT NULL FOREIGN KEY REFERENCES Users (UserID),
+	FK_UpdatedUserID INT NULL FOREIGN KEY REFERENCES Users (UserID),
+	DateCreated DATETIME NOT NULL DEFAULT (GETDATE()),
+	DateUpdated DATETIME NULL DEFAULT (GETDATE())
+	CONSTRAINT product_location_id UNIQUE (FK_ProductID, FK_LocationID, FK_SellUnitID)
+)

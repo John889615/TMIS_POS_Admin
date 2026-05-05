@@ -25,6 +25,8 @@ namespace POS_Common.Models.Menu.POS_DebtorMenuItemProducts
       public DateTime? DateUpdated { get; set; }
 
       public int? FK_UpdatedUserID { get; set; }
+
+      public int? DisplayOrder { get; set; }
        #endregion
   }
 }

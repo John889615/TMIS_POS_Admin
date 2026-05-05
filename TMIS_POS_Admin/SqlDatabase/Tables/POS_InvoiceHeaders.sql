@@ -1,0 +1,29 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_InvoiceHeaders', 'U') IS NOT NULL
+	DROP TABLE POS_InvoiceHeaders
+GO
+
+CREATE TABLE POS_InvoiceHeaders
+(
+	InvoiceHeaderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+
+	FK_LocationID INT NOT NULL FOREIGN KEY REFERENCES POS_Locations(LocationID),
+	FK_AccountID UNIQUEIDENTIFIER NULL FOREIGN KEY REFERENCES POS_Accounts(AccountID),
+
+	InvoiceNo VARCHAR(50) NOT NULL,
+	PartyName VARCHAR(50) NULL,
+	BookingReference VARCHAR(50) NULL,
+	DiscountTotal DECIMAL(18, 4) NOT NULL,
+	GratuityTotal DECIMAL(18, 4) NOT NULL,
+	ExclTotal DECIMAL(18, 4) NOT NULL,
+	VatTotal DECIMAL(18, 4) NOT NULL,
+	InclTotal DECIMAL(18, 4) NOT NULL,
+	IsDiscarded BIT NOT NULL,
+	BC_InvoiceID VARCHAR(255) NULL,
+
+	DateCreated DATETIME NOT NULL,
+	DatePaid DATETIME NULL,
+	SyncedToServer BIT NOT NULL
+)

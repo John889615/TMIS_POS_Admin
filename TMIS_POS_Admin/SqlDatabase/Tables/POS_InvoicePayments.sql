@@ -1,0 +1,28 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_InvoicePayments', 'U') IS NOT NULL
+	DROP TABLE POS_InvoicePayments
+GO
+
+CREATE TABLE POS_InvoicePayments
+(
+	InvoicePaymentID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+
+	FK_InvoiceID UNIQUEIDENTIFIER NULL FOREIGN KEY REFERENCES POS_InvoiceHeaders(InvoiceHeaderID),
+	FK_PaymentTypeID INT NOT NULL FOREIGN KEY REFERENCES POS_PaymentTypes(PaymentTypeID),
+	FK_FromCurrencyID INT NULL FOREIGN KEY REFERENCES Currencies(CurrencyID),
+	FK_ToCurrencyID INT NULL FOREIGN KEY REFERENCES Currencies(CurrencyID),
+
+	FromCurrency VARCHAR(10) NOT NULL,
+	ToCurrency VARCHAR(10) NOT NULL,
+	
+	FromTotal DECIMAL(18, 4) NULL,
+	ToTotal DECIMAL(18, 4) NULL,
+	FromAmountPaid DECIMAL(18, 4) NOT NULL,
+	ToAmountPaid DECIMAL(18, 4) NOT NULL,
+	ExchangeRate DECIMAL(18, 4) NULL,
+
+	ExchangeDate DATETIME NULL,
+	DatePaid DATETIME NULL
+)

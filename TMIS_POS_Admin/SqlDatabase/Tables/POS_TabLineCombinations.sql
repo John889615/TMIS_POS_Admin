@@ -1,0 +1,18 @@
+USE [TMIS_BlueSafaris]
+GO
+
+IF OBJECT_ID('POS_TabLineCombinations', 'U') IS NOT NULL
+	DROP TABLE POS_TabLineCombinations
+GO
+
+CREATE TABLE POS_TabLineCombinations
+(
+	TabLineCombinationID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+
+	FK_TabLineID UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES POS_TabLines (TabLineID),
+	FK_ProductCombinationID INT NOT NULL FOREIGN KEY REFERENCES POS_ProductCombinations(ProductCombinationID),
+
+	[Product] VARCHAR(255) NOT NULL,
+	Hold BIT NOT NULL,
+	Notes VARCHAR(MAX) NULL
+)

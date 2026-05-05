@@ -77,7 +77,7 @@ namespace POS_Api.Services.Menu
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<DebtorMenuItemProduct>(Menu_Translator.Translate_DebtorMenuItemProduct);
-                        Log.Information("DebtorMenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_DebtorMenuItemID={FK_DebtorMenuItemID}, FK_ProductID={FK_ProductID}, IsActive={IsActive}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}", resultItem.MenuItemProductID, resultItem.FK_DebtorMenuItemID, resultItem.FK_ProductID, resultItem.IsActive, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID);
+                        Log.Information("DebtorMenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_DebtorMenuItemID={FK_DebtorMenuItemID}, FK_ProductID={FK_ProductID}, IsActive={IsActive}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}, DisplayOrder={DisplayOrder}", resultItem.MenuItemProductID, resultItem.FK_DebtorMenuItemID, resultItem.FK_ProductID, resultItem.IsActive, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID, resultItem.DisplayOrder);
                         return resultItem;
                     }
                     else
@@ -147,12 +147,13 @@ namespace POS_Api.Services.Menu
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
                         , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }                ))
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DisplayOrder", Value = item.DisplayOrder }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<DebtorMenuItemProduct>(Menu_Translator.Translate_DebtorMenuItemProduct);
-                        Log.Information("DebtorMenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_DebtorMenuItemID={FK_DebtorMenuItemID}, FK_ProductID={FK_ProductID}, IsActive={IsActive}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}", resultItem.MenuItemProductID, resultItem.FK_DebtorMenuItemID, resultItem.FK_ProductID, resultItem.IsActive, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID);
+                        Log.Information("DebtorMenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_DebtorMenuItemID={FK_DebtorMenuItemID}, FK_ProductID={FK_ProductID}, IsActive={IsActive}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}, DisplayOrder={DisplayOrder}", resultItem.MenuItemProductID, resultItem.FK_DebtorMenuItemID, resultItem.FK_ProductID, resultItem.IsActive, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID, resultItem.DisplayOrder);
                         return resultItem;
                     }
                     else
@@ -292,12 +293,13 @@ namespace POS_Api.Services.Menu
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
                         , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }                ))
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DisplayOrder", Value = item.DisplayOrder }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<DebtorMenuItemProduct>(Menu_Translator.Translate_DebtorMenuItemProduct);
-                        Log.Information("DebtorMenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_DebtorMenuItemID={FK_DebtorMenuItemID}, FK_ProductID={FK_ProductID}, IsActive={IsActive}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}", resultItem.MenuItemProductID, resultItem.FK_DebtorMenuItemID, resultItem.FK_ProductID, resultItem.IsActive, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID);
+                        Log.Information("DebtorMenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_DebtorMenuItemID={FK_DebtorMenuItemID}, FK_ProductID={FK_ProductID}, IsActive={IsActive}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}, DisplayOrder={DisplayOrder}", resultItem.MenuItemProductID, resultItem.FK_DebtorMenuItemID, resultItem.FK_ProductID, resultItem.IsActive, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID, resultItem.DisplayOrder);
                         return resultItem;
                     }
                     else
@@ -961,7 +963,7 @@ namespace POS_Api.Services.Menu
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<MenuItemProduct>(Menu_Translator.Translate_MenuItemProduct);
-                        Log.Information("MenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_MenuItemID={FK_MenuItemID}, FK_ProductID={FK_ProductID}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}", resultItem.MenuItemProductID, resultItem.FK_MenuItemID, resultItem.FK_ProductID, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID);
+                        Log.Information("MenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_MenuItemID={FK_MenuItemID}, FK_ProductID={FK_ProductID}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}, DisplayOrder={DisplayOrder}", resultItem.MenuItemProductID, resultItem.FK_MenuItemID, resultItem.FK_ProductID, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID, resultItem.DisplayOrder);
                         return resultItem;
                     }
                     else
@@ -1030,12 +1032,13 @@ namespace POS_Api.Services.Menu
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
                         , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }                ))
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DisplayOrder", Value = item.DisplayOrder }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<MenuItemProduct>(Menu_Translator.Translate_MenuItemProduct);
-                        Log.Information("MenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_MenuItemID={FK_MenuItemID}, FK_ProductID={FK_ProductID}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}", resultItem.MenuItemProductID, resultItem.FK_MenuItemID, resultItem.FK_ProductID, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID);
+                        Log.Information("MenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_MenuItemID={FK_MenuItemID}, FK_ProductID={FK_ProductID}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}, DisplayOrder={DisplayOrder}", resultItem.MenuItemProductID, resultItem.FK_MenuItemID, resultItem.FK_ProductID, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID, resultItem.DisplayOrder);
                         return resultItem;
                     }
                     else
@@ -1174,12 +1177,13 @@ namespace POS_Api.Services.Menu
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
                         , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }                ))
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DisplayOrder", Value = item.DisplayOrder }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<MenuItemProduct>(Menu_Translator.Translate_MenuItemProduct);
-                        Log.Information("MenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_MenuItemID={FK_MenuItemID}, FK_ProductID={FK_ProductID}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}", resultItem.MenuItemProductID, resultItem.FK_MenuItemID, resultItem.FK_ProductID, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID);
+                        Log.Information("MenuItemProduct found: MenuItemProductID={MenuItemProductID}, FK_MenuItemID={FK_MenuItemID}, FK_ProductID={FK_ProductID}, DateCreated={DateCreated}, FK_CreatedUserID={FK_CreatedUserID}, DateUpdated={DateUpdated}, FK_UpdatedUserID={FK_UpdatedUserID}, DisplayOrder={DisplayOrder}", resultItem.MenuItemProductID, resultItem.FK_MenuItemID, resultItem.FK_ProductID, resultItem.DateCreated, resultItem.FK_CreatedUserID, resultItem.DateUpdated, resultItem.FK_UpdatedUserID, resultItem.DisplayOrder);
                         return resultItem;
                     }
                     else

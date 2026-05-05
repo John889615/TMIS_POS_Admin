@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace POS_Common.ModelsDto.StockController.StockRequest
 {
@@ -20,7 +16,7 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
 
         public string Notes { get; set; }
 
-        public bool? IsSubmitted { get; set; }
+        public List<Req_StockRequest_Add_Line> Lines { get; set; }
         #endregion
     }
 }

@@ -1,0 +1,17 @@
+USE [TMIS_Development]
+GO
+
+IF OBJECT_ID('POS_CostCenterPrinters', 'U') IS NOT NULL
+	DROP TABLE POS_CostCenterPrinters
+GO
+
+CREATE TABLE POS_CostCenterPrinters
+(
+	CostCenterPrinterID INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	FK_CostCenterID INT NULL FOREIGN KEY REFERENCES POS_CostCenters (CostCenterID),
+	FK_PrinterID INT NOT NULL FOREIGN KEY REFERENCES POS_SlipPrinters (SlipPrinterID),
+	FK_CreatedUserID INT NOT NULL FOREIGN KEY REFERENCES Users (UserID),
+	FK_UpdatedUserID INT NULL FOREIGN KEY REFERENCES Users (UserID),
+	DateCreated DATETIME NOT NULL,
+	DateUpdated DATETIME NOT NULL
+)

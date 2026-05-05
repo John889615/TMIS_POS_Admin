@@ -23,5 +23,7 @@ namespace POS_Common.ModelsDto.SyncController
         public DateTime? DateUpdated { get; set; }
 
         public int? FK_UpdatedUserID { get; set; }
+
+        public int? DisplayOrder { get; set; }
     }
 }
