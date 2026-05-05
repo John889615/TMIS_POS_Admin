@@ -19,6 +19,20 @@
 **/Logs/
 *.log
 
+# Node / Vite / frontend
+**/node_modules/
+**/dist/
+**/.vite/
+**/.vite-temp/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files (committed defaults stay in .env / .env.development / .env.production)
+.env.local
+.env.*.local
+
 # Misc
 .DS_Store
 Thumbs.db
