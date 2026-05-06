@@ -16,9 +16,9 @@
 --        IF OBJECT_ID('dbo.BookingGuests_insert', 'P') IS NOT NULL DROP PROCEDURE dbo.BookingGuests_insert;
 --        IF OBJECT_ID('dbo.BookingGuests_update', 'P') IS NOT NULL DROP PROCEDURE dbo.BookingGuests_update;
 --   2. Run the code generator.
---   3. POS_Arrivals already matches FOH (varchar CheckedInBy/CheckedOutBy
+--   3. Then move on to script 10 (Guests, the last shared table).
+--   4. POS_Arrivals already matches FOH (varchar CheckedInBy/CheckedOutBy
 --      shadow columns per staff-not-synced rule); no script needed.
---   4. Schema reconciliation is COMPLETE - move to Spec 2 (sync redesign).
 --
 -- This script is idempotent - safe to re-run.
 -- =============================================================
