@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TMIS_Authenticate\TMIS_Authenticate\TMIS_Common\TMIS_Common.csproj" />
+    <ProjectReference Include="..\POS_Api\POS_Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

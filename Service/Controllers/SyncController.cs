@@ -1519,9 +1519,9 @@ namespace POS_Webservice.Controllers
 
         [HttpGet("image/{id:int}")]
         [ProducesResponseType(typeof(FileContentResult), 200)]
-        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
-        [ProducesResponseType(typeof(ApiResponse<object>), 404)]
-        [ProducesResponseType(typeof(ApiResponse<object>), 500)]
+        [ProducesResponseType(typeof(POS_Common.Models.ApiResponse<object>), 400)]
+        [ProducesResponseType(typeof(POS_Common.Models.ApiResponse<object>), 404)]
+        [ProducesResponseType(typeof(POS_Common.Models.ApiResponse<object>), 500)]
         public async Task<IActionResult> Get_Image_Bytes_Async(int id)
         {
             // ✅ Validate Request
