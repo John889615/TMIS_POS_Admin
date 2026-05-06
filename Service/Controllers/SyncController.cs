@@ -2171,7 +2171,7 @@ namespace POS_Webservice.Controllers
         /// per cycle (MasterRefs, Operational, Transactional). Replaces the
         /// 14 per-entity sync endpoints removed by Spec 2.
         /// </summary>
-        [HttpPost("push/batch")]
+        [HttpPost("list/push/batch")]
         public async Task<IActionResult> PushBatch_Async([FromBody] Req_Push_Batch request)
         {
             if (!ModelState.IsValid)
