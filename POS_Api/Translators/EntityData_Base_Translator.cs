@@ -26,9 +26,8 @@ using POS_Common.Models.EntityData.TimeZones;
 using POS_Common.Models.EntityData.POS_TaxTypes;
 using POS_Common.Models.EntityData.Users;
 using POS_Common.Models.EntityData.POS_PaymentTypes;
-using POS_Common.Models.EntityData.TH_BookingHeaders;
 using POS_Common.Models.EntityData.Guests;
-using POS_Common.Models.EntityData.TH_BookingGuests;
+using POS_Common.Models.EntityData.BookingGuests;
 using POS_Common.Models.EntityData.POS_Images;
 using POS_Common.Models.EntityData.POS_ImageCategories;
 using POS_Common.Models.EntityData.POS_PaymentTypeIcons;
@@ -38,6 +37,7 @@ using POS_Common.Models.EntityData.CurrencyExchangeRates;
 using POS_Common.Models.EntityData.GlobalSettings;
 using POS_Common.Models.EntityData.POS_SlipTypes;
 using POS_Common.Models.EntityData.EntitySettings;
+using POS_Common.Models.EntityData.BookingHeaders;
 
 namespace POS_Api.Translators
 {
@@ -358,30 +358,6 @@ namespace POS_Api.Translators
       }
 
        
-      internal static BookingHeader Translate_BookingHeader(IDataRecord row)
-      {
-         return new BookingHeader()
-         {
-            BookingHeaderID = (int?)row["BookingHeaderID"],
-            PartyName = (string)row["PartyName"],
-            BookingReference = (string)row["BookingReference"],
-            FK_AgentDebtorID = row["FK_AgentDebtorID"].GetType() != typeof(DBNull) ? (int?)row["FK_AgentDebtorID"] : null,
-            FK_BranchID = (int?)row["FK_BranchID"],
-            FK_DepartmentID = (int?)row["FK_DepartmentID"],
-            FK_CurrencyID = (int?)row["FK_CurrencyID"],
-            QuoteTotal = (decimal?)row["QuoteTotal"],
-            BookingTotal = (decimal?)row["BookingTotal"],
-            FK_BookingStatusID = (int?)row["FK_BookingStatusID"],
-            TravelStart = row["TravelStart"].GetType() != typeof(DBNull) ? (DateTime?)row["TravelStart"] : null,
-            TravelEnd = row["TravelEnd"].GetType() != typeof(DBNull) ? (DateTime?)row["TravelEnd"] : null,
-            FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
-            DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
-         };
-      }
-
-       
       internal static Guest Translate_Guest(IDataRecord row)
       {
          return new Guest()
@@ -409,10 +385,8 @@ namespace POS_Api.Translators
          return new BookingGuest()
          {
             BookingGuestID = (int?)row["BookingGuestID"],
-            FK_BookingHeaderID = (int?)row["FK_BookingHeaderID"],
             FK_GuestID = row["FK_GuestID"].GetType() != typeof(DBNull) ? (int?)row["FK_GuestID"] : null,
-            FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
+            FK_BookingHeaderID = (int?)row["FK_BookingHeaderID"],
             DateCreated = (DateTime?)row["DateCreated"],
             DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
@@ -556,6 +530,22 @@ namespace POS_Api.Translators
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
             DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
+         };
+      }
+
+       
+      internal static BookingHeader Translate_BookingHeader(IDataRecord row)
+      {
+         return new BookingHeader()
+         {
+            BookingHeaderID = (int?)row["BookingHeaderID"],
+            PartyName = (string)row["PartyName"],
+            BookingReference = (string)row["BookingReference"],
+            TravelStart = row["TravelStart"].GetType() != typeof(DBNull) ? (DateTime?)row["TravelStart"] : null,
+            TravelEnd = row["TravelEnd"].GetType() != typeof(DBNull) ? (DateTime?)row["TravelEnd"] : null,
+            DateCreated = (DateTime?)row["DateCreated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
+            IsStaffBooking = (bool?)row["IsStaffBooking"],
          };
       }
 

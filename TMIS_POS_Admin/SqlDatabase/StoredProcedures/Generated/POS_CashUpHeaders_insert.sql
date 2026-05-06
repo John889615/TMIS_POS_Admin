@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_CashUpHeaders_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_CashUpHeaders_insert
+    @CashUpHeaderID UNIQUEIDENTIFIER = NULL,
     @FK_CostCenterID INT,
     @FK_CurrencyID INT,
     @CashUpDate DATE,
@@ -21,9 +22,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (CashUpHeaderID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_CashUpHeaders (FK_CostCenterID, FK_CurrencyID, CashUpDate, CashUpBy, TotalSystemAmount, TotalCountedAmount, TotalVariance, Notes, IsFinalised, DateCreated, DateUpdated)
+    INSERT INTO POS_CashUpHeaders (CashUpHeaderID, FK_CostCenterID, FK_CurrencyID, CashUpDate, CashUpBy, TotalSystemAmount, TotalCountedAmount, TotalVariance, Notes, IsFinalised, DateCreated, DateUpdated)
     OUTPUT INSERTED.CashUpHeaderID INTO @Inserted
-    VALUES (@FK_CostCenterID, @FK_CurrencyID, @CashUpDate, @CashUpBy, @TotalSystemAmount, @TotalCountedAmount, @TotalVariance, @Notes, @IsFinalised, @DateCreated, @DateUpdated);
+    VALUES (ISNULL(@CashUpHeaderID, NEWID()), @FK_CostCenterID, @FK_CurrencyID, @CashUpDate, @CashUpBy, @TotalSystemAmount, @TotalCountedAmount, @TotalVariance, @Notes, @IsFinalised, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM POS_CashUpHeaders

@@ -30,11 +30,11 @@ namespace POS_Common.Models.Sync.POS_Tabs
 
       public decimal? Gratuity { get; set; }
 
-      public int? GratuityPerc { get; set; }
+      public decimal? GratuityPerc { get; set; }
 
       public decimal? Discount { get; set; }
 
-      public int? DiscountPerc { get; set; }
+      public decimal? DiscountPerc { get; set; }
 
       public bool? IsVoided { get; set; }
 
@@ -61,6 +61,8 @@ namespace POS_Common.Models.Sync.POS_Tabs
       public DateTime? DateCreated { get; set; }
 
       public DateTime? DateUpdated { get; set; }
+
+      public int? TableNumber { get; set; }
        #endregion
   }
 }

@@ -76,11 +76,18 @@ namespace POS_Api.Translators
             ExclTotal = (decimal?)row["ExclTotal"],
             VatTotal = (decimal?)row["VatTotal"],
             InclTotal = (decimal?)row["InclTotal"],
-            IsDiscarded = (bool?)row["IsDiscarded"],
             BC_InvoiceID = row["BC_InvoiceID"].GetType() != typeof(DBNull) ? (string)row["BC_InvoiceID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
             DatePaid = row["DatePaid"].GetType() != typeof(DBNull) ? (DateTime?)row["DatePaid"] : null,
-            SyncedToServer = (bool?)row["SyncedToServer"],
+            SyncedToServer = row["SyncedToServer"].GetType() != typeof(DBNull) ? (bool?)row["SyncedToServer"] : null,
+            FK_CurrencyID = (int?)row["FK_CurrencyID"],
+            IsPaid = (bool?)row["IsPaid"],
+            AmountPaid = (decimal?)row["AmountPaid"],
+            AmountDue = (decimal?)row["AmountDue"],
+            IsVoided = (bool?)row["IsVoided"],
+            VoidReason = row["VoidReason"].GetType() != typeof(DBNull) ? (string)row["VoidReason"] : null,
+            VoidedDate = row["VoidedDate"].GetType() != typeof(DBNull) ? (DateTime?)row["VoidedDate"] : null,
+            VoidedBy = row["VoidedBy"].GetType() != typeof(DBNull) ? (string)row["VoidedBy"] : null,
          };
       }
 
@@ -91,7 +98,7 @@ namespace POS_Api.Translators
          {
             InvoiceLineID = (Guid?)row["InvoiceLineID"],
             FK_InvoiceTabID = (Guid?)row["FK_InvoiceTabID"],
-            FK_ProductID = (int?)row["FK_ProductID"],
+            FK_ProductID = row["FK_ProductID"].GetType() != typeof(DBNull) ? (int?)row["FK_ProductID"] : null,
             Product = (string)row["Product"],
             Quantity = (decimal?)row["Quantity"],
             LineDiscount = (decimal?)row["LineDiscount"],
@@ -221,19 +228,26 @@ namespace POS_Api.Translators
          return new InvoicePayment()
          {
             InvoicePaymentID = (Guid?)row["InvoicePaymentID"],
-            FK_InvoiceID = row["FK_InvoiceID"].GetType() != typeof(DBNull) ? (Guid?)row["FK_InvoiceID"] : null,
+            FK_InvoiceID = (Guid?)row["FK_InvoiceID"],
             FK_PaymentTypeID = (int?)row["FK_PaymentTypeID"],
-            FK_FromCurrencyID = row["FK_FromCurrencyID"].GetType() != typeof(DBNull) ? (int?)row["FK_FromCurrencyID"] : null,
-            FK_ToCurrencyID = row["FK_ToCurrencyID"].GetType() != typeof(DBNull) ? (int?)row["FK_ToCurrencyID"] : null,
-            FromCurrency = (string)row["FromCurrency"],
-            ToCurrency = (string)row["ToCurrency"],
-            FromTotal = row["FromTotal"].GetType() != typeof(DBNull) ? (decimal?)row["FromTotal"] : null,
-            ToTotal = row["ToTotal"].GetType() != typeof(DBNull) ? (decimal?)row["ToTotal"] : null,
-            FromAmountPaid = (decimal?)row["FromAmountPaid"],
-            ToAmountPaid = (decimal?)row["ToAmountPaid"],
-            ExchangeRate = row["ExchangeRate"].GetType() != typeof(DBNull) ? (decimal?)row["ExchangeRate"] : null,
-            ExchangeDate = row["ExchangeDate"].GetType() != typeof(DBNull) ? (DateTime?)row["ExchangeDate"] : null,
-            DatePaid = row["DatePaid"].GetType() != typeof(DBNull) ? (DateTime?)row["DatePaid"] : null,
+            FK_BaseCurrencyID = (int?)row["FK_BaseCurrencyID"],
+            FK_PaymentCurrencyID = (int?)row["FK_PaymentCurrencyID"],
+            BaseCurrencyCode = (string)row["BaseCurrencyCode"],
+            PaymentCurrencyCode = (string)row["PaymentCurrencyCode"],
+            BaseAmountPaid = (decimal?)row["BaseAmountPaid"],
+            PaymentAmountPaid = (decimal?)row["PaymentAmountPaid"],
+            ExchangeRate = (decimal?)row["ExchangeRate"],
+            ExchangeDate = (DateTime?)row["ExchangeDate"],
+            DatePaid = (DateTime?)row["DatePaid"],
+            StaffName = (string)row["StaffName"],
+            IdempotencyKey = (Guid?)row["IdempotencyKey"],
+            Reference = row["Reference"].GetType() != typeof(DBNull) ? (string)row["Reference"] : null,
+            Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
+            IsVoided = (bool?)row["IsVoided"],
+            VoidReason = row["VoidReason"].GetType() != typeof(DBNull) ? (string)row["VoidReason"] : null,
+            VoidedDate = row["VoidedDate"].GetType() != typeof(DBNull) ? (DateTime?)row["VoidedDate"] : null,
+            VoidedBy = row["VoidedBy"].GetType() != typeof(DBNull) ? (string)row["VoidedBy"] : null,
+            SignatureBase64 = row["SignatureBase64"].GetType() != typeof(DBNull) ? (string)row["SignatureBase64"] : null,
          };
       }
 
@@ -304,7 +318,7 @@ namespace POS_Api.Translators
             Product = (string)row["Product"],
             Quantity = (decimal?)row["Quantity"],
             Discount = row["Discount"].GetType() != typeof(DBNull) ? (decimal?)row["Discount"] : null,
-            DiscountPerc = row["DiscountPerc"].GetType() != typeof(DBNull) ? (int?)row["DiscountPerc"] : null,
+            DiscountPerc = row["DiscountPerc"].GetType() != typeof(DBNull) ? (decimal?)row["DiscountPerc"] : null,
             IsVoided = (bool?)row["IsVoided"],
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             AutoNotes = row["AutoNotes"].GetType() != typeof(DBNull) ? (string)row["AutoNotes"] : null,
@@ -316,6 +330,8 @@ namespace POS_Api.Translators
             ServedAsQuantity = row["ServedAsQuantity"].GetType() != typeof(DBNull) ? (decimal?)row["ServedAsQuantity"] : null,
             FK_MenuID = row["FK_MenuID"].GetType() != typeof(DBNull) ? (int?)row["FK_MenuID"] : null,
             MenuName = row["MenuName"].GetType() != typeof(DBNull) ? (string)row["MenuName"] : null,
+            Gratuity = row["Gratuity"].GetType() != typeof(DBNull) ? (decimal?)row["Gratuity"] : null,
+            GratuityPerc = row["GratuityPerc"].GetType() != typeof(DBNull) ? (decimal?)row["GratuityPerc"] : null,
          };
       }
 
@@ -324,7 +340,7 @@ namespace POS_Api.Translators
       {
          return new TabLineSubstitute()
          {
-            POS_TablineSubstituteID = (Guid?)row["POS_TablineSubstituteID"],
+            TablineSubstituteID = (Guid?)row["TablineSubstituteID"],
             FK_ParentTabLineID = (Guid?)row["FK_ParentTabLineID"],
             FK_SubstituionTabLineID = (Guid?)row["FK_SubstituionTabLineID"],
             FK_ParentTabLineCombinationID = row["FK_ParentTabLineCombinationID"].GetType() != typeof(DBNull) ? (Guid?)row["FK_ParentTabLineCombinationID"] : null,
@@ -346,9 +362,9 @@ namespace POS_Api.Translators
             TableName = row["TableName"].GetType() != typeof(DBNull) ? (int?)row["TableName"] : null,
             NoOfGuests = row["NoOfGuests"].GetType() != typeof(DBNull) ? (int?)row["NoOfGuests"] : null,
             Gratuity = row["Gratuity"].GetType() != typeof(DBNull) ? (decimal?)row["Gratuity"] : null,
-            GratuityPerc = row["GratuityPerc"].GetType() != typeof(DBNull) ? (int?)row["GratuityPerc"] : null,
+            GratuityPerc = row["GratuityPerc"].GetType() != typeof(DBNull) ? (decimal?)row["GratuityPerc"] : null,
             Discount = row["Discount"].GetType() != typeof(DBNull) ? (decimal?)row["Discount"] : null,
-            DiscountPerc = row["DiscountPerc"].GetType() != typeof(DBNull) ? (int?)row["DiscountPerc"] : null,
+            DiscountPerc = row["DiscountPerc"].GetType() != typeof(DBNull) ? (decimal?)row["DiscountPerc"] : null,
             IsVoided = (bool?)row["IsVoided"],
             VoidNote = row["VoidNote"].GetType() != typeof(DBNull) ? (string)row["VoidNote"] : null,
             IsPaid = (bool?)row["IsPaid"],
@@ -362,6 +378,7 @@ namespace POS_Api.Translators
             CreatedBy = (string)row["CreatedBy"],
             DateCreated = (DateTime?)row["DateCreated"],
             DateUpdated = (DateTime?)row["DateUpdated"],
+            TableNumber = row["TableNumber"].GetType() != typeof(DBNull) ? (int?)row["TableNumber"] : null,
          };
       }
 

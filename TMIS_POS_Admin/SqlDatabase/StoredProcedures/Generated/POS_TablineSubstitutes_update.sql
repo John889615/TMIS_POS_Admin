@@ -7,7 +7,7 @@ IF OBJECT_ID('dbo.POS_TablineSubstitutes_update', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_TablineSubstitutes_update
-    @POS_TablineSubstituteID UNIQUEIDENTIFIER,
+    @TablineSubstituteID UNIQUEIDENTIFIER,
     @FK_ParentTabLineID UNIQUEIDENTIFIER,
     @FK_SubstituionTabLineID UNIQUEIDENTIFIER,
     @FK_ParentTabLineCombinationID UNIQUEIDENTIFIER = NULL
@@ -17,10 +17,10 @@ BEGIN
     SET     FK_ParentTabLineID = @FK_ParentTabLineID,
     FK_SubstituionTabLineID = @FK_SubstituionTabLineID,
     FK_ParentTabLineCombinationID = @FK_ParentTabLineCombinationID
-    WHERE POS_TablineSubstituteID = @POS_TablineSubstituteID;
+    WHERE TablineSubstituteID = @TablineSubstituteID;
 
     SELECT *
     FROM POS_TablineSubstitutes
-    WHERE POS_TablineSubstituteID = @POS_TablineSubstituteID;
+    WHERE TablineSubstituteID = @TablineSubstituteID;
 END
 GO

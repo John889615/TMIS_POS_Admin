@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_Arrivals_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_Arrivals_insert
+    @ArrivalID UNIQUEIDENTIFIER = NULL,
     @FK_GuestID INT,
     @CheckedInBy VARCHAR(255) = NULL,
     @CheckInDate DATETIME,
@@ -15,9 +16,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (ArrivalID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_Arrivals (FK_GuestID, CheckedInBy, CheckInDate, CheckedOutBy, CheckOutDate)
+    INSERT INTO POS_Arrivals (ArrivalID, FK_GuestID, CheckedInBy, CheckInDate, CheckedOutBy, CheckOutDate)
     OUTPUT INSERTED.ArrivalID INTO @Inserted
-    VALUES (@FK_GuestID, @CheckedInBy, @CheckInDate, @CheckedOutBy, @CheckOutDate);
+    VALUES (ISNULL(@ArrivalID, NEWID()), @FK_GuestID, @CheckedInBy, @CheckInDate, @CheckedOutBy, @CheckOutDate);
 
     SELECT *
     FROM POS_Arrivals

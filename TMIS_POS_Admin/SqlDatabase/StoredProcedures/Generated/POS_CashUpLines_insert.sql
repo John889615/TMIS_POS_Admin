@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_CashUpLines_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_CashUpLines_insert
+    @CashUpPaymentTypeID UNIQUEIDENTIFIER = NULL,
     @FK_CashUpID UNIQUEIDENTIFIER,
     @FK_PaymentTypeID INT,
     @SystemAmount DECIMAL (18, 4),
@@ -18,9 +19,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (CashUpPaymentTypeID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_CashUpLines (FK_CashUpID, FK_PaymentTypeID, SystemAmount, CountedAmount, VarianceAmount, Notes, DateCreated, DateUpdated)
+    INSERT INTO POS_CashUpLines (CashUpPaymentTypeID, FK_CashUpID, FK_PaymentTypeID, SystemAmount, CountedAmount, VarianceAmount, Notes, DateCreated, DateUpdated)
     OUTPUT INSERTED.CashUpPaymentTypeID INTO @Inserted
-    VALUES (@FK_CashUpID, @FK_PaymentTypeID, @SystemAmount, @CountedAmount, @VarianceAmount, @Notes, @DateCreated, @DateUpdated);
+    VALUES (ISNULL(@CashUpPaymentTypeID, NEWID()), @FK_CashUpID, @FK_PaymentTypeID, @SystemAmount, @CountedAmount, @VarianceAmount, @Notes, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM POS_CashUpLines

@@ -3,6 +3,7 @@ using POS_Common.Models.Sync;
 using POS_Common.ModelsDto.StockController.PurchaseOrder;
 using POS_Common.ModelsDto.SyncController;
 using POS_Common.ModelsDto.SyncController.FromServer;
+using POS_Common.ModelsDto.SyncController.PushBatch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,11 +39,13 @@ namespace POS_Api.ServiceInterfaces.Sync
 
         Task<ApiResponse<List<Res_CostCenterProduct_Sync>>> List_Cost_Center_Products();
 
-        Task<ApiResponse<List<Res_BookingHeader_Sync>>> List_Booking_Headers();
+        //Task<ApiResponse<List<Res_BookingHeader_Sync>>> List_Booking_Headers();
 
-        Task<ApiResponse<List<Res_Guest_Sync>>> List_Guests();
+        //Task<ApiResponse<List<Res_Guest_Sync>>> List_Guests();
 
-        Task<ApiResponse<List<Res_BookingGuest_Sync>>> List_Booking_Guests();
+        // Pull-from-server List_Booking_Guests is currently disabled (impl commented out
+        // in Sync_Service.cs). Re-enable here once the impl is wired up.
+        //Task<ApiResponse<List<Res_BookingGuest_Sync>>> List_Booking_Guests();
 
         Task<ApiResponse<List<Res_PaymentType_Sync>>> List_Payment_Types();
 
@@ -120,6 +123,11 @@ namespace POS_Api.ServiceInterfaces.Sync
         #region Admin
 
         Task<ApiResponse<bool>> Notify_Result(Req_Notify_Result request);
+        #endregion
+
+        #region Push Batch (Spec 2)
+
+        Task<ApiResponse<Res_Push_Batch>> Process_Push_Batch(Req_Push_Batch request);
         #endregion
     }
 }

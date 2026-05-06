@@ -6,8 +6,9 @@ IF OBJECT_ID('dbo.POS_InvoiceLines_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_InvoiceLines_insert
+    @InvoiceLineID UNIQUEIDENTIFIER = NULL,
     @FK_InvoiceTabID UNIQUEIDENTIFIER,
-    @FK_ProductID INT,
+    @FK_ProductID INT = NULL,
     @Product VARCHAR(100),
     @Quantity DECIMAL (18, 4),
     @LineDiscount DECIMAL (18, 4),
@@ -19,9 +20,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (InvoiceLineID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_InvoiceLines (FK_InvoiceTabID, FK_ProductID, Product, Quantity, LineDiscount, LineTotalExcl, LineTotalVat, LineTotalIncl, Guests)
+    INSERT INTO POS_InvoiceLines (InvoiceLineID, FK_InvoiceTabID, FK_ProductID, Product, Quantity, LineDiscount, LineTotalExcl, LineTotalVat, LineTotalIncl, Guests)
     OUTPUT INSERTED.InvoiceLineID INTO @Inserted
-    VALUES (@FK_InvoiceTabID, @FK_ProductID, @Product, @Quantity, @LineDiscount, @LineTotalExcl, @LineTotalVat, @LineTotalIncl, @Guests);
+    VALUES (ISNULL(@InvoiceLineID, NEWID()), @FK_InvoiceTabID, @FK_ProductID, @Product, @Quantity, @LineDiscount, @LineTotalExcl, @LineTotalVat, @LineTotalIncl, @Guests);
 
     SELECT *
     FROM POS_InvoiceLines

@@ -21,6 +21,7 @@ using POS_Common.Enums;
 using POS_Common.Models;
 using POS_Common.Models.Debtors.POS_Locations;
 using POS_Common.ModelsDto.SyncController;
+using POS_Common.ModelsDto.SyncController.PushBatch;
 using POS_Common.Models.Debtors.POS_CostCenters;
 using POS_Common.Models.Inventory.POS_Units;
 using POS_Common.Models.EntityData.POS_TaxTypes;
@@ -723,47 +724,47 @@ namespace POS_Api.Services.Sync
             }
         }
 
-        public async Task<ApiResponse<List<Res_BookingHeader_Sync>>> List_Booking_Headers()
-        {
-            try
-            {
-                _logger.LogService("Starting Sync List");
+        //public async Task<ApiResponse<List<Res_BookingHeader_Sync>>> List_Booking_Headers()
+        //{
+        //    try
+        //    {
+        //        _logger.LogService("Starting Sync List");
 
-                var syncResponse = await EntityData.EntityData_Custom_Service.TH_BookingHeaders_Select_All(new BookingHeader()
-                {
+        //        var syncResponse = await EntityData.EntityData_Custom_Service.TH_BookingHeaders_Select_All(new BookingHeader()
+        //        {
 
-                }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+        //        }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
 
 
-                var response = new List<Res_BookingHeader_Sync>();
+        //        var response = new List<Res_BookingHeader_Sync>();
 
-                if (syncResponse != null && syncResponse.Any())
-                {
-                    foreach (var sync in syncResponse)
-                    {
+        //        if (syncResponse != null && syncResponse.Any())
+        //        {
+        //            foreach (var sync in syncResponse)
+        //            {
 
-                        response.Add(new Res_BookingHeader_Sync()
-                        {
-                            BookingHeaderID = sync.BookingHeaderID,
-                            PartyName = sync.PartyName,
-                            BookingReference = sync.BookingReference,
-                            TravelStart = sync.TravelStart,
-                            TravelEnd = sync.TravelEnd,
-                            DateCreated = sync.DateCreated,
-                            DateUpdated = sync.DateUpdated
-                        });
-                    }
-                }
+        //                response.Add(new Res_BookingHeader_Sync()
+        //                {
+        //                    BookingHeaderID = sync.BookingHeaderID,
+        //                    PartyName = sync.PartyName,
+        //                    BookingReference = sync.BookingReference,
+        //                    TravelStart = sync.TravelStart,
+        //                    TravelEnd = sync.TravelEnd,
+        //                    DateCreated = sync.DateCreated,
+        //                    DateUpdated = sync.DateUpdated
+        //                });
+        //            }
+        //        }
 
-                return ApiResponse.Success(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogService("Exception during location list", ex);
-                return ApiResponse.Fail<List<Res_BookingHeader_Sync>>(AppErrorCode.ServerError, new List<string> { ex.Message
-                }, 500);
-            }
-        }
+        //        return ApiResponse.Success(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogService("Exception during location list", ex);
+        //        return ApiResponse.Fail<List<Res_BookingHeader_Sync>>(AppErrorCode.ServerError, new List<string> { ex.Message
+        //        }, 500);
+        //    }
+        //}
 
         public async Task<ApiResponse<List<Res_Guest_Sync>>> List_Guests()
         {
@@ -814,45 +815,45 @@ namespace POS_Api.Services.Sync
             }
         }
 
-        public async Task<ApiResponse<List<Res_BookingGuest_Sync>>> List_Booking_Guests()
-        {
-            try
-            {
-                _logger.LogService("Starting Sync List");
+        //public async Task<ApiResponse<List<Res_BookingGuest_Sync>>> List_Booking_Guests()
+        //{
+        //    try
+        //    {
+        //        _logger.LogService("Starting Sync List");
 
-                var syncResponse = await EntityData.EntityData_Custom_Service.TH_BookingGuests_Select_All(new BookingGuest()
-                {
+        //        var syncResponse = await EntityData.EntityData_Custom_Service.TH_BookingGuests_Select_All(new BookingGuest()
+        //        {
 
-                }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
+        //        }, _configuration.GetConnectionString(string.Format("ApplicationDb_{0}", _userContext.TenantID.ToString())));
 
 
-                var response = new List<Res_BookingGuest_Sync>();
+        //        var response = new List<Res_BookingGuest_Sync>();
 
-                if (syncResponse != null && syncResponse.Any())
-                {
-                    foreach (var sync in syncResponse)
-                    {
+        //        if (syncResponse != null && syncResponse.Any())
+        //        {
+        //            foreach (var sync in syncResponse)
+        //            {
 
-                        response.Add(new Res_BookingGuest_Sync()
-                        {
-                            BookingGuestID = sync.BookingGuestID,
-                            FK_BookingHeaderID = sync.FK_BookingHeaderID,
-                            FK_GuestID = sync.FK_GuestID,
-                            DateCreated = sync.DateCreated,
-                            DateUpdated = sync.DateUpdated
-                        });
-                    }
-                }
+        //                response.Add(new Res_BookingGuest_Sync()
+        //                {
+        //                    BookingGuestID = sync.BookingGuestID,
+        //                    FK_BookingHeaderID = sync.FK_BookingHeaderID,
+        //                    FK_GuestID = sync.FK_GuestID,
+        //                    DateCreated = sync.DateCreated,
+        //                    DateUpdated = sync.DateUpdated
+        //                });
+        //            }
+        //        }
 
-                return ApiResponse.Success(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogService("Exception during location list", ex);
-                return ApiResponse.Fail<List<Res_BookingGuest_Sync>>(AppErrorCode.ServerError, new List<string> { ex.Message
-                }, 500);
-            }
-        }
+        //        return ApiResponse.Success(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogService("Exception during location list", ex);
+        //        return ApiResponse.Fail<List<Res_BookingGuest_Sync>>(AppErrorCode.ServerError, new List<string> { ex.Message
+        //        }, 500);
+        //    }
+        //}
 
         public async Task<ApiResponse<List<Res_PaymentType_Sync>>> List_Payment_Types()
         {
@@ -2190,7 +2191,7 @@ namespace POS_Api.Services.Sync
                     row["Int1"] = ToDb(item.FK_CostCenterID);
                     row["Int2"] = ToDb(item.FK_CurrencyID);
                     row["Date1"] = ToDb(item.CashUpDate);
-                    row["String2"] = ToDb(item.CashedUpBy);
+                    row["String2"] = ToDb(item.CashUpBy);
                     row["Decimal1"] = ToDb(item.TotalSystemAmount);
                     row["Decimal2"] = ToDb(item.TotalCountedAmount);
                     row["Decimal3"] = ToDb(item.TotalVariance);
@@ -2264,34 +2265,50 @@ namespace POS_Api.Services.Sync
 
                 foreach (var item in items ?? new List<Tab_Sync>())
                 {
+                    // Slot mapping aligns with BulkUpsertToServer_Tabs (Spec 2):
+                    //   Guid1 TabID                 Bool1 IsVoided
+                    //   Guid2 FK_AccountID          Bool2 IsPaid
+                    //   Int1 FK_LocationID          Date1 PaymentDate
+                    //   Int2 NoOfGuests             Date2 ClosedDate
+                    //   Int3 FK_CostCenterID        Date3 DateCreated
+                    //   Int4 FK_PaymentTypeID       Date4 DateUpdated
+                    //   Int5 TableName              Decimal1 Gratuity
+                    //   Int6 FK_CurrencyID          Decimal2 GratuityPerc
+                    //   Int7 TableNumber            Decimal3 Discount
+                    //   String1 TabName             Decimal4 DiscountPerc
+                    //   String2 VoidNote            Decimal5 AmountPaid
+                    //   String3 AdditionalInfo      Decimal6 AmountDue
+                    //   String4 CreatedBy           Decimal7 VatTotal
+                    //   String5 SyncStatus          Decimal8 CurrentExchangeRate
                     var row = tvp.NewRow();
                     row["Guid1"] = ToDb(item.TabID);
-                    row["Int1"] = ToDb(item.FK_LocationID);
-                    row["String4"] = ToDb(item.CreatedBy);
                     row["Guid2"] = ToDb(item.FK_AccountID);
+                    row["Int1"] = ToDb(item.FK_LocationID);
+                    row["Int2"] = ToDb(item.NoOfGuests);
                     row["Int3"] = ToDb(item.FK_CostCenterID);
                     row["Int4"] = ToDb(item.FK_PaymentTypeID);
-                    row["String1"] = ToDb(item.TabName);
                     row["Int5"] = ToDb(item.TableName);
-                    row["Int6"] = ToDb(item.NoOfGuests);
-                    row["Decimal1"] = ToDb(item.Gratuity);
-                    row["Int7"] = ToDb(item.GratuityPerc);
-                    row["Decimal2"] = ToDb(item.Discount);
-                    row["Int8"] = ToDb(item.DiscountPerc);
-                    row["Bool1"] = ToDb(item.IsVoided);
+                    row["Int6"] = ToDb(item.FK_CurrencyID);
+                    row["Int7"] = ToDb(item.TableNumber);
+                    row["String1"] = ToDb(item.TabName);
                     row["String2"] = ToDb(item.VoidNote);
+                    row["String3"] = ToDb(item.AdditionalInfo);
+                    row["String4"] = ToDb(item.CreatedBy);
+                    row["String5"] = ToDb(item.SyncStatus);
+                    row["Decimal1"] = ToDb(item.Gratuity);
+                    row["Decimal2"] = ToDb(item.GratuityPerc);
+                    row["Decimal3"] = ToDb(item.Discount);
+                    row["Decimal4"] = ToDb(item.DiscountPerc);
+                    row["Decimal5"] = ToDb(item.AmountPaid);
+                    row["Decimal6"] = ToDb(item.AmountDue);
+                    row["Decimal7"] = ToDb(item.VatTotal);
+                    row["Decimal8"] = ToDb(item.CurrentExchangeRate);
+                    row["Bool1"] = ToDb(item.IsVoided);
                     row["Bool2"] = ToDb(item.IsPaid);
-                    row["Decimal3"] = ToDb(item.AmountPaid);
-                    row["Decimal4"] = ToDb(item.AmountDue);
-                    row["Decimal5"] = ToDb(item.VatTotal);
                     row["Date1"] = ToDb(item.PaymentDate);
                     row["Date2"] = ToDb(item.ClosedDate);
-                    row["String3"] = ToDb(item.AdditionalInfo);
                     row["Date3"] = ToDb(item.DateCreated);
                     row["Date4"] = ToDb(item.DateUpdated);
-                    row["Int10"] = ToDb(item.FK_CurrencyID);
-                    row["Decimal6"] = ToDb(item.CurrentExchangeRate);
-                    row["String5"] = ToDb(item.SyncStatus);
                     tvp.Rows.Add(row);
                 }
 
@@ -2319,31 +2336,35 @@ namespace POS_Api.Services.Sync
 
                 foreach (var item in items ?? new List<TabLine_Sync>())
                 {
+                    // Slot mapping aligns with BulkUpsertToServer_TabLines (Spec 2).
+                    // DiscountPerc moved INT -> Decimal slot. New: Gratuity, GratuityPerc.
                     var row = tvp.NewRow();
                     row["Guid1"] = ToDb(item.TabLineID);
                     row["Guid2"] = ToDb(item.FK_TabID);
-                    row["String6"] = ToDb(item.CreatedBy);
+                    row["Guid3"] = ToDb(item.FK_PointerID);
                     row["Int2"] = ToDb(item.FK_ProductID);
                     row["Int3"] = ToDb(item.FK_PriceCodeID);
-                    row["Guid3"] = ToDb(item.FK_PointerID);
+                    row["Int5"] = ToDb(item.FK_MenuID);
+                    row["String1"] = ToDb(item.Product);
+                    row["String2"] = ToDb(item.Notes);
+                    row["String3"] = ToDb(item.AutoNotes);
+                    row["String4"] = ToDb(item.ServedAs);
+                    row["String5"] = ToDb(item.MenuName);
+                    row["String6"] = ToDb(item.CreatedBy);
+                    row["String7"] = ToDb(item.SyncStatus);
                     row["Decimal1"] = ToDb(item.UnitCostExcl);
                     row["Decimal2"] = ToDb(item.Vat);
                     row["Decimal3"] = ToDb(item.UnitCostIncl);
-                    row["String1"] = ToDb(item.Product);
                     row["Decimal4"] = ToDb(item.Quantity);
                     row["Decimal5"] = ToDb(item.Discount);
-                    row["Int4"] = ToDb(item.DiscountPerc);
+                    row["Decimal6"] = ToDb(item.ServedAsQuantity);
+                    row["Decimal7"] = ToDb(item.DiscountPerc);
+                    row["Decimal8"] = ToDb(item.Gratuity);
+                    row["Decimal9"] = ToDb(item.GratuityPerc);
                     row["Bool1"] = ToDb(item.IsVoided);
-                    row["String2"] = ToDb(item.Notes);
-                    row["String3"] = ToDb(item.AutoNotes);
+                    row["Bool2"] = ToDb(item.ServedAsQuantified);
                     row["Date1"] = ToDb(item.DateCreated);
                     row["Date2"] = ToDb(item.DateUpdated);
-                    row["String4"] = ToDb(item.ServedAs);
-                    row["Bool2"] = ToDb(item.ServedAsQuantified);
-                    row["Decimal6"] = ToDb(item.ServedAsQuantity);
-                    row["Int5"] = ToDb(item.FK_MenuID);
-                    row["String5"] = ToDb(item.MenuName);
-                    row["String7"] = ToDb(item.SyncStatus);
                     tvp.Rows.Add(row);
                 }
 
@@ -2539,22 +2560,32 @@ namespace POS_Api.Services.Sync
 
                 foreach (var item in items ?? new List<InvoiceHeader_Sync>())
                 {
+                    // Slot mapping aligns with BulkUpsertToServer_InvoiceHeaders (Spec 2).
+                    // IsDiscarded -> IsVoided + audit fields. New: FK_CurrencyID, IsPaid,
+                    // AmountPaid, AmountDue, VoidReason, VoidedDate, VoidedBy.
                     var row = tvp.NewRow();
                     row["Guid1"] = ToDb(item.InvoiceHeaderID);
                     row["Guid2"] = ToDb(item.FK_AccountID);
                     row["Int1"] = ToDb(item.FK_LocationID);
+                    row["Int2"] = ToDb(item.FK_CurrencyID);
                     row["String1"] = ToDb(item.InvoiceNo);
                     row["String2"] = ToDb(item.PartyName);
                     row["String3"] = ToDb(item.BookingReference);
+                    row["String4"] = ToDb(item.VoidReason);
+                    row["String5"] = ToDb(item.VoidedBy);
+                    row["String6"] = ToDb(item.SyncStatus);
                     row["Decimal1"] = ToDb(item.DiscountTotal);
                     row["Decimal2"] = ToDb(item.GratuityTotal);
                     row["Decimal3"] = ToDb(item.ExclTotal);
                     row["Decimal4"] = ToDb(item.VatTotal);
                     row["Decimal5"] = ToDb(item.InclTotal);
-                    row["Bool1"] = ToDb(item.IsDiscarded);
-                    row["Date1"] = ToDb(item.DateCreated);
-                    row["Date2"] = ToDb(item.DatePaid);
-                    row["String4"] = ToDb(item.SyncStatus);
+                    row["Decimal6"] = ToDb(item.AmountPaid);
+                    row["Decimal7"] = ToDb(item.AmountDue);
+                    row["Bool1"] = ToDb(item.IsPaid);
+                    row["Bool2"] = ToDb(item.IsVoided);
+                    row["Date1"] = ToDb(item.DatePaid);
+                    row["Date2"] = ToDb(item.VoidedDate);
+                    row["Date3"] = ToDb(item.DateCreated);
                     tvp.Rows.Add(row);
                 }
 
@@ -2660,22 +2691,33 @@ namespace POS_Api.Services.Sync
 
                 foreach (var item in items ?? new List<InvoicePayment_Sync>())
                 {
+                    // Slot mapping aligns with BulkUpsertToServer_InvoicePayments (Spec 2).
+                    // From/To -> Base/Payment. New: StaffName, IdempotencyKey, Reference,
+                    // Notes, IsVoided, VoidReason, VoidedDate, VoidedBy, SignatureBase64.
+                    // FromTotal/ToTotal dropped.
                     var row = tvp.NewRow();
                     row["Guid1"] = ToDb(item.InvoicePaymentID);
                     row["Guid2"] = ToDb(item.FK_InvoiceID);
+                    row["Guid3"] = ToDb(item.IdempotencyKey);
                     row["Int1"] = ToDb(item.FK_PaymentTypeID);
-                    row["Int2"] = ToDb(item.FK_FromCurrencyID);
-                    row["Int3"] = ToDb(item.FK_ToCurrencyID);
-                    row["String1"] = ToDb(item.FromCurrency);
-                    row["String2"] = ToDb(item.ToCurrency);
-                    row["Decimal1"] = ToDb(item.FromTotal);
-                    row["Decimal2"] = ToDb(item.ToTotal);
-                    row["Decimal3"] = ToDb(item.FromAmountPaid);
-                    row["Decimal4"] = ToDb(item.ToAmountPaid);
-                    row["Decimal5"] = ToDb(item.ExchangeRate);
+                    row["Int2"] = ToDb(item.FK_BaseCurrencyID);
+                    row["Int3"] = ToDb(item.FK_PaymentCurrencyID);
+                    row["String1"] = ToDb(item.BaseCurrencyCode);
+                    row["String2"] = ToDb(item.PaymentCurrencyCode);
+                    row["String3"] = ToDb(item.StaffName);
+                    row["String4"] = ToDb(item.Reference);
+                    row["String5"] = ToDb(item.Notes);
+                    row["String6"] = ToDb(item.VoidReason);
+                    row["String7"] = ToDb(item.VoidedBy);
+                    row["String8"] = ToDb(item.SignatureBase64);
+                    row["String9"] = ToDb(item.SyncStatus);
+                    row["Decimal1"] = ToDb(item.BaseAmountPaid);
+                    row["Decimal2"] = ToDb(item.PaymentAmountPaid);
+                    row["Decimal3"] = ToDb(item.ExchangeRate);
                     row["Date1"] = ToDb(item.ExchangeDate);
                     row["Date2"] = ToDb(item.DatePaid);
-                    row["String3"] = ToDb(item.SyncStatus);
+                    row["Date3"] = ToDb(item.VoidedDate);
+                    row["Bool1"] = ToDb(item.IsVoided);
                     tvp.Rows.Add(row);
                 }
 
@@ -2799,6 +2841,215 @@ namespace POS_Api.Services.Sync
                 _logger.LogService("Notify_Result failed", ex);
                 return ApiResponse.Fail<bool>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
             }
+        }
+
+        #endregion
+
+        #region Push Batch (Spec 2)
+
+        // Pure data: which entities run inside which group, in FK order.
+        private static readonly string[] GroupOrder_MasterRefs = new[]
+        {
+            "Guests", "BookingHeaders", "Accounts",
+            "BookingGuests", "AccountGuests", "Arrivals",
+        };
+
+        private static readonly string[] GroupOrder_Operational = new[]
+        {
+            "Tabs", "TabLines", "TabLineCombinations",
+            "TabLineExtras", "TabLineGuests", "TabLinePreparationMethods",
+            "TablineSubstitutes", "VoidLogs",
+            "CashUpHeaders", "CashUpLines",
+        };
+
+        private static readonly string[] GroupOrder_Transactional = new[]
+        {
+            "InvoiceHeaders", "InvoiceTabs", "InvoiceLines", "InvoicePayments",
+        };
+
+        public async Task<ApiResponse<Res_Push_Batch>> Process_Push_Batch(Req_Push_Batch request)
+        {
+            try
+            {
+                if (request == null
+                    || request.BatchID == null || request.BatchID == Guid.Empty
+                    || request.SiteID == null
+                    || string.IsNullOrWhiteSpace(request.Group))
+                {
+                    return ApiResponse.Fail<Res_Push_Batch>(
+                        AppErrorCode.ValidationError,
+                        new List<string> { "BatchID, SiteID and Group are required." },
+                        400);
+                }
+
+                var entityOrder = SelectGroupOrder(request.Group);
+                if (entityOrder == null)
+                {
+                    return ApiResponse.Fail<Res_Push_Batch>(
+                        AppErrorCode.ValidationError,
+                        new List<string> { $"Unknown group: {request.Group}. Expected MasterRefs|Operational|Transactional." },
+                        400);
+                }
+
+                var connectionString = GetAppDbConnectionString();
+
+                // Idempotency lookup
+                var cached = await BatchDedupe_Lookup(request.BatchID.Value, connectionString);
+                if (cached != null) return ApiResponse.Success(cached);
+
+                var response = new Res_Push_Batch
+                {
+                    BatchID = request.BatchID,
+                    Group = request.Group,
+                    Results = new Dictionary<string, Entity_Result>(),
+                };
+
+                foreach (var entityName in entityOrder)
+                {
+                    var result = await Process_Push_Batch_Entity(entityName, request.Entities);
+                    response.Results[entityName] = result;
+                }
+
+                // Idempotency persist (best-effort; failure here logs but doesn't fail the batch)
+                try
+                {
+                    var json = System.Text.Json.JsonSerializer.Serialize(response);
+                    await BatchDedupe_Complete(request.BatchID.Value, request.SiteID.Value, request.Group, json, connectionString);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogService("BatchDedupe_complete failed (continuing)", ex);
+                }
+
+                return ApiResponse.Success(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService("Process_Push_Batch failed", ex);
+                return ApiResponse.Fail<Res_Push_Batch>(AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+        }
+
+        private static string[] SelectGroupOrder(string group) => group switch
+        {
+            "MasterRefs"    => GroupOrder_MasterRefs,
+            "Operational"   => GroupOrder_Operational,
+            "Transactional" => GroupOrder_Transactional,
+            _ => null,
+        };
+
+        private async Task<Entity_Result> Process_Push_Batch_Entity(string entityName, Push_Batch_Entities e)
+        {
+            // Returns an Entity_Result regardless of whether the entity list was
+            // null/empty (skip => 0/0/[]). Per-entity failures are caught and
+            // turned into Rejected counts so other entities still get processed.
+            try
+            {
+                switch (entityName)
+                {
+                    // MasterRefs
+                    case "Guests":                    return await CallList(e?.Guests,                    List_Guests,                       items => items.Select(x => x.GuestID?.ToString()).ToList());
+                    case "BookingHeaders":            return await CallList(e?.BookingHeaders,            List_Booking_Headers,              items => items.Select(x => x.BookingHeaderID?.ToString()).ToList());
+                    case "Accounts":                  return await CallList(e?.Accounts,                  List_Accounts,                     items => items.Select(x => x.AccountID?.ToString()).ToList());
+                    case "BookingGuests":             return await CallList(e?.BookingGuests,             List_Booking_Guests,               items => items.Select(x => x.BookingGuestID?.ToString()).ToList());
+                    case "AccountGuests":             return await CallList(e?.AccountGuests,             List_Account_Guests,               items => items.Select(x => x.AccountGuestID?.ToString()).ToList());
+                    case "Arrivals":                  return await CallList(e?.Arrivals,                  List_Arrivals,                     items => items.Select(x => x.ArrivalID?.ToString()).ToList());
+
+                    // Operational
+                    case "Tabs":                      return await CallList(e?.Tabs,                      List_Tabs,                         items => items.Select(x => x.TabID?.ToString()).ToList());
+                    case "TabLines":                  return await CallList(e?.TabLines,                  List_Tab_Lines,                    items => items.Select(x => x.TabLineID?.ToString()).ToList());
+                    case "TabLineCombinations":       return await CallList(e?.TabLineCombinations,       List_TabLine_Combinations,         items => items.Select(x => x.TabLineCombinationID?.ToString()).ToList());
+                    case "TabLineExtras":             return await CallList(e?.TabLineExtras,             List_TabLine_Extras,               items => items.Select(x => x.TabLineExtraID?.ToString()).ToList());
+                    case "TabLineGuests":             return await CallList(e?.TabLineGuests,             List_TabLine_Guests,               items => items.Select(x => x.TabLineGuestID?.ToString()).ToList());
+                    case "TabLinePreparationMethods": return await CallList(e?.TabLinePreparationMethods, List_TabLine_Preparation_Methods,  items => items.Select(x => x.TabLinePreparationMethodID?.ToString()).ToList());
+                    case "TablineSubstitutes":        return await CallList(e?.TablineSubstitutes,        List_Tabline_Substitutes,          items => items.Select(x => x.TablineSubstituteID?.ToString()).ToList());
+                    case "VoidLogs":                  return await CallList(e?.VoidLogs,                  List_Void_Logs,                    items => items.Select(x => x.VoidLogID?.ToString()).ToList());
+                    case "CashUpHeaders":             return await CallList(e?.CashUpHeaders,             List_CashUp_Headers,               items => items.Select(x => x.CashUpHeaderID?.ToString()).ToList());
+                    case "CashUpLines":               return await CallList(e?.CashUpLines,               List_CashUp_Lines,                 items => items.Select(x => x.CashUpPaymentTypeID?.ToString()).ToList());
+
+                    // Transactional
+                    case "InvoiceHeaders":            return await CallList(e?.InvoiceHeaders,            List_Invoice_Headers,              items => items.Select(x => x.InvoiceHeaderID?.ToString()).ToList());
+                    case "InvoiceTabs":               return await CallList(e?.InvoiceTabs,               List_Invoice_Tabs,                 items => items.Select(x => x.InvoiceTabID?.ToString()).ToList());
+                    case "InvoiceLines":              return await CallList(e?.InvoiceLines,              List_Invoice_Lines,                items => items.Select(x => x.InvoiceLineID?.ToString()).ToList());
+                    case "InvoicePayments":           return await CallList(e?.InvoicePayments,           List_Invoice_Payments,             items => items.Select(x => x.InvoicePaymentID?.ToString()).ToList());
+
+                    default:
+                        return new Entity_Result
+                        {
+                            Accepted = 0,
+                            Rejected = 0,
+                            Errors = new List<Entity_Error> { new Entity_Error { Reason = $"Unknown entity: {entityName}" } },
+                        };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogService($"Process_Push_Batch_Entity({entityName}) failed", ex);
+                return new Entity_Result
+                {
+                    Accepted = 0,
+                    Rejected = 0,
+                    Errors = new List<Entity_Error> { new Entity_Error { Reason = ex.Message } },
+                };
+            }
+        }
+
+        private static async Task<Entity_Result> CallList<T>(
+            List<T> items,
+            Func<List<T>, Task<ApiResponse<bool>>> listMethod,
+            Func<List<T>, List<string>> idExtractor)
+        {
+            if (items == null || items.Count == 0)
+            {
+                return new Entity_Result();
+            }
+
+            var inboundCount = items.Count;
+            var apiResponse = await listMethod(items);
+
+            if (apiResponse?.Success == true)
+            {
+                return new Entity_Result { Accepted = inboundCount, Rejected = 0 };
+            }
+
+            // Whole-batch failure: every row counts as rejected.
+            var ids = idExtractor(items);
+            var reason = apiResponse?.Messages?.OfType<string>().FirstOrDefault() ?? "unknown failure";
+            return new Entity_Result
+            {
+                Accepted = 0,
+                Rejected = inboundCount,
+                Errors = ids.Select(id => new Entity_Error { Id = id, Reason = reason }).ToList(),
+            };
+        }
+
+        private static async Task<Res_Push_Batch> BatchDedupe_Lookup(Guid batchId, string connectionString)
+        {
+            using var conn = SqlClient.CreateInstance(connectionString);
+            await conn.OpenAsync();
+            using var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                conn,
+                "BatchDedupe_lookup",
+                new SqlParameter { DbType = DbType.Guid, Direction = ParameterDirection.Input, ParameterName = "@BatchID", Value = batchId });
+
+            if (!reader.HasRows) return null;
+            await reader.ReadAsync();
+            var json = reader["ResultJson"] as string;
+            if (string.IsNullOrWhiteSpace(json)) return null;
+            return System.Text.Json.JsonSerializer.Deserialize<Res_Push_Batch>(json);
+        }
+
+        private static async Task BatchDedupe_Complete(Guid batchId, int siteId, string group, string resultJson, string connectionString)
+        {
+            using var conn = SqlClient.CreateInstance(connectionString);
+            await conn.OpenAsync();
+            await SqlClient.ExecuteNonQueryStoredProcedureAsync(
+                conn,
+                "BatchDedupe_complete",
+                new SqlParameter { DbType = DbType.Guid,   Direction = ParameterDirection.Input, ParameterName = "@BatchID",    Value = batchId },
+                new SqlParameter { DbType = DbType.Int32,  Direction = ParameterDirection.Input, ParameterName = "@SiteID",     Value = siteId },
+                new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@GroupName",  Value = group ?? string.Empty },
+                new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@ResultJson", Value = resultJson ?? string.Empty });
         }
 
         #endregion

@@ -16,27 +16,41 @@ namespace POS_Common.Models.Sync.POS_InvoicePayments
 
       public int? FK_PaymentTypeID { get; set; }
 
-      public int? FK_FromCurrencyID { get; set; }
+      public int? FK_BaseCurrencyID { get; set; }
 
-      public int? FK_ToCurrencyID { get; set; }
+      public int? FK_PaymentCurrencyID { get; set; }
 
-      public string FromCurrency { get; set; }
+      public string BaseCurrencyCode { get; set; }
 
-      public string ToCurrency { get; set; }
+      public string PaymentCurrencyCode { get; set; }
 
-      public decimal? FromTotal { get; set; }
+      public decimal? BaseAmountPaid { get; set; }
 
-      public decimal? ToTotal { get; set; }
-
-      public decimal? FromAmountPaid { get; set; }
-
-      public decimal? ToAmountPaid { get; set; }
+      public decimal? PaymentAmountPaid { get; set; }
 
       public decimal? ExchangeRate { get; set; }
 
       public DateTime? ExchangeDate { get; set; }
 
       public DateTime? DatePaid { get; set; }
+
+      public string StaffName { get; set; }
+
+      public Guid? IdempotencyKey { get; set; }
+
+      public string Reference { get; set; }
+
+      public string Notes { get; set; }
+
+      public bool? IsVoided { get; set; }
+
+      public string VoidReason { get; set; }
+
+      public DateTime? VoidedDate { get; set; }
+
+      public string VoidedBy { get; set; }
+
+      public string SignatureBase64 { get; set; }
        #endregion
   }
 }

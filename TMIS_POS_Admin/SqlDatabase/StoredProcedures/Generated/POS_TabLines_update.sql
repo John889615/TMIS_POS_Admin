@@ -18,7 +18,7 @@ CREATE PROCEDURE dbo.POS_TabLines_update
     @Product VARCHAR(50),
     @Quantity DECIMAL (18, 4),
     @Discount DECIMAL (18, 4) = NULL,
-    @DiscountPerc INT = NULL,
+    @DiscountPerc DECIMAL (18, 4) = NULL,
     @IsVoided BIT,
     @Notes VARCHAR(MAX) = NULL,
     @AutoNotes VARCHAR(MAX) = NULL,
@@ -29,7 +29,9 @@ CREATE PROCEDURE dbo.POS_TabLines_update
     @ServedAsQuantified BIT = NULL,
     @ServedAsQuantity DECIMAL (18, 4) = NULL,
     @FK_MenuID INT = NULL,
-    @MenuName VARCHAR(100) = NULL
+    @MenuName VARCHAR(100) = NULL,
+    @Gratuity DECIMAL (18, 4) = NULL,
+    @GratuityPerc DECIMAL (18, 4) = NULL
 AS
 BEGIN
     UPDATE POS_TabLines
@@ -53,7 +55,9 @@ BEGIN
     ServedAsQuantified = @ServedAsQuantified,
     ServedAsQuantity = @ServedAsQuantity,
     FK_MenuID = @FK_MenuID,
-    MenuName = @MenuName
+    MenuName = @MenuName,
+    Gratuity = @Gratuity,
+    GratuityPerc = @GratuityPerc
     WHERE TabLineID = @TabLineID;
 
     SELECT *

@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_TabLines_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_TabLines_insert
+    @TabLineID UNIQUEIDENTIFIER = NULL,
     @FK_TabID UNIQUEIDENTIFIER,
     @FK_ProductID INT,
     @FK_PriceCodeID INT,
@@ -16,7 +17,7 @@ CREATE PROCEDURE dbo.POS_TabLines_insert
     @Product VARCHAR(50),
     @Quantity DECIMAL (18, 4),
     @Discount DECIMAL (18, 4) = NULL,
-    @DiscountPerc INT = NULL,
+    @DiscountPerc DECIMAL (18, 4) = NULL,
     @IsVoided BIT,
     @Notes VARCHAR(MAX) = NULL,
     @AutoNotes VARCHAR(MAX) = NULL,
@@ -27,14 +28,16 @@ CREATE PROCEDURE dbo.POS_TabLines_insert
     @ServedAsQuantified BIT = NULL,
     @ServedAsQuantity DECIMAL (18, 4) = NULL,
     @FK_MenuID INT = NULL,
-    @MenuName VARCHAR(100) = NULL
+    @MenuName VARCHAR(100) = NULL,
+    @Gratuity DECIMAL (18, 4) = NULL,
+    @GratuityPerc DECIMAL (18, 4) = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (TabLineID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_TabLines (FK_TabID, FK_ProductID, FK_PriceCodeID, FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product, Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes, CreatedBy, DateCreated, DateUpdated, ServedAs, ServedAsQuantified, ServedAsQuantity, FK_MenuID, MenuName)
+    INSERT INTO POS_TabLines (TabLineID, FK_TabID, FK_ProductID, FK_PriceCodeID, FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product, Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes, CreatedBy, DateCreated, DateUpdated, ServedAs, ServedAsQuantified, ServedAsQuantity, FK_MenuID, MenuName, Gratuity, GratuityPerc)
     OUTPUT INSERTED.TabLineID INTO @Inserted
-    VALUES (@FK_TabID, @FK_ProductID, @FK_PriceCodeID, @FK_PointerID, @UnitCostExcl, @Vat, @UnitCostIncl, @Product, @Quantity, @Discount, @DiscountPerc, @IsVoided, @Notes, @AutoNotes, @CreatedBy, @DateCreated, @DateUpdated, @ServedAs, @ServedAsQuantified, @ServedAsQuantity, @FK_MenuID, @MenuName);
+    VALUES (ISNULL(@TabLineID, NEWID()), @FK_TabID, @FK_ProductID, @FK_PriceCodeID, @FK_PointerID, @UnitCostExcl, @Vat, @UnitCostIncl, @Product, @Quantity, @Discount, @DiscountPerc, @IsVoided, @Notes, @AutoNotes, @CreatedBy, @DateCreated, @DateUpdated, @ServedAs, @ServedAsQuantified, @ServedAsQuantity, @FK_MenuID, @MenuName, @Gratuity, @GratuityPerc);
 
     SELECT *
     FROM POS_TabLines

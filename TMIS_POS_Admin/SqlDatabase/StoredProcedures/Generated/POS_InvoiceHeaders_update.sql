@@ -11,18 +11,25 @@ CREATE PROCEDURE dbo.POS_InvoiceHeaders_update
     @FK_LocationID INT,
     @FK_AccountID UNIQUEIDENTIFIER = NULL,
     @InvoiceNo VARCHAR(50),
-    @PartyName VARCHAR(50) = NULL,
-    @BookingReference VARCHAR(50) = NULL,
+    @PartyName VARCHAR(100) = NULL,
+    @BookingReference VARCHAR(100) = NULL,
     @DiscountTotal DECIMAL (18, 4),
     @GratuityTotal DECIMAL (18, 4),
     @ExclTotal DECIMAL (18, 4),
     @VatTotal DECIMAL (18, 4),
     @InclTotal DECIMAL (18, 4),
-    @IsDiscarded BIT,
     @BC_InvoiceID VARCHAR(255) = NULL,
     @DateCreated DATETIME,
     @DatePaid DATETIME = NULL,
-    @SyncedToServer BIT
+    @SyncedToServer BIT = NULL,
+    @FK_CurrencyID INT,
+    @IsPaid BIT,
+    @AmountPaid DECIMAL (18, 4),
+    @AmountDue DECIMAL (18, 4),
+    @IsVoided BIT,
+    @VoidReason VARCHAR(255) = NULL,
+    @VoidedDate DATETIME = NULL,
+    @VoidedBy VARCHAR(255) = NULL
 AS
 BEGIN
     UPDATE POS_InvoiceHeaders
@@ -36,10 +43,17 @@ BEGIN
     ExclTotal = @ExclTotal,
     VatTotal = @VatTotal,
     InclTotal = @InclTotal,
-    IsDiscarded = @IsDiscarded,
     BC_InvoiceID = @BC_InvoiceID,
     DatePaid = @DatePaid,
-    SyncedToServer = @SyncedToServer
+    SyncedToServer = @SyncedToServer,
+    FK_CurrencyID = @FK_CurrencyID,
+    IsPaid = @IsPaid,
+    AmountPaid = @AmountPaid,
+    AmountDue = @AmountDue,
+    IsVoided = @IsVoided,
+    VoidReason = @VoidReason,
+    VoidedDate = @VoidedDate,
+    VoidedBy = @VoidedBy
     WHERE InvoiceHeaderID = @InvoiceHeaderID;
 
     SELECT *

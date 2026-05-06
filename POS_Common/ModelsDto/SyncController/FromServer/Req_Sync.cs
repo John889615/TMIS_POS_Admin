@@ -142,7 +142,9 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public int? FK_CostCenterID { get; set; }
         public int? FK_CurrencyID { get; set; }
         public DateTime? CashUpDate { get; set; }
-        public string CashedUpBy { get; set; }
+        // Per Spec 1: Staff is not synced. Admin keeps a varchar shadow column.
+        // FOH side fills CashUpBy from Staff.Name + ' ' + Staff.Surname.
+        public string CashUpBy { get; set; }
         public decimal? TotalSystemAmount { get; set; }
         public decimal? TotalCountedAmount { get; set; }
         public decimal? TotalVariance { get; set; }
@@ -193,6 +195,7 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
     {
         public Guid? TabID { get; set; }
         public int? FK_LocationID { get; set; }
+        // Per Spec 1: varchar shadow for Staff (not synced).
         public string CreatedBy { get; set; }
         public Guid? FK_AccountID { get; set; }
         public int? FK_CostCenterID { get; set; }
@@ -201,9 +204,11 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public int? TableName { get; set; }
         public int? NoOfGuests { get; set; }
         public decimal? Gratuity { get; set; }
-        public int? GratuityPerc { get; set; }
+        // Per Spec 1: GratuityPerc widened INT -> DECIMAL(18,4).
+        public decimal? GratuityPerc { get; set; }
         public decimal? Discount { get; set; }
-        public int? DiscountPerc { get; set; }
+        // Per Spec 1: DiscountPerc widened INT -> DECIMAL(18,4).
+        public decimal? DiscountPerc { get; set; }
         public bool? IsVoided { get; set; }
         public string VoidNote { get; set; }
         public bool? IsPaid { get; set; }
@@ -236,6 +241,7 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
     {
         public Guid? TabLineID { get; set; }
         public Guid? FK_TabID { get; set; }
+        // Per Spec 1: varchar shadow for Staff (not synced).
         public string CreatedBy { get; set; }
         public int? FK_ProductID { get; set; }
         public int? FK_PriceCodeID { get; set; }
@@ -246,7 +252,8 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public string Product { get; set; }
         public decimal Quantity { get; set; }
         public decimal? Discount { get; set; }
-        public int? DiscountPerc { get; set; }
+        // Per Spec 1: DiscountPerc widened INT -> DECIMAL(18,4).
+        public decimal? DiscountPerc { get; set; }
         public bool? IsVoided { get; set; }
         public string Notes { get; set; }
         public string AutoNotes { get; set; }
@@ -257,6 +264,9 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public decimal? ServedAsQuantity { get; set; }
         public int? FK_MenuID { get; set; }
         public string MenuName { get; set; }
+        // Per Spec 1: new gratuity fields.
+        public decimal? Gratuity { get; set; }
+        public decimal? GratuityPerc { get; set; }
         public string SyncStatus { get; set; }
     }
 
@@ -379,6 +389,8 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public Guid? InvoiceHeaderID { get; set; }
         public Guid? FK_AccountID { get; set; }
         public int? FK_LocationID { get; set; }
+        // Per Spec 1: new explicit currency on invoice.
+        public int? FK_CurrencyID { get; set; }
         public string InvoiceNo { get; set; }
         public string PartyName { get; set; }
         public string BookingReference { get; set; }
@@ -387,9 +399,18 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public decimal ExclTotal { get; set; }
         public decimal VatTotal { get; set; }
         public decimal InclTotal { get; set; }
-        public bool? IsDiscarded { get; set; }
+        // Per Spec 1: payment-state denormalisation.
+        public decimal? AmountPaid { get; set; }
+        public decimal? AmountDue { get; set; }
+        public bool? IsPaid { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DatePaid { get; set; }
+        // Per Spec 1: IsDiscarded -> IsVoided + audit fields.
+        public bool? IsVoided { get; set; }
+        public string VoidReason { get; set; }
+        public DateTime? VoidedDate { get; set; }
+        // Per Spec 1: varchar shadow for Staff (not synced).
+        public string VoidedBy { get; set; }
         public bool? SyncedToServer { get; set; }
         public string SyncStatus { get; set; }
     }
@@ -464,17 +485,28 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         public Guid? InvoicePaymentID { get; set; }
         public Guid? FK_InvoiceID { get; set; }
         public int? FK_PaymentTypeID { get; set; }
-        public int? FK_FromCurrencyID { get; set; }
-        public int? FK_ToCurrencyID { get; set; }
-        public string FromCurrency { get; set; }
-        public string ToCurrency { get; set; }
-        public decimal? FromTotal { get; set; }
-        public decimal? ToTotal { get; set; }
-        public decimal FromAmountPaid { get; set; }
-        public decimal ToAmountPaid { get; set; }
-        public decimal? ExchangeRate { get; set; }
+        // Per Spec 1: From/To -> Base/Payment.
+        public int? FK_BaseCurrencyID { get; set; }
+        public int? FK_PaymentCurrencyID { get; set; }
+        public string BaseCurrencyCode { get; set; }
+        public string PaymentCurrencyCode { get; set; }
+        public decimal BaseAmountPaid { get; set; }
+        public decimal PaymentAmountPaid { get; set; }
+        public decimal ExchangeRate { get; set; }
         public DateTime? ExchangeDate { get; set; }
         public DateTime? DatePaid { get; set; }
+        // Per Spec 1: idempotency key on every payment.
+        public Guid? IdempotencyKey { get; set; }
+        public string Reference { get; set; }
+        public string Notes { get; set; }
+        // Per Spec 1: void audit (placeholder feature; payments rarely voided).
+        public bool? IsVoided { get; set; }
+        public string VoidReason { get; set; }
+        public DateTime? VoidedDate { get; set; }
+        // Per Spec 1: varchar shadows for Staff (not synced).
+        public string StaffName { get; set; }
+        public string VoidedBy { get; set; }
+        public string SignatureBase64 { get; set; }
         public string SyncStatus { get; set; }
     }
 

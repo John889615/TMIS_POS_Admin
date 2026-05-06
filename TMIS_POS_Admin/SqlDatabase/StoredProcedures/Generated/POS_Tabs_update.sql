@@ -17,9 +17,9 @@ CREATE PROCEDURE dbo.POS_Tabs_update
     @TableName INT = NULL,
     @NoOfGuests INT = NULL,
     @Gratuity DECIMAL (18, 4) = NULL,
-    @GratuityPerc INT = NULL,
+    @GratuityPerc DECIMAL (18, 4) = NULL,
     @Discount DECIMAL (18, 4) = NULL,
-    @DiscountPerc INT = NULL,
+    @DiscountPerc DECIMAL (18, 4) = NULL,
     @IsVoided BIT,
     @VoidNote VARCHAR(MAX) = NULL,
     @IsPaid BIT,
@@ -32,7 +32,8 @@ CREATE PROCEDURE dbo.POS_Tabs_update
     @AdditionalInfo VARCHAR(255) = NULL,
     @CreatedBy VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME,
+    @TableNumber INT = NULL
 AS
 BEGIN
     UPDATE POS_Tabs
@@ -59,7 +60,8 @@ BEGIN
     ClosedDate = @ClosedDate,
     AdditionalInfo = @AdditionalInfo,
     CreatedBy = @CreatedBy,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    TableNumber = @TableNumber
     WHERE TabID = @TabID;
 
     SELECT *

@@ -10,7 +10,7 @@ namespace POS_Common.Models.Sync.POS_TablineSubstitutes
   {
        #region Properties
        
-      public Guid? POS_TablineSubstituteID { get; set; }
+      public Guid? TablineSubstituteID { get; set; }
 
       public Guid? FK_ParentTabLineID { get; set; }
 

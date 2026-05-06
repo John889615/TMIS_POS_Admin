@@ -32,8 +32,6 @@ namespace POS_Common.Models.Sync.POS_InvoiceHeaders
 
       public decimal? InclTotal { get; set; }
 
-      public bool? IsDiscarded { get; set; }
-
       public string BC_InvoiceID { get; set; }
 
       public DateTime? DateCreated { get; set; }
@@ -41,6 +39,22 @@ namespace POS_Common.Models.Sync.POS_InvoiceHeaders
       public DateTime? DatePaid { get; set; }
 
       public bool? SyncedToServer { get; set; }
+
+      public int? FK_CurrencyID { get; set; }
+
+      public bool? IsPaid { get; set; }
+
+      public decimal? AmountPaid { get; set; }
+
+      public decimal? AmountDue { get; set; }
+
+      public bool? IsVoided { get; set; }
+
+      public string VoidReason { get; set; }
+
+      public DateTime? VoidedDate { get; set; }
+
+      public string VoidedBy { get; set; }
        #endregion
   }
 }

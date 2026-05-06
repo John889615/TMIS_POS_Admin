@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_VoidLogs_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_VoidLogs_insert
+    @VoidLogID UNIQUEIDENTIFIER = NULL,
     @FK_TabID UNIQUEIDENTIFIER = NULL,
     @FK_TabLineID UNIQUEIDENTIFIER = NULL,
     @VoidedBy VARCHAR(255),
@@ -16,9 +17,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (VoidLogID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_VoidLogs (FK_TabID, FK_TabLineID, VoidedBy, Note, DateCreated, DateUpdated)
+    INSERT INTO POS_VoidLogs (VoidLogID, FK_TabID, FK_TabLineID, VoidedBy, Note, DateCreated, DateUpdated)
     OUTPUT INSERTED.VoidLogID INTO @Inserted
-    VALUES (@FK_TabID, @FK_TabLineID, @VoidedBy, @Note, @DateCreated, @DateUpdated);
+    VALUES (ISNULL(@VoidLogID, NEWID()), @FK_TabID, @FK_TabLineID, @VoidedBy, @Note, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM POS_VoidLogs

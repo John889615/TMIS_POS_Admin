@@ -7,11 +7,11 @@ IF OBJECT_ID('dbo.TH_BookingHeaders_select_single', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.TH_BookingHeaders_select_single
-    @BookingHeaderID INT
+
 AS
 BEGIN
     SELECT *
     FROM TH_BookingHeaders
-    WHERE BookingHeaderID = @BookingHeaderID;
+    WHERE ;
 END
 GO

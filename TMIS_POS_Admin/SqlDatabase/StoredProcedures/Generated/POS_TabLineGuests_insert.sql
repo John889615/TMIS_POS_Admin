@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_TabLineGuests_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_TabLineGuests_insert
+    @TabLineGuestID UNIQUEIDENTIFIER = NULL,
     @FK_TabLineID UNIQUEIDENTIFIER,
     @FK_GuestID INT,
     @Note VARCHAR(MAX) = NULL,
@@ -14,9 +15,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (TabLineGuestID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_TabLineGuests (FK_TabLineID, FK_GuestID, Note, DateUpdated)
+    INSERT INTO POS_TabLineGuests (TabLineGuestID, FK_TabLineID, FK_GuestID, Note, DateUpdated)
     OUTPUT INSERTED.TabLineGuestID INTO @Inserted
-    VALUES (@FK_TabLineID, @FK_GuestID, @Note, @DateUpdated);
+    VALUES (ISNULL(@TabLineGuestID, NEWID()), @FK_TabLineID, @FK_GuestID, @Note, @DateUpdated);
 
     SELECT *
     FROM POS_TabLineGuests

@@ -32,7 +32,7 @@ namespace POS_Common.Models.Sync.POS_TabLines
 
       public decimal? Discount { get; set; }
 
-      public int? DiscountPerc { get; set; }
+      public decimal? DiscountPerc { get; set; }
 
       public bool? IsVoided { get; set; }
 
@@ -55,6 +55,10 @@ namespace POS_Common.Models.Sync.POS_TabLines
       public int? FK_MenuID { get; set; }
 
       public string MenuName { get; set; }
+
+      public decimal? Gratuity { get; set; }
+
+      public decimal? GratuityPerc { get; set; }
        #endregion
   }
 }

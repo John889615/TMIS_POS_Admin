@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_Tabs_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_Tabs_insert
+    @TabID UNIQUEIDENTIFIER = NULL,
     @FK_LocationID INT,
     @FK_AccountID UNIQUEIDENTIFIER = NULL,
     @FK_CostCenterID INT = NULL,
@@ -15,9 +16,9 @@ CREATE PROCEDURE dbo.POS_Tabs_insert
     @TableName INT = NULL,
     @NoOfGuests INT = NULL,
     @Gratuity DECIMAL (18, 4) = NULL,
-    @GratuityPerc INT = NULL,
+    @GratuityPerc DECIMAL (18, 4) = NULL,
     @Discount DECIMAL (18, 4) = NULL,
-    @DiscountPerc INT = NULL,
+    @DiscountPerc DECIMAL (18, 4) = NULL,
     @IsVoided BIT,
     @VoidNote VARCHAR(MAX) = NULL,
     @IsPaid BIT,
@@ -30,14 +31,15 @@ CREATE PROCEDURE dbo.POS_Tabs_insert
     @AdditionalInfo VARCHAR(255) = NULL,
     @CreatedBy VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME,
+    @TableNumber INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (TabID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_Tabs (FK_LocationID, FK_AccountID, FK_CostCenterID, FK_PaymentTypeID, FK_CurrencyID, TabName, TableName, NoOfGuests, Gratuity, GratuityPerc, Discount, DiscountPerc, IsVoided, VoidNote, IsPaid, AmountPaid, AmountDue, VatTotal, CurrentExchangeRate, PaymentDate, ClosedDate, AdditionalInfo, CreatedBy, DateCreated, DateUpdated)
+    INSERT INTO POS_Tabs (TabID, FK_LocationID, FK_AccountID, FK_CostCenterID, FK_PaymentTypeID, FK_CurrencyID, TabName, TableName, NoOfGuests, Gratuity, GratuityPerc, Discount, DiscountPerc, IsVoided, VoidNote, IsPaid, AmountPaid, AmountDue, VatTotal, CurrentExchangeRate, PaymentDate, ClosedDate, AdditionalInfo, CreatedBy, DateCreated, DateUpdated, TableNumber)
     OUTPUT INSERTED.TabID INTO @Inserted
-    VALUES (@FK_LocationID, @FK_AccountID, @FK_CostCenterID, @FK_PaymentTypeID, @FK_CurrencyID, @TabName, @TableName, @NoOfGuests, @Gratuity, @GratuityPerc, @Discount, @DiscountPerc, @IsVoided, @VoidNote, @IsPaid, @AmountPaid, @AmountDue, @VatTotal, @CurrentExchangeRate, @PaymentDate, @ClosedDate, @AdditionalInfo, @CreatedBy, @DateCreated, @DateUpdated);
+    VALUES (ISNULL(@TabID, NEWID()), @FK_LocationID, @FK_AccountID, @FK_CostCenterID, @FK_PaymentTypeID, @FK_CurrencyID, @TabName, @TableName, @NoOfGuests, @Gratuity, @GratuityPerc, @Discount, @DiscountPerc, @IsVoided, @VoidNote, @IsPaid, @AmountPaid, @AmountDue, @VatTotal, @CurrentExchangeRate, @PaymentDate, @ClosedDate, @AdditionalInfo, @CreatedBy, @DateCreated, @DateUpdated, @TableNumber);
 
     SELECT *
     FROM POS_Tabs

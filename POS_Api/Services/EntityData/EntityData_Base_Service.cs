@@ -31,9 +31,8 @@ using POS_Common.Models.EntityData.TimeZones;
 using POS_Common.Models.EntityData.POS_TaxTypes;
 using POS_Common.Models.EntityData.Users;
 using POS_Common.Models.EntityData.POS_PaymentTypes;
-using POS_Common.Models.EntityData.TH_BookingHeaders;
 using POS_Common.Models.EntityData.Guests;
-using POS_Common.Models.EntityData.TH_BookingGuests;
+using POS_Common.Models.EntityData.BookingGuests;
 using POS_Common.Models.EntityData.POS_Images;
 using POS_Common.Models.EntityData.POS_ImageCategories;
 using POS_Common.Models.EntityData.POS_PaymentTypeIcons;
@@ -43,6 +42,7 @@ using POS_Common.Models.EntityData.CurrencyExchangeRates;
 using POS_Common.Models.EntityData.GlobalSettings;
 using POS_Common.Models.EntityData.POS_SlipTypes;
 using POS_Common.Models.EntityData.EntitySettings;
+using POS_Common.Models.EntityData.BookingHeaders;
 
 namespace POS_Api.Services.EntityData
 {
@@ -6135,314 +6135,6 @@ namespace POS_Api.Services.EntityData
         }
         #endregion
 
-        #region TH_BookingHeaders
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Select_Single_Transaction(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Select_Single(item, sqlConn);
-                    transaction.Complete();
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Select_Single(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Select_Single(item, sqlConn);
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Select_Single(BookingHeader item, SqlConnection sqlConn)
-        {
-            try
-            {
-                BookingHeader resultItem = null;
-
-                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
-                    sqlConn,
-                    "TH_BookingHeaders_select_single",
-                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingHeaderID", Value = item.BookingHeaderID }                ))
-                {
-                    if (reader.HasRows)
-                    {
-                        resultItem = await reader.TranslateSingleAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader);
-                        Log.Information("BookingHeader found: BookingHeaderID={BookingHeaderID}, PartyName={PartyName}, BookingReference={BookingReference}, FK_AgentDebtorID={FK_AgentDebtorID}, FK_BranchID={FK_BranchID}, FK_DepartmentID={FK_DepartmentID}, FK_CurrencyID={FK_CurrencyID}, QuoteTotal={QuoteTotal}, BookingTotal={BookingTotal}, FK_BookingStatusID={FK_BookingStatusID}, TravelStart={TravelStart}, TravelEnd={TravelEnd}, FK_CreatedUserID={FK_CreatedUserID}, FK_UpdatedUserID={FK_UpdatedUserID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingHeaderID, resultItem.PartyName, resultItem.BookingReference, resultItem.FK_AgentDebtorID, resultItem.FK_BranchID, resultItem.FK_DepartmentID, resultItem.FK_CurrencyID, resultItem.QuoteTotal, resultItem.BookingTotal, resultItem.FK_BookingStatusID, resultItem.TravelStart, resultItem.TravelEnd, resultItem.FK_CreatedUserID, resultItem.FK_UpdatedUserID, resultItem.DateCreated, resultItem.DateUpdated);
-                        return resultItem;
-                    }
-                    else
-                    {
-                        Log.Warning("No BookingHeader found with the given BookingHeaderID.");
-                        return default;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Insert_Transaction(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Insert(item, sqlConn);
-                    transaction.Complete();
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Insert(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Insert(item, sqlConn);
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Insert(BookingHeader item, SqlConnection sqlConn)
-        {
-            try
-            {
-                BookingHeader resultItem = null;
-
-                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
-                    sqlConn,
-                    "TH_BookingHeaders_insert",
-                        new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@PartyName", Value = item.PartyName }
-                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@BookingReference", Value = item.BookingReference }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_AgentDebtorID", Value = item.FK_AgentDebtorID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BranchID", Value = item.FK_BranchID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_DepartmentID", Value = item.FK_DepartmentID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CurrencyID", Value = item.FK_CurrencyID }
-                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@QuoteTotal", Value = item.QuoteTotal }
-                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@BookingTotal", Value = item.BookingTotal }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BookingStatusID", Value = item.FK_BookingStatusID }
-                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelStart", Value = item.TravelStart }
-                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelEnd", Value = item.TravelEnd }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
-                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
-                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
-                {
-                    if (reader.HasRows)
-                    {
-                        resultItem = await reader.TranslateSingleAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader);
-                        Log.Information("BookingHeader found: BookingHeaderID={BookingHeaderID}, PartyName={PartyName}, BookingReference={BookingReference}, FK_AgentDebtorID={FK_AgentDebtorID}, FK_BranchID={FK_BranchID}, FK_DepartmentID={FK_DepartmentID}, FK_CurrencyID={FK_CurrencyID}, QuoteTotal={QuoteTotal}, BookingTotal={BookingTotal}, FK_BookingStatusID={FK_BookingStatusID}, TravelStart={TravelStart}, TravelEnd={TravelEnd}, FK_CreatedUserID={FK_CreatedUserID}, FK_UpdatedUserID={FK_UpdatedUserID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingHeaderID, resultItem.PartyName, resultItem.BookingReference, resultItem.FK_AgentDebtorID, resultItem.FK_BranchID, resultItem.FK_DepartmentID, resultItem.FK_CurrencyID, resultItem.QuoteTotal, resultItem.BookingTotal, resultItem.FK_BookingStatusID, resultItem.TravelStart, resultItem.TravelEnd, resultItem.FK_CreatedUserID, resultItem.FK_UpdatedUserID, resultItem.DateCreated, resultItem.DateUpdated);
-                        return resultItem;
-                    }
-                    else
-                    {
-                        Log.Warning("BookingHeader failed to create.");
-                        return default;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<List<BookingHeader>> TH_BookingHeaders_Select_All_Transaction(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Select_All(item, sqlConn);
-                    transaction.Complete();
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<List<BookingHeader>> TH_BookingHeaders_Select_All(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Select_All(item, sqlConn);
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<List<BookingHeader>> TH_BookingHeaders_Select_All(BookingHeader item, SqlConnection sqlConn)
-        {
-            try
-            {
-                List<BookingHeader> resultItem = new List<BookingHeader>();
-
-                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
-                    sqlConn,
-                    "TH_BookingHeaders_select_all",
-                    null))
-                {
-                    if (reader.HasRows)
-                    {
-                        resultItem.AddRange(await reader.TranslateAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader));
-                        Log.Information("BookingHeader records found: {Count}", resultItem.Count);
-                        return resultItem;
-                    }
-                    else
-                    {
-                        Log.Warning("No BookingHeader records found.");
-                        return default;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Update_Transaction(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Update(item, sqlConn);
-                    transaction.Complete();
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Update(BookingHeader item, string connectionString)
-        {
-            try
-            {
-                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
-                {
-                    await sqlConn.OpenAsync();
-                    var result = await TH_BookingHeaders_Update(item, sqlConn);
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-
-        public static async Task<BookingHeader> TH_BookingHeaders_Update(BookingHeader item, SqlConnection sqlConn)
-        {
-            try
-            {
-                BookingHeader resultItem = null;
-
-                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
-                    sqlConn,
-                    "TH_BookingHeaders_update",
-                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingHeaderID", Value = item.BookingHeaderID }
-                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@PartyName", Value = item.PartyName }
-                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@BookingReference", Value = item.BookingReference }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_AgentDebtorID", Value = item.FK_AgentDebtorID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BranchID", Value = item.FK_BranchID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_DepartmentID", Value = item.FK_DepartmentID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CurrencyID", Value = item.FK_CurrencyID }
-                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@QuoteTotal", Value = item.QuoteTotal }
-                        , new SqlParameter() { DbType = DbType.Decimal, Direction = ParameterDirection.Input, ParameterName = "@BookingTotal", Value = item.BookingTotal }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BookingStatusID", Value = item.FK_BookingStatusID }
-                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelStart", Value = item.TravelStart }
-                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelEnd", Value = item.TravelEnd }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
-                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
-                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
-                {
-                    if (reader.HasRows)
-                    {
-                        resultItem = await reader.TranslateSingleAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader);
-                        Log.Information("BookingHeader found: BookingHeaderID={BookingHeaderID}, PartyName={PartyName}, BookingReference={BookingReference}, FK_AgentDebtorID={FK_AgentDebtorID}, FK_BranchID={FK_BranchID}, FK_DepartmentID={FK_DepartmentID}, FK_CurrencyID={FK_CurrencyID}, QuoteTotal={QuoteTotal}, BookingTotal={BookingTotal}, FK_BookingStatusID={FK_BookingStatusID}, TravelStart={TravelStart}, TravelEnd={TravelEnd}, FK_CreatedUserID={FK_CreatedUserID}, FK_UpdatedUserID={FK_UpdatedUserID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingHeaderID, resultItem.PartyName, resultItem.BookingReference, resultItem.FK_AgentDebtorID, resultItem.FK_BranchID, resultItem.FK_DepartmentID, resultItem.FK_CurrencyID, resultItem.QuoteTotal, resultItem.BookingTotal, resultItem.FK_BookingStatusID, resultItem.TravelStart, resultItem.TravelEnd, resultItem.FK_CreatedUserID, resultItem.FK_UpdatedUserID, resultItem.DateCreated, resultItem.DateUpdated);
-                        return resultItem;
-                    }
-                    else
-                    {
-                        Log.Warning("BookingHeader failed to update.");
-                        return default;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error in generated code");
-                return default;
-            }
-        }
-        #endregion
-
         #region Guests
 
         public static async Task<Guest> Guests_Select_Single_Transaction(Guest item, string connectionString)
@@ -6747,9 +6439,9 @@ namespace POS_Api.Services.EntityData
         }
         #endregion
 
-        #region TH_BookingGuests
+        #region BookingGuests
 
-        public static async Task<BookingGuest> TH_BookingGuests_Select_Single_Transaction(BookingGuest item, string connectionString)
+        public static async Task<BookingGuest> BookingGuests_Select_Single_Transaction(BookingGuest item, string connectionString)
         {
             try
             {
@@ -6757,7 +6449,7 @@ namespace POS_Api.Services.EntityData
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Select_Single(item, sqlConn);
+                    var result = await BookingGuests_Select_Single(item, sqlConn);
                     transaction.Complete();
                     return result;
                 }
@@ -6769,14 +6461,14 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Select_Single(BookingGuest item, string connectionString)
+        public static async Task<BookingGuest> BookingGuests_Select_Single(BookingGuest item, string connectionString)
         {
             try
             {
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Select_Single(item, sqlConn);
+                    var result = await BookingGuests_Select_Single(item, sqlConn);
                     return result;
                 }
             }
@@ -6787,7 +6479,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Select_Single(BookingGuest item, SqlConnection sqlConn)
+        public static async Task<BookingGuest> BookingGuests_Select_Single(BookingGuest item, SqlConnection sqlConn)
         {
             try
             {
@@ -6795,13 +6487,13 @@ namespace POS_Api.Services.EntityData
 
                 using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
                     sqlConn,
-                    "TH_BookingGuests_select_single",
+                    "BookingGuests_select_single",
                         new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingGuestID", Value = item.BookingGuestID }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<BookingGuest>(EntityData_Translator.Translate_BookingGuest);
-                        Log.Information("BookingGuest found: BookingGuestID={BookingGuestID}, FK_BookingHeaderID={FK_BookingHeaderID}, FK_GuestID={FK_GuestID}, FK_CreatedUserID={FK_CreatedUserID}, FK_UpdatedUserID={FK_UpdatedUserID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingGuestID, resultItem.FK_BookingHeaderID, resultItem.FK_GuestID, resultItem.FK_CreatedUserID, resultItem.FK_UpdatedUserID, resultItem.DateCreated, resultItem.DateUpdated);
+                        Log.Information("BookingGuest found: BookingGuestID={BookingGuestID}, FK_GuestID={FK_GuestID}, FK_BookingHeaderID={FK_BookingHeaderID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingGuestID, resultItem.FK_GuestID, resultItem.FK_BookingHeaderID, resultItem.DateCreated, resultItem.DateUpdated);
                         return resultItem;
                     }
                     else
@@ -6818,7 +6510,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Insert_Transaction(BookingGuest item, string connectionString)
+        public static async Task<BookingGuest> BookingGuests_Insert_Transaction(BookingGuest item, string connectionString)
         {
             try
             {
@@ -6826,7 +6518,7 @@ namespace POS_Api.Services.EntityData
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Insert(item, sqlConn);
+                    var result = await BookingGuests_Insert(item, sqlConn);
                     transaction.Complete();
                     return result;
                 }
@@ -6838,14 +6530,14 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Insert(BookingGuest item, string connectionString)
+        public static async Task<BookingGuest> BookingGuests_Insert(BookingGuest item, string connectionString)
         {
             try
             {
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Insert(item, sqlConn);
+                    var result = await BookingGuests_Insert(item, sqlConn);
                     return result;
                 }
             }
@@ -6856,7 +6548,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Insert(BookingGuest item, SqlConnection sqlConn)
+        public static async Task<BookingGuest> BookingGuests_Insert(BookingGuest item, SqlConnection sqlConn)
         {
             try
             {
@@ -6864,18 +6556,17 @@ namespace POS_Api.Services.EntityData
 
                 using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
                     sqlConn,
-                    "TH_BookingGuests_insert",
-                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BookingHeaderID", Value = item.FK_BookingHeaderID }
+                    "BookingGuests_insert",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingGuestID", Value = item.BookingGuestID }
                         , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_GuestID", Value = item.FK_GuestID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BookingHeaderID", Value = item.FK_BookingHeaderID }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<BookingGuest>(EntityData_Translator.Translate_BookingGuest);
-                        Log.Information("BookingGuest found: BookingGuestID={BookingGuestID}, FK_BookingHeaderID={FK_BookingHeaderID}, FK_GuestID={FK_GuestID}, FK_CreatedUserID={FK_CreatedUserID}, FK_UpdatedUserID={FK_UpdatedUserID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingGuestID, resultItem.FK_BookingHeaderID, resultItem.FK_GuestID, resultItem.FK_CreatedUserID, resultItem.FK_UpdatedUserID, resultItem.DateCreated, resultItem.DateUpdated);
+                        Log.Information("BookingGuest found: BookingGuestID={BookingGuestID}, FK_GuestID={FK_GuestID}, FK_BookingHeaderID={FK_BookingHeaderID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingGuestID, resultItem.FK_GuestID, resultItem.FK_BookingHeaderID, resultItem.DateCreated, resultItem.DateUpdated);
                         return resultItem;
                     }
                     else
@@ -6892,7 +6583,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<List<BookingGuest>> TH_BookingGuests_Select_All_Transaction(BookingGuest item, string connectionString)
+        public static async Task<List<BookingGuest>> BookingGuests_Select_All_Transaction(BookingGuest item, string connectionString)
         {
             try
             {
@@ -6900,7 +6591,7 @@ namespace POS_Api.Services.EntityData
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Select_All(item, sqlConn);
+                    var result = await BookingGuests_Select_All(item, sqlConn);
                     transaction.Complete();
                     return result;
                 }
@@ -6912,14 +6603,14 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<List<BookingGuest>> TH_BookingGuests_Select_All(BookingGuest item, string connectionString)
+        public static async Task<List<BookingGuest>> BookingGuests_Select_All(BookingGuest item, string connectionString)
         {
             try
             {
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Select_All(item, sqlConn);
+                    var result = await BookingGuests_Select_All(item, sqlConn);
                     return result;
                 }
             }
@@ -6930,7 +6621,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<List<BookingGuest>> TH_BookingGuests_Select_All(BookingGuest item, SqlConnection sqlConn)
+        public static async Task<List<BookingGuest>> BookingGuests_Select_All(BookingGuest item, SqlConnection sqlConn)
         {
             try
             {
@@ -6938,7 +6629,7 @@ namespace POS_Api.Services.EntityData
 
                 using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
                     sqlConn,
-                    "TH_BookingGuests_select_all",
+                    "BookingGuests_select_all",
                     null))
                 {
                     if (reader.HasRows)
@@ -6961,7 +6652,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Update_Transaction(BookingGuest item, string connectionString)
+        public static async Task<BookingGuest> BookingGuests_Update_Transaction(BookingGuest item, string connectionString)
         {
             try
             {
@@ -6969,7 +6660,7 @@ namespace POS_Api.Services.EntityData
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Update(item, sqlConn);
+                    var result = await BookingGuests_Update(item, sqlConn);
                     transaction.Complete();
                     return result;
                 }
@@ -6981,14 +6672,14 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Update(BookingGuest item, string connectionString)
+        public static async Task<BookingGuest> BookingGuests_Update(BookingGuest item, string connectionString)
         {
             try
             {
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
-                    var result = await TH_BookingGuests_Update(item, sqlConn);
+                    var result = await BookingGuests_Update(item, sqlConn);
                     return result;
                 }
             }
@@ -6999,7 +6690,7 @@ namespace POS_Api.Services.EntityData
             }
         }
 
-        public static async Task<BookingGuest> TH_BookingGuests_Update(BookingGuest item, SqlConnection sqlConn)
+        public static async Task<BookingGuest> BookingGuests_Update(BookingGuest item, SqlConnection sqlConn)
         {
             try
             {
@@ -7007,19 +6698,17 @@ namespace POS_Api.Services.EntityData
 
                 using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
                     sqlConn,
-                    "TH_BookingGuests_update",
+                    "BookingGuests_update",
                         new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingGuestID", Value = item.BookingGuestID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BookingHeaderID", Value = item.FK_BookingHeaderID }
                         , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_GuestID", Value = item.FK_GuestID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_CreatedUserID", Value = item.FK_CreatedUserID }
-                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_UpdatedUserID", Value = item.FK_UpdatedUserID }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@FK_BookingHeaderID", Value = item.FK_BookingHeaderID }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
                         , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
                 {
                     if (reader.HasRows)
                     {
                         resultItem = await reader.TranslateSingleAsync<BookingGuest>(EntityData_Translator.Translate_BookingGuest);
-                        Log.Information("BookingGuest found: BookingGuestID={BookingGuestID}, FK_BookingHeaderID={FK_BookingHeaderID}, FK_GuestID={FK_GuestID}, FK_CreatedUserID={FK_CreatedUserID}, FK_UpdatedUserID={FK_UpdatedUserID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingGuestID, resultItem.FK_BookingHeaderID, resultItem.FK_GuestID, resultItem.FK_CreatedUserID, resultItem.FK_UpdatedUserID, resultItem.DateCreated, resultItem.DateUpdated);
+                        Log.Information("BookingGuest found: BookingGuestID={BookingGuestID}, FK_GuestID={FK_GuestID}, FK_BookingHeaderID={FK_BookingHeaderID}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.BookingGuestID, resultItem.FK_GuestID, resultItem.FK_BookingHeaderID, resultItem.DateCreated, resultItem.DateUpdated);
                         return resultItem;
                     }
                     else
@@ -9647,6 +9336,299 @@ namespace POS_Api.Services.EntityData
                     else
                     {
                         Log.Warning("EntitySetting failed to update.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+        #endregion
+
+        #region BookingHeaders
+
+        public static async Task<BookingHeader> BookingHeaders_Select_Single_Transaction(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Select_Single(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Select_Single(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Select_Single(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Select_Single(BookingHeader item, SqlConnection sqlConn)
+        {
+            try
+            {
+                BookingHeader resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "BookingHeaders_select_single",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingHeaderID", Value = item.BookingHeaderID }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader);
+                        Log.Information("BookingHeader found: BookingHeaderID={BookingHeaderID}, PartyName={PartyName}, BookingReference={BookingReference}, TravelStart={TravelStart}, TravelEnd={TravelEnd}, DateCreated={DateCreated}, DateUpdated={DateUpdated}, IsStaffBooking={IsStaffBooking}", resultItem.BookingHeaderID, resultItem.PartyName, resultItem.BookingReference, resultItem.TravelStart, resultItem.TravelEnd, resultItem.DateCreated, resultItem.DateUpdated, resultItem.IsStaffBooking);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("No BookingHeader found with the given BookingHeaderID.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Insert_Transaction(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Insert(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Insert(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Insert(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Insert(BookingHeader item, SqlConnection sqlConn)
+        {
+            try
+            {
+                BookingHeader resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "BookingHeaders_insert",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingHeaderID", Value = item.BookingHeaderID }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@PartyName", Value = item.PartyName }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@BookingReference", Value = item.BookingReference }
+                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelStart", Value = item.TravelStart }
+                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelEnd", Value = item.TravelEnd }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
+                        , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsStaffBooking", Value = item.IsStaffBooking }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader);
+                        Log.Information("BookingHeader found: BookingHeaderID={BookingHeaderID}, PartyName={PartyName}, BookingReference={BookingReference}, TravelStart={TravelStart}, TravelEnd={TravelEnd}, DateCreated={DateCreated}, DateUpdated={DateUpdated}, IsStaffBooking={IsStaffBooking}", resultItem.BookingHeaderID, resultItem.PartyName, resultItem.BookingReference, resultItem.TravelStart, resultItem.TravelEnd, resultItem.DateCreated, resultItem.DateUpdated, resultItem.IsStaffBooking);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("BookingHeader failed to create.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<BookingHeader>> BookingHeaders_Select_All_Transaction(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Select_All(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<BookingHeader>> BookingHeaders_Select_All(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Select_All(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<BookingHeader>> BookingHeaders_Select_All(BookingHeader item, SqlConnection sqlConn)
+        {
+            try
+            {
+                List<BookingHeader> resultItem = new List<BookingHeader>();
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "BookingHeaders_select_all",
+                    null))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem.AddRange(await reader.TranslateAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader));
+                        Log.Information("BookingHeader records found: {Count}", resultItem.Count);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("No BookingHeader records found.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Update_Transaction(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Update(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Update(BookingHeader item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await BookingHeaders_Update(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<BookingHeader> BookingHeaders_Update(BookingHeader item, SqlConnection sqlConn)
+        {
+            try
+            {
+                BookingHeader resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "BookingHeaders_update",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@BookingHeaderID", Value = item.BookingHeaderID }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@PartyName", Value = item.PartyName }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@BookingReference", Value = item.BookingReference }
+                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelStart", Value = item.TravelStart }
+                        , new SqlParameter() { DbType = DbType.Date, Direction = ParameterDirection.Input, ParameterName = "@TravelEnd", Value = item.TravelEnd }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }
+                        , new SqlParameter() { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsStaffBooking", Value = item.IsStaffBooking }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<BookingHeader>(EntityData_Translator.Translate_BookingHeader);
+                        Log.Information("BookingHeader found: BookingHeaderID={BookingHeaderID}, PartyName={PartyName}, BookingReference={BookingReference}, TravelStart={TravelStart}, TravelEnd={TravelEnd}, DateCreated={DateCreated}, DateUpdated={DateUpdated}, IsStaffBooking={IsStaffBooking}", resultItem.BookingHeaderID, resultItem.PartyName, resultItem.BookingReference, resultItem.TravelStart, resultItem.TravelEnd, resultItem.DateCreated, resultItem.DateUpdated, resultItem.IsStaffBooking);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("BookingHeader failed to update.");
                         return default;
                     }
                 }

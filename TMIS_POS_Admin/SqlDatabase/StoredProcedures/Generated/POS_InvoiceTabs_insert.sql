@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_InvoiceTabs_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_InvoiceTabs_insert
+    @InvoiceTabID UNIQUEIDENTIFIER = NULL,
     @FK_InvoiceHeaderID UNIQUEIDENTIFIER,
     @FK_TabID UNIQUEIDENTIFIER,
     @TabGratuity DECIMAL (18, 4),
@@ -19,9 +20,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (InvoiceTabID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_InvoiceTabs (FK_InvoiceHeaderID, FK_TabID, TabGratuity, TabDiscount, TabTotalExcl, TabTotalVat, TabTotalIncl, TabDateOpened, TabDateClosed)
+    INSERT INTO POS_InvoiceTabs (InvoiceTabID, FK_InvoiceHeaderID, FK_TabID, TabGratuity, TabDiscount, TabTotalExcl, TabTotalVat, TabTotalIncl, TabDateOpened, TabDateClosed)
     OUTPUT INSERTED.InvoiceTabID INTO @Inserted
-    VALUES (@FK_InvoiceHeaderID, @FK_TabID, @TabGratuity, @TabDiscount, @TabTotalExcl, @TabTotalVat, @TabTotalIncl, @TabDateOpened, @TabDateClosed);
+    VALUES (ISNULL(@InvoiceTabID, NEWID()), @FK_InvoiceHeaderID, @FK_TabID, @TabGratuity, @TabDiscount, @TabTotalExcl, @TabTotalVat, @TabTotalIncl, @TabDateOpened, @TabDateClosed);
 
     SELECT *
     FROM POS_InvoiceTabs

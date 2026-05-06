@@ -9,7 +9,7 @@ GO
 CREATE PROCEDURE dbo.POS_InvoiceLines_update
     @InvoiceLineID UNIQUEIDENTIFIER,
     @FK_InvoiceTabID UNIQUEIDENTIFIER,
-    @FK_ProductID INT,
+    @FK_ProductID INT = NULL,
     @Product VARCHAR(100),
     @Quantity DECIMAL (18, 4),
     @LineDiscount DECIMAL (18, 4),

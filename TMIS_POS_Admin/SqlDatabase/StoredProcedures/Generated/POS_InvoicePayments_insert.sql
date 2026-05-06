@@ -6,26 +6,34 @@ IF OBJECT_ID('dbo.POS_InvoicePayments_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_InvoicePayments_insert
-    @FK_InvoiceID UNIQUEIDENTIFIER = NULL,
+    @InvoicePaymentID UNIQUEIDENTIFIER = NULL,
+    @FK_InvoiceID UNIQUEIDENTIFIER,
     @FK_PaymentTypeID INT,
-    @FK_FromCurrencyID INT = NULL,
-    @FK_ToCurrencyID INT = NULL,
-    @FromCurrency VARCHAR(10),
-    @ToCurrency VARCHAR(10),
-    @FromTotal DECIMAL (18, 4) = NULL,
-    @ToTotal DECIMAL (18, 4) = NULL,
-    @FromAmountPaid DECIMAL (18, 4),
-    @ToAmountPaid DECIMAL (18, 4),
-    @ExchangeRate DECIMAL (18, 4) = NULL,
-    @ExchangeDate DATETIME = NULL,
-    @DatePaid DATETIME = NULL
+    @FK_BaseCurrencyID INT,
+    @FK_PaymentCurrencyID INT,
+    @BaseCurrencyCode VARCHAR(10),
+    @PaymentCurrencyCode VARCHAR(10),
+    @BaseAmountPaid DECIMAL (18, 4),
+    @PaymentAmountPaid DECIMAL (18, 4),
+    @ExchangeRate DECIMAL (18, 4),
+    @ExchangeDate DATETIME,
+    @DatePaid DATETIME,
+    @StaffName VARCHAR(255),
+    @IdempotencyKey UNIQUEIDENTIFIER,
+    @Reference VARCHAR(100) = NULL,
+    @Notes VARCHAR(MAX) = NULL,
+    @IsVoided BIT,
+    @VoidReason VARCHAR(255) = NULL,
+    @VoidedDate DATETIME = NULL,
+    @VoidedBy VARCHAR(255) = NULL,
+    @SignatureBase64 VARCHAR(MAX) = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (InvoicePaymentID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_InvoicePayments (FK_InvoiceID, FK_PaymentTypeID, FK_FromCurrencyID, FK_ToCurrencyID, FromCurrency, ToCurrency, FromTotal, ToTotal, FromAmountPaid, ToAmountPaid, ExchangeRate, ExchangeDate, DatePaid)
+    INSERT INTO POS_InvoicePayments (InvoicePaymentID, FK_InvoiceID, FK_PaymentTypeID, FK_BaseCurrencyID, FK_PaymentCurrencyID, BaseCurrencyCode, PaymentCurrencyCode, BaseAmountPaid, PaymentAmountPaid, ExchangeRate, ExchangeDate, DatePaid, StaffName, IdempotencyKey, Reference, Notes, IsVoided, VoidReason, VoidedDate, VoidedBy, SignatureBase64)
     OUTPUT INSERTED.InvoicePaymentID INTO @Inserted
-    VALUES (@FK_InvoiceID, @FK_PaymentTypeID, @FK_FromCurrencyID, @FK_ToCurrencyID, @FromCurrency, @ToCurrency, @FromTotal, @ToTotal, @FromAmountPaid, @ToAmountPaid, @ExchangeRate, @ExchangeDate, @DatePaid);
+    VALUES (ISNULL(@InvoicePaymentID, NEWID()), @FK_InvoiceID, @FK_PaymentTypeID, @FK_BaseCurrencyID, @FK_PaymentCurrencyID, @BaseCurrencyCode, @PaymentCurrencyCode, @BaseAmountPaid, @PaymentAmountPaid, @ExchangeRate, @ExchangeDate, @DatePaid, @StaffName, @IdempotencyKey, @Reference, @Notes, @IsVoided, @VoidReason, @VoidedDate, @VoidedBy, @SignatureBase64);
 
     SELECT *
     FROM POS_InvoicePayments

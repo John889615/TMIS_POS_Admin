@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_AccountGuests_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_AccountGuests_insert
+    @AccountGuestID UNIQUEIDENTIFIER = NULL,
     @FK_AccountID UNIQUEIDENTIFIER,
     @FK_GuestID INT,
     @IsResponsible BIT,
@@ -15,9 +16,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (AccountGuestID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_AccountGuests (FK_AccountID, FK_GuestID, IsResponsible, DateCreated, DateUpdated)
+    INSERT INTO POS_AccountGuests (AccountGuestID, FK_AccountID, FK_GuestID, IsResponsible, DateCreated, DateUpdated)
     OUTPUT INSERTED.AccountGuestID INTO @Inserted
-    VALUES (@FK_AccountID, @FK_GuestID, @IsResponsible, @DateCreated, @DateUpdated);
+    VALUES (ISNULL(@AccountGuestID, NEWID()), @FK_AccountID, @FK_GuestID, @IsResponsible, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM POS_AccountGuests

@@ -6,6 +6,7 @@ IF OBJECT_ID('dbo.POS_TabLineCombinations_insert', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.POS_TabLineCombinations_insert
+    @TabLineCombinationID UNIQUEIDENTIFIER = NULL,
     @FK_TabLineID UNIQUEIDENTIFIER,
     @FK_ProductCombinationID INT,
     @Product VARCHAR(255),
@@ -15,9 +16,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (TabLineCombinationID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_TabLineCombinations (FK_TabLineID, FK_ProductCombinationID, Product, Hold, Notes)
+    INSERT INTO POS_TabLineCombinations (TabLineCombinationID, FK_TabLineID, FK_ProductCombinationID, Product, Hold, Notes)
     OUTPUT INSERTED.TabLineCombinationID INTO @Inserted
-    VALUES (@FK_TabLineID, @FK_ProductCombinationID, @Product, @Hold, @Notes);
+    VALUES (ISNULL(@TabLineCombinationID, NEWID()), @FK_TabLineID, @FK_ProductCombinationID, @Product, @Hold, @Notes);
 
     SELECT *
     FROM POS_TabLineCombinations
