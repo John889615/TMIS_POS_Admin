@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Nullable disabled so non-null string properties on these DTOs are NOT
+// treated as [Required] by ASP.NET Core's automatic model validation.
+// FOH legitimately omits BookingReference / PartyName for some rows.
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
