@@ -19,6 +19,5 @@ CREATE TABLE POS_InvoiceTabs
 	TabTotalIncl DECIMAL(18, 4) NOT NULL,
 
 	TabDateOpened DATETIME NOT NULL,
-	TabDateClosed DATETIME NOT NULL,
-	SyncedToServer BIT NOT NULL
+	TabDateClosed DATETIME NOT NULL
 )

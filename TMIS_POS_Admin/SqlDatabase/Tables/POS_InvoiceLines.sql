@@ -17,6 +17,5 @@ CREATE TABLE POS_InvoiceLines
 	LineTotalExcl DECIMAL(18, 4) NOT NULL,
 	LineTotalVat DECIMAL(18, 4) NOT NULL,
 	LineTotalIncl DECIMAL(18, 4) NOT NULL,
-	Guests VARCHAR(100) NULL,
-	SyncedToServer BIT NOT NULL
+	Guests VARCHAR(100) NULL
 )

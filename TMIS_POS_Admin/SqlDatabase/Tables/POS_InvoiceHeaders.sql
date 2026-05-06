@@ -24,6 +24,5 @@ CREATE TABLE POS_InvoiceHeaders
 	BC_InvoiceID VARCHAR(255) NULL,
 
 	DateCreated DATETIME NOT NULL,
-	DatePaid DATETIME NULL,
-	SyncedToServer BIT NOT NULL
+	DatePaid DATETIME NULL
 )

@@ -139,13 +139,13 @@ BEGIN
                     DiscountTotal, GratuityTotal, ExclTotal, VatTotal, InclTotal,
                     AmountPaid, AmountDue, IsPaid,
                     DatePaid, IsVoided, VoidReason, VoidedDate, VoidedBy,
-                    DateCreated, SyncedToServer)
+                    DateCreated)
             VALUES (S.InvoiceHeaderID, S.FK_AccountID, S.FK_LocationID, S.FK_CurrencyID,
                     S.InvoiceNo, S.PartyName, S.BookingReference,
                     S.DiscountTotal, S.GratuityTotal, S.ExclTotal, S.VatTotal, S.InclTotal,
                     S.AmountPaid, S.AmountDue, S.IsPaid,
                     S.DatePaid, S.IsVoided, S.VoidReason, S.VoidedDate, S.VoidedBy,
-                    S.DateCreated, 0);
+                    S.DateCreated);
 
         COMMIT TRAN;
     END TRY

@@ -61,8 +61,8 @@ BEGIN
                 T.Guests = S.Guests,
                 T.FK_ProductID = S.FK_ProductID
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT (InvoiceLineID, FK_InvoiceTabID, Product, Quantity, LineDiscount, LineTotalExcl, LineTotalVat, LineTotalIncl, Guests, SyncedToServer, FK_ProductID)
-            VALUES (S.InvoiceLineID, S.FK_InvoiceTabID, S.Product, S.Quantity, S.LineDiscount, S.LineTotalExcl, S.LineTotalVat, S.LineTotalIncl, S.Guests, 0, S.FK_ProductID);
+            INSERT (InvoiceLineID, FK_InvoiceTabID, Product, Quantity, LineDiscount, LineTotalExcl, LineTotalVat, LineTotalIncl, Guests, FK_ProductID)
+            VALUES (S.InvoiceLineID, S.FK_InvoiceTabID, S.Product, S.Quantity, S.LineDiscount, S.LineTotalExcl, S.LineTotalVat, S.LineTotalIncl, S.Guests, S.FK_ProductID);
 
         COMMIT TRAN;
     END TRY

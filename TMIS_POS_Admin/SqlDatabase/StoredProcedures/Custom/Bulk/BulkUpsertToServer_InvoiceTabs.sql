@@ -73,8 +73,8 @@ BEGIN
                 T.TabDateOpened = S.TabDateOpened,
                 T.TabDateClosed = S.TabDateClosed
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT (InvoiceTabID, FK_InvoiceHeaderID, FK_TabID, TabGratuity, TabDiscount, TabTotalExcl, TabTotalVat, TabTotalIncl, TabDateOpened, TabDateClosed, SyncedToServer)
-            VALUES (S.InvoiceTabID, S.FK_InvoiceHeaderID, S.FK_TabID, S.TabGratuity, S.TabDiscount, S.TabTotalExcl, S.TabTotalVat, S.TabTotalIncl, S.TabDateOpened, S.TabDateClosed, 0);
+            INSERT (InvoiceTabID, FK_InvoiceHeaderID, FK_TabID, TabGratuity, TabDiscount, TabTotalExcl, TabTotalVat, TabTotalIncl, TabDateOpened, TabDateClosed)
+            VALUES (S.InvoiceTabID, S.FK_InvoiceHeaderID, S.FK_TabID, S.TabGratuity, S.TabDiscount, S.TabTotalExcl, S.TabTotalVat, S.TabTotalIncl, S.TabDateOpened, S.TabDateClosed);
 
         COMMIT TRAN;
     END TRY
