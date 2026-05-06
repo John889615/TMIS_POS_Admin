@@ -1,10 +1,20 @@
-USE [TMIS_BlueSafaris]
+USE [TMIS_Development]
 GO
 
 IF OBJECT_ID('dbo.BulkUpsertToServer_Accounts', 'P') IS NOT NULL
     DROP PROCEDURE dbo.BulkUpsertToServer_Accounts;
 GO
 
+-- =============================================================
+-- Updated 2026-05-06 (Spec 2):
+--   - Fixed slot collision: SyncStatus was reading from String1
+--     (overwritten by Name); now reads from String2 to match the
+--     C# List_Accounts slot mapping.
+--   - Pre-validates FK_BookingHeaderID and FK_ResponsibleID against
+--     dbo.BookingHeaders / dbo.Guests. Rows with missing FK targets
+--     are silently dropped from the upsert (they'll retry next sync
+--     cycle once the parent has landed).
+-- =============================================================
 CREATE PROCEDURE dbo.BulkUpsertToServer_Accounts
     @Rows dbo.BulkInsertToServer READONLY
 AS
@@ -25,7 +35,7 @@ BEGIN
                 Int2 AS FK_ResponsibleID,
                 Date1 AS DateCreated,
                 Date2 AS DateUpdated,
-                CAST(String1 AS VARCHAR(50)) AS SyncStatus
+                CAST(String2 AS VARCHAR(50)) AS SyncStatus
             FROM @Rows
             WHERE Guid1 IS NOT NULL
         )
@@ -152,9 +162,17 @@ BEGIN
 
         ;WITH UpsertSrc AS
         (
-            SELECT AccountID, Name, FK_BookingHeaderID, IsClosed, FK_ResponsibleID, DateCreated, DateUpdated
-            FROM #Src
-            WHERE ISNULL(SyncStatus, 'NOT_SYNCED') <> 'DELETE_PENDING'
+            SELECT s.AccountID, s.Name, s.FK_BookingHeaderID, s.IsClosed, s.FK_ResponsibleID,
+                   s.DateCreated, s.DateUpdated
+            FROM #Src s
+            -- Pre-validate FK targets exist on Admin. Rows with missing parents
+            -- are skipped here; they will retry on the next sync cycle once
+            -- the parent row has landed.
+            INNER JOIN dbo.BookingHeaders bh
+                ON bh.BookingHeaderID = s.FK_BookingHeaderID
+            INNER JOIN dbo.Guests g
+                ON g.GuestID = s.FK_ResponsibleID
+            WHERE ISNULL(s.SyncStatus, 'NOT_SYNCED') <> 'DELETE_PENDING'
         )
         MERGE dbo.POS_Accounts AS T
         USING UpsertSrc AS S
