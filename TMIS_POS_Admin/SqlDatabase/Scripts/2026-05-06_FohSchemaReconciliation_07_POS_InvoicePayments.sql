@@ -61,7 +61,8 @@
 --        Two known custom SPs to inspect:
 --          BulkUpsertToServer_InvoicePayments.sql
 --          (any in CurrencyExchangeRates_* if they cross-ref payments)
---   4. Schema reconciliation is COMPLETE - move to Spec 2 (sync redesign).
+--   4. Move on to script 08 (BookingHeaders) and 09 (BookingGuests),
+--      which top up the two shared tables that lacked Tables/.sql files.
 --
 -- This script is idempotent - safe to re-run.
 -- =============================================================
