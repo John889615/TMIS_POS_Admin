@@ -1,10 +1,32 @@
-USE [TMIS_BlueSafaris]
+USE [TMIS_Development]
 GO
 
 IF OBJECT_ID('dbo.BulkUpsertToServer_Tabs', 'P') IS NOT NULL
     DROP PROCEDURE dbo.BulkUpsertToServer_Tabs;
 GO
 
+-- =============================================================
+-- Updated 2026-05-06 for FOH schema reconciliation (Spec 1):
+--   - Adds TableNumber.
+--   - Switches DiscountPerc / GratuityPerc from INT slots to
+--     DECIMAL slots (FOH widened to DECIMAL(18,4)).
+--
+-- Slot mapping:
+--   Guid1   TabID                   Bool1   IsVoided
+--   Guid2   FK_AccountID            Bool2   IsPaid
+--   Int1    FK_LocationID           Date1   PaymentDate
+--   Int2    NoOfGuests              Date2   ClosedDate
+--   Int3    FK_CostCenterID         Date3   DateCreated
+--   Int4    FK_PaymentTypeID        Date4   DateUpdated
+--   Int5    TableName               Decimal1 Gratuity
+--   Int6    FK_CurrencyID           Decimal2 GratuityPerc
+--   Int7    TableNumber             Decimal3 Discount
+--   String1 TabName (50)            Decimal4 DiscountPerc
+--   String2 VoidNote (MAX)          Decimal5 AmountPaid
+--   String3 AdditionalInfo (255)    Decimal6 AmountDue
+--   String4 CreatedBy (255)         Decimal7 VatTotal
+--   String5 SyncStatus (50)         Decimal8 CurrentExchangeRate
+-- =============================================================
 CREATE PROCEDURE dbo.BulkUpsertToServer_Tabs
     @Rows dbo.BulkInsertToServer READONLY
 AS
@@ -19,32 +41,33 @@ BEGIN
         (
             SELECT
                 Guid1 AS TabID,
-                Int1 AS FK_LocationID,
-                String4 AS CreatedBy,
+                Int1  AS FK_LocationID,
+                CAST(String4 AS VARCHAR(255)) AS CreatedBy,
                 Guid2 AS FK_AccountID,
-                Int3 AS FK_CostCenterID,
-                Int4 AS FK_PaymentTypeID,
-                CAST(String1 AS VARCHAR(50)) AS TabName,
-                Int5 AS TableName,
-                Int6 AS NoOfGuests,
+                Int3  AS FK_CostCenterID,
+                Int4  AS FK_PaymentTypeID,
+                CAST(String1 AS VARCHAR(50))  AS TabName,
+                Int5  AS TableName,
+                Int2  AS NoOfGuests,
                 Decimal1 AS Gratuity,
-                Int7 AS GratuityPerc,
-                Decimal2 AS Discount,
-                Int8 AS DiscountPerc,
+                Decimal2 AS GratuityPerc,
+                Decimal3 AS Discount,
+                Decimal4 AS DiscountPerc,
                 Bool1 AS IsVoided,
                 CAST(String2 AS VARCHAR(MAX)) AS VoidNote,
                 Bool2 AS IsPaid,
-                Decimal3 AS AmountPaid,
-                Decimal4 AS AmountDue,
-                Decimal5 AS VatTotal,
+                Decimal5 AS AmountPaid,
+                Decimal6 AS AmountDue,
+                Decimal7 AS VatTotal,
                 Date1 AS PaymentDate,
                 Date2 AS ClosedDate,
-                CAST(String3 AS VARCHAR(MAX)) AS AdditionalInfo,
+                CAST(String3 AS VARCHAR(255)) AS AdditionalInfo,
                 Date3 AS DateCreated,
                 Date4 AS DateUpdated,
-                Int10 AS FK_CurrencyID,
-                Decimal6 AS CurrentExchangeRate,
-                CAST(String5 AS VARCHAR(50)) AS SyncStatus
+                Int7  AS TableNumber,
+                Int6  AS FK_CurrencyID,
+                Decimal8 AS CurrentExchangeRate,
+                CAST(String5 AS VARCHAR(50))  AS SyncStatus
             FROM @Rows
             WHERE Guid1 IS NOT NULL
         )
@@ -139,7 +162,13 @@ BEGIN
 
         ;WITH UpsertSrc AS
         (
-            SELECT TabID, FK_LocationID, CreatedBy, FK_AccountID, FK_CostCenterID, FK_PaymentTypeID, TabName, TableName, NoOfGuests, Gratuity, GratuityPerc, Discount, DiscountPerc, IsVoided, VoidNote, IsPaid, AmountPaid, AmountDue, VatTotal, PaymentDate, ClosedDate, AdditionalInfo, DateCreated, DateUpdated, FK_CurrencyID, CurrentExchangeRate
+            SELECT TabID, FK_LocationID, CreatedBy, FK_AccountID, FK_CostCenterID,
+                   FK_PaymentTypeID, TabName, TableName, NoOfGuests,
+                   Gratuity, GratuityPerc, Discount, DiscountPerc,
+                   IsVoided, VoidNote, IsPaid, AmountPaid, AmountDue, VatTotal,
+                   PaymentDate, ClosedDate, AdditionalInfo,
+                   DateCreated, DateUpdated,
+                   TableNumber, FK_CurrencyID, CurrentExchangeRate
             FROM #Src
             WHERE ISNULL(SyncStatus, 'NOT_SYNCED') <> 'DELETE_PENDING'
         )
@@ -148,34 +177,47 @@ BEGIN
           ON T.TabID = S.TabID
         WHEN MATCHED THEN
             UPDATE SET
-                T.FK_LocationID = S.FK_LocationID,
-                T.CreatedBy = S.CreatedBy,
-                T.FK_AccountID = S.FK_AccountID,
-                T.FK_CostCenterID = S.FK_CostCenterID,
-                T.FK_PaymentTypeID = S.FK_PaymentTypeID,
-                T.TabName = S.TabName,
-                T.TableName = S.TableName,
-                T.NoOfGuests = S.NoOfGuests,
-                T.Gratuity = S.Gratuity,
-                T.GratuityPerc = S.GratuityPerc,
-                T.Discount = S.Discount,
-                T.DiscountPerc = S.DiscountPerc,
-                T.IsVoided = S.IsVoided,
-                T.VoidNote = S.VoidNote,
-                T.IsPaid = S.IsPaid,
-                T.AmountPaid = S.AmountPaid,
-                T.AmountDue = S.AmountDue,
-                T.VatTotal = S.VatTotal,
-                T.PaymentDate = S.PaymentDate,
-                T.ClosedDate = S.ClosedDate,
-                T.AdditionalInfo = S.AdditionalInfo,
-                T.DateCreated = S.DateCreated,
-                T.DateUpdated = S.DateUpdated,
-                T.FK_CurrencyID = S.FK_CurrencyID,
-                T.CurrentExchangeRate = S.CurrentExchangeRate
+                T.FK_LocationID         = S.FK_LocationID,
+                T.CreatedBy             = S.CreatedBy,
+                T.FK_AccountID          = S.FK_AccountID,
+                T.FK_CostCenterID       = S.FK_CostCenterID,
+                T.FK_PaymentTypeID      = S.FK_PaymentTypeID,
+                T.TabName               = S.TabName,
+                T.TableName             = S.TableName,
+                T.NoOfGuests            = S.NoOfGuests,
+                T.Gratuity              = S.Gratuity,
+                T.GratuityPerc          = S.GratuityPerc,
+                T.Discount              = S.Discount,
+                T.DiscountPerc          = S.DiscountPerc,
+                T.IsVoided              = S.IsVoided,
+                T.VoidNote              = S.VoidNote,
+                T.IsPaid                = S.IsPaid,
+                T.AmountPaid            = S.AmountPaid,
+                T.AmountDue             = S.AmountDue,
+                T.VatTotal              = S.VatTotal,
+                T.PaymentDate           = S.PaymentDate,
+                T.ClosedDate            = S.ClosedDate,
+                T.AdditionalInfo        = S.AdditionalInfo,
+                T.DateCreated           = S.DateCreated,
+                T.DateUpdated           = S.DateUpdated,
+                T.TableNumber           = S.TableNumber,
+                T.FK_CurrencyID         = S.FK_CurrencyID,
+                T.CurrentExchangeRate   = S.CurrentExchangeRate
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT (TabID, FK_LocationID, CreatedBy, FK_AccountID, FK_CostCenterID, FK_PaymentTypeID, TabName, TableName, NoOfGuests, Gratuity, GratuityPerc, Discount, DiscountPerc, IsVoided, VoidNote, IsPaid, AmountPaid, AmountDue, VatTotal, PaymentDate, ClosedDate, AdditionalInfo, DateCreated, DateUpdated, FK_CurrencyID, CurrentExchangeRate)
-            VALUES (S.TabID, S.FK_LocationID, S.CreatedBy, S.FK_AccountID, S.FK_CostCenterID, S.FK_PaymentTypeID, S.TabName, S.TableName, S.NoOfGuests, S.Gratuity, S.GratuityPerc, S.Discount, S.DiscountPerc, S.IsVoided, S.VoidNote, S.IsPaid, S.AmountPaid, S.AmountDue, S.VatTotal, S.PaymentDate, S.ClosedDate, S.AdditionalInfo, S.DateCreated, S.DateUpdated, S.FK_CurrencyID, S.CurrentExchangeRate);
+            INSERT (TabID, FK_LocationID, CreatedBy, FK_AccountID, FK_CostCenterID,
+                    FK_PaymentTypeID, TabName, TableName, NoOfGuests,
+                    Gratuity, GratuityPerc, Discount, DiscountPerc,
+                    IsVoided, VoidNote, IsPaid, AmountPaid, AmountDue, VatTotal,
+                    PaymentDate, ClosedDate, AdditionalInfo,
+                    DateCreated, DateUpdated,
+                    TableNumber, FK_CurrencyID, CurrentExchangeRate)
+            VALUES (S.TabID, S.FK_LocationID, S.CreatedBy, S.FK_AccountID, S.FK_CostCenterID,
+                    S.FK_PaymentTypeID, S.TabName, S.TableName, S.NoOfGuests,
+                    S.Gratuity, S.GratuityPerc, S.Discount, S.DiscountPerc,
+                    S.IsVoided, S.VoidNote, S.IsPaid, S.AmountPaid, S.AmountDue, S.VatTotal,
+                    S.PaymentDate, S.ClosedDate, S.AdditionalInfo,
+                    S.DateCreated, S.DateUpdated,
+                    S.TableNumber, S.FK_CurrencyID, S.CurrentExchangeRate);
 
         COMMIT TRAN;
     END TRY

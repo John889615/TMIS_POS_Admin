@@ -1,10 +1,17 @@
-USE [TMIS_BlueSafaris]
+USE [TMIS_Development]
 GO
 
 IF OBJECT_ID('dbo.BulkUpsertToServer_TablineSubstitutes', 'P') IS NOT NULL
     DROP PROCEDURE dbo.BulkUpsertToServer_TablineSubstitutes;
 GO
 
+-- =============================================================
+-- Updated 2026-05-06 for FOH schema reconciliation (Spec 1):
+--   - PK column renamed POS_TablineSubstituteID -> TablineSubstituteID.
+--     All references in MERGE/INSERT updated.
+--
+-- Slot mapping unchanged from prior version.
+-- =============================================================
 CREATE PROCEDURE dbo.BulkUpsertToServer_TablineSubstitutes
     @Rows dbo.BulkInsertToServer READONLY
 AS
@@ -31,7 +38,7 @@ BEGIN
         DELETE ts
         FROM dbo.POS_TablineSubstitutes ts
         INNER JOIN #Src s
-            ON s.TablineSubstituteID = ts.POS_TablineSubstituteID
+            ON s.TablineSubstituteID = ts.TablineSubstituteID
         WHERE s.SyncStatus = 'DELETE_PENDING';
 
         ;WITH UpsertSrc AS
@@ -42,14 +49,14 @@ BEGIN
         )
         MERGE dbo.POS_TablineSubstitutes AS T
         USING UpsertSrc AS S
-          ON T.POS_TablineSubstituteID = S.TablineSubstituteID
+          ON T.TablineSubstituteID = S.TablineSubstituteID
         WHEN MATCHED THEN
             UPDATE SET
-                T.FK_ParentTabLineID = S.FK_ParentTabLineID,
-                T.FK_SubstituionTabLineID = S.FK_SubstituionTabLineID,
+                T.FK_ParentTabLineID            = S.FK_ParentTabLineID,
+                T.FK_SubstituionTabLineID       = S.FK_SubstituionTabLineID,
                 T.FK_ParentTabLineCombinationID = S.FK_ParentTabLineCombinationID
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT (POS_TablineSubstituteID, FK_ParentTabLineID, FK_SubstituionTabLineID, FK_ParentTabLineCombinationID)
+            INSERT (TablineSubstituteID, FK_ParentTabLineID, FK_SubstituionTabLineID, FK_ParentTabLineCombinationID)
             VALUES (S.TablineSubstituteID, S.FK_ParentTabLineID, S.FK_SubstituionTabLineID, S.FK_ParentTabLineCombinationID);
 
         COMMIT TRAN;

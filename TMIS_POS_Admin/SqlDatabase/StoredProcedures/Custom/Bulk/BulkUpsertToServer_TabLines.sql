@@ -1,10 +1,34 @@
-USE [TMIS_BlueSafaris]
+USE [TMIS_Development]
 GO
 
 IF OBJECT_ID('dbo.BulkUpsertToServer_TabLines', 'P') IS NOT NULL
     DROP PROCEDURE dbo.BulkUpsertToServer_TabLines;
 GO
 
+-- =============================================================
+-- Updated 2026-05-06 for FOH schema reconciliation (Spec 1):
+--   - Adds Gratuity, GratuityPerc.
+--   - Switches DiscountPerc from INT slot to DECIMAL slot
+--     (FOH widened DiscountPerc INT -> DECIMAL(18,4)).
+--
+-- ServedAs / ServedAsQuantified / ServedAsQuantity / FK_MenuID /
+-- MenuName were already in place; preserved.
+--
+-- Slot mapping:
+--   Guid1   TabLineID              Bool1   IsVoided
+--   Guid2   FK_TabID               Bool2   ServedAsQuantified
+--   Guid3   FK_PointerID           Date1   DateCreated
+--   Int2    FK_ProductID           Date2   DateUpdated
+--   Int3    FK_PriceCodeID         Decimal1 UnitCostExcl
+--   Int5    FK_MenuID              Decimal2 Vat
+--   String1 Product (50)           Decimal3 UnitCostIncl
+--   String2 Notes (MAX)            Decimal4 Quantity
+--   String3 AutoNotes (MAX)        Decimal5 Discount
+--   String4 ServedAs (50)          Decimal6 ServedAsQuantity
+--   String5 MenuName (100)         Decimal7 DiscountPerc
+--   String6 CreatedBy (255)        Decimal8 Gratuity
+--   String7 SyncStatus (50)        Decimal9 GratuityPerc
+-- =============================================================
 CREATE PROCEDURE dbo.BulkUpsertToServer_TabLines
     @Rows dbo.BulkInsertToServer READONLY
 AS
@@ -20,28 +44,30 @@ BEGIN
             SELECT
                 Guid1 AS TabLineID,
                 Guid2 AS FK_TabID,
-                String6 AS CreatedBy,
-                Int2 AS FK_ProductID,
-                Int3 AS FK_PriceCodeID,
+                CAST(String6 AS VARCHAR(255)) AS CreatedBy,
+                Int2  AS FK_ProductID,
+                Int3  AS FK_PriceCodeID,
                 Guid3 AS FK_PointerID,
                 Decimal1 AS UnitCostExcl,
                 Decimal2 AS Vat,
                 Decimal3 AS UnitCostIncl,
-                CAST(String1 AS VARCHAR(50)) AS Product,
+                CAST(String1 AS VARCHAR(50))  AS Product,
                 Decimal4 AS Quantity,
                 Decimal5 AS Discount,
-                Int4 AS DiscountPerc,
-                Bool1 AS IsVoided,
+                Decimal7 AS DiscountPerc,
+                Bool1   AS IsVoided,
                 CAST(String2 AS VARCHAR(MAX)) AS Notes,
                 CAST(String3 AS VARCHAR(MAX)) AS AutoNotes,
-                Date1 AS DateCreated,
-                Date2 AS DateUpdated,
-                CAST(String4 AS VARCHAR(50)) AS ServedAs,
-                Bool2 AS ServedAsQuantified,
+                Date1   AS DateCreated,
+                Date2   AS DateUpdated,
+                CAST(String4 AS VARCHAR(50))  AS ServedAs,
+                Bool2   AS ServedAsQuantified,
                 Decimal6 AS ServedAsQuantity,
-                Int5 AS FK_MenuID,
+                Int5    AS FK_MenuID,
                 CAST(String5 AS VARCHAR(100)) AS MenuName,
-                CAST(String7 AS VARCHAR(50)) AS SyncStatus
+                Decimal8 AS Gratuity,
+                Decimal9 AS GratuityPerc,
+                CAST(String7 AS VARCHAR(50))  AS SyncStatus
             FROM @Rows
             WHERE Guid1 IS NOT NULL
         )
@@ -105,7 +131,11 @@ BEGIN
 
         ;WITH UpsertSrc AS
         (
-            SELECT TabLineID, FK_TabID, CreatedBy, FK_ProductID, FK_PriceCodeID, FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product, Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes, DateCreated, DateUpdated, ServedAs, ServedAsQuantified, ServedAsQuantity, FK_MenuID, MenuName
+            SELECT TabLineID, FK_TabID, CreatedBy, FK_ProductID, FK_PriceCodeID,
+                   FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product,
+                   Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes,
+                   DateCreated, DateUpdated, ServedAs, ServedAsQuantified,
+                   ServedAsQuantity, FK_MenuID, MenuName, Gratuity, GratuityPerc
             FROM #Src
             WHERE ISNULL(SyncStatus, 'NOT_SYNCED') <> 'DELETE_PENDING'
         )
@@ -114,31 +144,41 @@ BEGIN
           ON T.TabLineID = S.TabLineID
         WHEN MATCHED THEN
             UPDATE SET
-                T.FK_TabID = S.FK_TabID,
-                T.CreatedBy = S.CreatedBy,
-                T.FK_ProductID = S.FK_ProductID,
-                T.FK_PriceCodeID = S.FK_PriceCodeID,
-                T.FK_PointerID = S.FK_PointerID,
-                T.UnitCostExcl = S.UnitCostExcl,
-                T.Vat = S.Vat,
-                T.UnitCostIncl = S.UnitCostIncl,
-                T.Product = S.Product,
-                T.Quantity = S.Quantity,
-                T.Discount = S.Discount,
-                T.DiscountPerc = S.DiscountPerc,
-                T.IsVoided = S.IsVoided,
-                T.Notes = S.Notes,
-                T.AutoNotes = S.AutoNotes,
-                T.DateCreated = S.DateCreated,
-                T.DateUpdated = S.DateUpdated,
-                T.ServedAs = S.ServedAs,
-                T.ServedAsQuantified = S.ServedAsQuantified,
-                T.ServedAsQuantity = S.ServedAsQuantity,
-                T.FK_MenuID = S.FK_MenuID,
-                T.MenuName = S.MenuName
+                T.FK_TabID            = S.FK_TabID,
+                T.CreatedBy           = S.CreatedBy,
+                T.FK_ProductID        = S.FK_ProductID,
+                T.FK_PriceCodeID      = S.FK_PriceCodeID,
+                T.FK_PointerID        = S.FK_PointerID,
+                T.UnitCostExcl        = S.UnitCostExcl,
+                T.Vat                 = S.Vat,
+                T.UnitCostIncl        = S.UnitCostIncl,
+                T.Product             = S.Product,
+                T.Quantity            = S.Quantity,
+                T.Discount            = S.Discount,
+                T.DiscountPerc        = S.DiscountPerc,
+                T.IsVoided            = S.IsVoided,
+                T.Notes               = S.Notes,
+                T.AutoNotes           = S.AutoNotes,
+                T.DateCreated         = S.DateCreated,
+                T.DateUpdated         = S.DateUpdated,
+                T.ServedAs            = S.ServedAs,
+                T.ServedAsQuantified  = S.ServedAsQuantified,
+                T.ServedAsQuantity    = S.ServedAsQuantity,
+                T.FK_MenuID           = S.FK_MenuID,
+                T.MenuName            = S.MenuName,
+                T.Gratuity            = S.Gratuity,
+                T.GratuityPerc        = S.GratuityPerc
         WHEN NOT MATCHED BY TARGET THEN
-            INSERT (TabLineID, FK_TabID, CreatedBy, FK_ProductID, FK_PriceCodeID, FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product, Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes, DateCreated, DateUpdated, ServedAs, ServedAsQuantified, ServedAsQuantity, FK_MenuID, MenuName)
-            VALUES (S.TabLineID, S.FK_TabID, S.CreatedBy, S.FK_ProductID, S.FK_PriceCodeID, S.FK_PointerID, S.UnitCostExcl, S.Vat, S.UnitCostIncl, S.Product, S.Quantity, S.Discount, S.DiscountPerc, S.IsVoided, S.Notes, S.AutoNotes, S.DateCreated, S.DateUpdated, S.ServedAs, S.ServedAsQuantified, S.ServedAsQuantity, S.FK_MenuID, S.MenuName);
+            INSERT (TabLineID, FK_TabID, CreatedBy, FK_ProductID, FK_PriceCodeID,
+                    FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product,
+                    Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes,
+                    DateCreated, DateUpdated, ServedAs, ServedAsQuantified,
+                    ServedAsQuantity, FK_MenuID, MenuName, Gratuity, GratuityPerc)
+            VALUES (S.TabLineID, S.FK_TabID, S.CreatedBy, S.FK_ProductID, S.FK_PriceCodeID,
+                    S.FK_PointerID, S.UnitCostExcl, S.Vat, S.UnitCostIncl, S.Product,
+                    S.Quantity, S.Discount, S.DiscountPerc, S.IsVoided, S.Notes, S.AutoNotes,
+                    S.DateCreated, S.DateUpdated, S.ServedAs, S.ServedAsQuantified,
+                    S.ServedAsQuantity, S.FK_MenuID, S.MenuName, S.Gratuity, S.GratuityPerc);
 
         COMMIT TRAN;
     END TRY
