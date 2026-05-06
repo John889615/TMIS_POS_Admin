@@ -22,12 +22,29 @@ CREATE TABLE POS_TabLines
 	[Product] VARCHAR(50) NOT NULL,
 	Quantity DECIMAL (18, 4) NOT NULL,
 	Discount DECIMAL (18, 4) NULL,
-	DiscountPerc INT NULL,
+	-- Spec 1: widened from INT to DECIMAL(18,4).
+	DiscountPerc DECIMAL(18, 4) NULL,
 	IsVoided BIT NOT NULL,
 	Notes VARCHAR(MAX) NULL,
 	AutoNotes VARCHAR(MAX) NULL,
 
+	-- Per Spec 1 staff-not-synced rule: varchar shadow populated by the
+	-- FOH-side translator from Staff.StaffName + ' ' + Staff.LastName.
 	CreatedBy VARCHAR(255) NOT NULL,
+
+	-- Spec 1 additions:
+	ServedAs VARCHAR(50) NULL,
+	ServedAsQuantified BIT NULL,
+	ServedAsQuantity DECIMAL(18, 4) NULL,
+
+	-- Spec 1 + addendum: FK references POS_DebtorMenus on Admin
+	-- (FOH's MenuID corresponds to Admin's DebtorMenuID).
+	FK_MenuID INT NULL FOREIGN KEY REFERENCES POS_DebtorMenus (DebtorMenuID),
+	MenuName VARCHAR(100) NULL,
+
+	-- Spec 1: gratuity carried per line.
+	Gratuity DECIMAL(18, 4) NULL,
+	GratuityPerc DECIMAL(18, 4) NULL,
 
 	DateCreated DATETIME NOT NULL,
 	DateUpdated DATETIME NOT NULL
