@@ -1,4 +1,10 @@
-﻿using System;
+﻿// Nullable disabled so non-null string properties on these DTOs are NOT
+// treated as [Required] by ASP.NET Core's automatic model validation.
+// FOH may legitimately omit fields (CheckedInBy, BookingReference,
+// PartyName, etc.) that the schema permits as NULL.
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

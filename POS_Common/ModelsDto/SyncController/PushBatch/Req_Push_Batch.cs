@@ -1,3 +1,9 @@
+// Nullable disabled so non-null reference types in this DTO are NOT
+// treated as [Required] by ASP.NET Core's automatic model validation.
+// FOH only populates the entity lists relevant to the current Group;
+// the others must be allowed to arrive as null.
+#nullable disable
+
 using POS_Common.ModelsDto.SyncController.FromServer;
 using System;
 using System.Collections.Generic;
