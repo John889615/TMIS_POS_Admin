@@ -236,6 +236,13 @@ namespace POS_Api.Services.Sync
         {
             using var cmd = new SqlCommand(procedureName, sqlConn);
             cmd.CommandType = CommandType.StoredProcedure;
+            // Configurable via "Sync:SqlCommandTimeoutSeconds"; default 600s.
+            // Bulk upserts of full tables take significantly longer than the
+            // ADO.NET 30s default.
+            var sqlTimeout = 600;
+            if (int.TryParse(_configuration["Sync:SqlCommandTimeoutSeconds"], out var configured) && configured > 0)
+                sqlTimeout = configured;
+            cmd.CommandTimeout = sqlTimeout;
 
             var param = cmd.Parameters.AddWithValue("@Rows", table);
             param.SqlDbType = SqlDbType.Structured;
