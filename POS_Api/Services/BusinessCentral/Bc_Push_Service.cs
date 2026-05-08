@@ -94,8 +94,11 @@ namespace POS_Api.Services.BusinessCentral
 
             if (!string.IsNullOrWhiteSpace(header.ExistingBcInvoiceID) && !hasOrderPlaceholder)
             {
-                result.AlreadyPushed = true;
-                result.BC_InvoiceID  = header.ExistingBcInvoiceID;
+                result.AlreadyPushed   = true;
+                result.BC_InvoiceID    = header.ExistingBcInvoiceID;
+                result.BC_InvoiceNo    = header.ExistingBcInvoiceNo;
+                result.BC_SalesOrderID = header.ExistingBcSalesOrderID;
+                result.BC_SalesOrderNo = header.ExistingBcSalesOrderNo;
                 return ApiResponse.Success(result);
             }
 
@@ -141,22 +144,34 @@ namespace POS_Api.Services.BusinessCentral
             // in BC every time a posting-setup error surfaces.
             bool resume = !string.IsNullOrWhiteSpace(header.ExistingBcSalesOrderID);
             string orderId = header.ExistingBcSalesOrderID;
+            string orderNumber = header.ExistingBcSalesOrderNo;
+
+            // Track current pipeline stage so a failure stamps an accurate
+            // value into POS_InvoiceHeader_BC_AuditLog.Stage.
+            string currentStage = resume ? "Resume" : "CreateOrder";
 
             try
             {
                 if (!resume)
                 {
                     // 3. Create the sales order header
-                    orderId = await CreateSalesOrderAsync(
+                    (orderId, orderNumber) = await CreateSalesOrderAsync(
                         client, companyUrl, settings.PosCustomerNo, header, token);
 
-                    // Stamp the order id NOW so a downstream failure (line
-                    // creation, posting setup, etc.) leaves the order id
-                    // recoverable. The next attempt will resume from here.
+                    // Stamp the order id + number NOW so a downstream failure
+                    // (line creation, posting setup, etc.) leaves the order
+                    // recoverable. The next attempt resumes from here.
                     try
                     {
-                        await StampResultAsync(invoiceHeaderId, success: true,
-                            bcInvoiceId: null, bcSalesOrderId: orderId, errorMessage: null);
+                        await StampResultAsync(
+                            invoiceHeaderId,
+                            success:        true,
+                            bcInvoiceId:    null,
+                            bcInvoiceNo:    null,
+                            bcSalesOrderId: orderId,
+                            bcSalesOrderNo: orderNumber,
+                            stage:          "CreateOrder",
+                            errorMessage:   null);
                     }
                     catch (Exception stampEx)
                     {
@@ -166,6 +181,7 @@ namespace POS_Api.Services.BusinessCentral
                     // 4. Add each line (locationId = BC Location GUID).
                     // Wrap each line POST so a BC failure surfaces which product
                     // it choked on (its name + DB ProductID + BC item GUID).
+                    currentStage = "AddLine";
                     foreach (var line in lines)
                     {
                         _logger.LogInformation(
@@ -192,10 +208,14 @@ namespace POS_Api.Services.BusinessCentral
                 }
 
                 string stampedInvoiceId;
+                string stampedInvoiceNo = null;
+                string finalStage;
                 if (settings.AutoPost)
                 {
                     // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
-                    stampedInvoiceId = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
+                    currentStage = "ShipAndInvoice";
+                    (stampedInvoiceId, stampedInvoiceNo) = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
+                    finalStage = "ShipAndInvoice";
                 }
                 else
                 {
@@ -208,6 +228,7 @@ namespace POS_Api.Services.BusinessCentral
                     // posted-invoice id, and BC_SalesOrderID still holds the
                     // raw order id for direct lookup in BC.
                     stampedInvoiceId = "ORDER:" + orderId;
+                    finalStage = "OrderOnly";
                     _logger.LogWarning(
                         "BC AutoPost disabled - order {OrderId} created OPEN. Stock NOT deducted. " +
                         "Operator must post manually in BC after fixing posting-setup config.",
@@ -215,11 +236,21 @@ namespace POS_Api.Services.BusinessCentral
                 }
 
                 // Step 6: stamp success (also re-stamps BC_SalesOrderID, no-op if same)
-                await StampResultAsync(invoiceHeaderId, success: true,
-                    bcInvoiceId: stampedInvoiceId, bcSalesOrderId: orderId, errorMessage: null);
+                await StampResultAsync(
+                    invoiceHeaderId,
+                    success:        true,
+                    bcInvoiceId:    stampedInvoiceId,
+                    bcInvoiceNo:    stampedInvoiceNo,
+                    bcSalesOrderId: orderId,
+                    bcSalesOrderNo: orderNumber,
+                    stage:          finalStage,
+                    errorMessage:   null);
 
-                result.Pushed       = true;
-                result.BC_InvoiceID = stampedInvoiceId;
+                result.Pushed          = true;
+                result.BC_InvoiceID    = stampedInvoiceId;
+                result.BC_InvoiceNo    = stampedInvoiceNo;
+                result.BC_SalesOrderID = orderId;
+                result.BC_SalesOrderNo = orderNumber;
                 return ApiResponse.Success(result);
             }
             catch (Exception ex)
@@ -230,11 +261,21 @@ namespace POS_Api.Services.BusinessCentral
                 {
                     // Preserve any orderId we already obtained so a future
                     // retry can resume on the existing BC order.
-                    await StampResultAsync(invoiceHeaderId, success: false,
-                        bcInvoiceId: null, bcSalesOrderId: orderId, errorMessage: msg);
+                    await StampResultAsync(
+                        invoiceHeaderId,
+                        success:        false,
+                        bcInvoiceId:    null,
+                        bcInvoiceNo:    null,
+                        bcSalesOrderId: orderId,
+                        bcSalesOrderNo: orderNumber,
+                        stage:          currentStage,
+                        errorMessage:   msg);
                 }
                 catch (Exception stampEx) { _logger.LogError(stampEx, "stamp_result failed for {Id}", invoiceHeaderId); }
-                return Fail(result, msg);
+                // Caller's Fail() would re-stamp; pass through the stage so
+                // the audit log keeps the most-specific failure point.
+                result.ErrorMessage = msg;
+                return ApiResponse.Fail<Bc_Push_Result>(AppErrorCode.ServerError, new List<string> { msg }, 500);
             }
         }
 
@@ -266,6 +307,9 @@ namespace POS_Api.Services.BusinessCentral
                         VoidedBy         = reader["VoidedBy"]         as string,
                         VoidReason       = reader["VoidReason"]       as string,
                         BC_InvoiceID     = reader["BC_InvoiceID"]     as string,
+                        BC_InvoiceNo     = reader["BC_InvoiceNo"]     as string,
+                        BC_SalesOrderID  = reader["BC_SalesOrderID"]  as string,
+                        BC_SalesOrderNo  = reader["BC_SalesOrderNo"]  as string,
                         BC_PushedAt      = reader["BC_PushedAt"]      as DateTime?,
                     });
                 }
@@ -289,7 +333,7 @@ namespace POS_Api.Services.BusinessCentral
         // BC OData calls
         // -------------------------------------------------------------------
 
-        private async Task<string> CreateSalesOrderAsync(HttpClient client, string companyUrl, string customerNumber, HeaderRow header, CancellationToken token)
+        private async Task<(string OrderId, string OrderNumber)> CreateSalesOrderAsync(HttpClient client, string companyUrl, string customerNumber, HeaderRow header, CancellationToken token)
         {
             var url = $"{companyUrl}/salesOrders";
 
@@ -335,14 +379,15 @@ namespace POS_Api.Services.BusinessCentral
             // Surface the BC order id and the documentNumber (BC's own SO no.)
             // so the operator can find this exact order in BC and compare
             // its VAT Bus. Posting Group / pricesIncludeTax against a manually
-            // created order on the same customer.
+            // created order on the same customer. The number is also stamped
+            // back to POS_InvoiceHeader_BC.BC_SalesOrderNo for the audit grid.
             string docNumber = doc.RootElement.TryGetProperty("number", out var numEl) && numEl.ValueKind == JsonValueKind.String
                 ? numEl.GetString() : null;
             _logger.LogInformation(
                 "BC sales order created. id={OrderId} number={DocNumber} customer={Customer} externalDocNo={ExtDoc}",
                 orderId, docNumber, customerNumber, header.InvoiceNo);
 
-            return orderId;
+            return (orderId, docNumber);
         }
 
         private async Task AddSalesOrderLineAsync(HttpClient client, string companyUrl, string orderId, string locationBcId, LineRow line, CancellationToken token)
@@ -382,7 +427,7 @@ namespace POS_Api.Services.BusinessCentral
                 throw new Exception($"BC POST salesOrderLines failed {(int)resp.StatusCode}: {respBody}");
         }
 
-        private async Task<string> ShipAndInvoiceAsync(HttpClient client, string companyUrl, string orderId, CancellationToken token)
+        private async Task<(string InvoiceId, string InvoiceNumber)> ShipAndInvoiceAsync(HttpClient client, string companyUrl, string orderId, CancellationToken token)
         {
             var url = $"{companyUrl}/salesOrders({orderId})/Microsoft.NAV.shipAndInvoice";
 
@@ -395,12 +440,21 @@ namespace POS_Api.Services.BusinessCentral
             if (!resp.IsSuccessStatusCode)
                 throw new Exception($"BC shipAndInvoice failed {(int)resp.StatusCode}: {respBody}");
 
-            // BC may return the new posted-invoice id as a string body, an
-            // object with "value" or "id", or empty (then we fall back to the
-            // sales order id as a placeholder marker).
-            if (string.IsNullOrWhiteSpace(respBody))
-                return orderId;
+            // shipAndInvoice typically returns the new posted-invoice id, but
+            // the response shape varies (string body, object with "value" or
+            // "id", or empty). Extract whatever id we can; the document number
+            // is fetched in a follow-up GET on /salesInvoices(<id>).
+            string invoiceId = ExtractInvoiceIdFromShipAndInvoiceResponse(respBody) ?? orderId;
 
+            string invoiceNumber = await TryGetSalesInvoiceNumberAsync(client, companyUrl, invoiceId, token);
+
+            return (invoiceId, invoiceNumber);
+        }
+
+        private static string ExtractInvoiceIdFromShipAndInvoiceResponse(string respBody)
+        {
+            if (string.IsNullOrWhiteSpace(respBody))
+                return null;
             try
             {
                 using var doc = JsonDocument.Parse(respBody);
@@ -411,11 +465,34 @@ namespace POS_Api.Services.BusinessCentral
             }
             catch
             {
-                // Body wasn't JSON; treat as opaque id string
                 return respBody.Trim('"');
             }
-
             return respBody.Trim('"');
+        }
+
+        private async Task<string> TryGetSalesInvoiceNumberAsync(HttpClient client, string companyUrl, string invoiceId, CancellationToken token)
+        {
+            // Best-effort: a failure here must not break the push. The doc
+            // number is for display/audit, not for posting correctness.
+            if (string.IsNullOrWhiteSpace(invoiceId))
+                return null;
+            try
+            {
+                var url = $"{companyUrl}/salesInvoices({invoiceId})?$select=number";
+                using var req = new HttpRequestMessage(HttpMethod.Get, url);
+                using var resp = await client.SendAsync(req, token);
+                if (!resp.IsSuccessStatusCode)
+                    return null;
+                var body = await resp.Content.ReadAsStringAsync(token);
+                using var doc = JsonDocument.Parse(body);
+                if (doc.RootElement.TryGetProperty("number", out var numEl) && numEl.ValueKind == JsonValueKind.String)
+                    return numEl.GetString();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Could not fetch BC salesInvoices({Id}) number", invoiceId);
+            }
+            return null;
         }
 
         // -------------------------------------------------------------------
@@ -450,7 +527,9 @@ namespace POS_Api.Services.BusinessCentral
                     LocationCode            = reader["LocationCode"]            as string,
                     LocationBcId            = reader["LocationBcId"]            as string,
                     ExistingBcInvoiceID     = reader["ExistingBcInvoiceID"]     as string,
+                    ExistingBcInvoiceNo     = reader["ExistingBcInvoiceNo"]     as string,
                     ExistingBcSalesOrderID  = reader["ExistingBcSalesOrderID"]  as string,
+                    ExistingBcSalesOrderNo  = reader["ExistingBcSalesOrderNo"]  as string,
                 };
             }
 
@@ -476,7 +555,15 @@ namespace POS_Api.Services.BusinessCentral
             return (header, lines);
         }
 
-        private async Task StampResultAsync(Guid invoiceHeaderId, bool success, string bcInvoiceId, string bcSalesOrderId, string errorMessage)
+        private async Task StampResultAsync(
+            Guid invoiceHeaderId,
+            bool success,
+            string bcInvoiceId,
+            string bcInvoiceNo,
+            string bcSalesOrderId,
+            string bcSalesOrderNo,
+            string stage,
+            string errorMessage)
         {
             var connectionString = _config.GetConnectionString("ApplicationDb_1");
             using var conn = SqlClient.CreateInstance(connectionString);
@@ -486,9 +573,12 @@ namespace POS_Api.Services.BusinessCentral
                 "POS_InvoiceHeader_BC_stamp_result",
                 new SqlParameter { DbType = DbType.Guid,    Direction = ParameterDirection.Input, ParameterName = "@InvoiceHeaderID", Value = invoiceHeaderId },
                 new SqlParameter { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@Success",         Value = success },
-                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcInvoiceID",     Value = (object)bcInvoiceId    ?? DBNull.Value },
-                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcSalesOrderID",  Value = (object)bcSalesOrderId ?? DBNull.Value },
-                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@ErrorMessage",    Value = (object)errorMessage   ?? DBNull.Value });
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcInvoiceID",     Value = (object)bcInvoiceId     ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcInvoiceNo",     Value = (object)bcInvoiceNo     ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcSalesOrderID",  Value = (object)bcSalesOrderId  ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcSalesOrderNo",  Value = (object)bcSalesOrderNo  ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@Stage",           Value = (object)stage           ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@ErrorMessage",    Value = (object)errorMessage    ?? DBNull.Value });
         }
 
         // -------------------------------------------------------------------
@@ -502,14 +592,22 @@ namespace POS_Api.Services.BusinessCentral
             return s;
         }
 
-        private ApiResponse<Bc_Push_Result> Fail(Bc_Push_Result result, string message)
+        private ApiResponse<Bc_Push_Result> Fail(Bc_Push_Result result, string message, string stage = "Validate")
         {
             result.ErrorMessage = message;
-            // Stamp the failure to the extension table; ignore if it itself fails.
+            // Stamp the failure to the extension table + audit log; ignore if
+            // the stamp itself fails (it must not mask the real error).
             try
             {
-                StampResultAsync(result.InvoiceHeaderID, success: false,
-                    bcInvoiceId: null, bcSalesOrderId: null, errorMessage: Truncate(message, 4000))
+                StampResultAsync(
+                    result.InvoiceHeaderID,
+                    success: false,
+                    bcInvoiceId:     null,
+                    bcInvoiceNo:     null,
+                    bcSalesOrderId:  null,
+                    bcSalesOrderNo:  null,
+                    stage:           stage,
+                    errorMessage:    Truncate(message, 4000))
                     .GetAwaiter().GetResult();
             }
             catch (Exception ex) { _logger.LogWarning(ex, "stamp_result during Fail() threw for {Id}", result.InvoiceHeaderID); }
@@ -533,7 +631,9 @@ namespace POS_Api.Services.BusinessCentral
             public string LocationCode { get; set; }   // POS_Locations.ShortCode  (informational)
             public string LocationBcId { get; set; }   // POS_Locations.BC_ID      (BC location GUID, used for locationId on salesOrderLine)
             public string ExistingBcInvoiceID { get; set; }
+            public string ExistingBcInvoiceNo { get; set; }
             public string ExistingBcSalesOrderID { get; set; }  // BC sales order id, set after a previous successful CreateSalesOrderAsync
+            public string ExistingBcSalesOrderNo { get; set; }
         }
 
         private sealed class LineRow

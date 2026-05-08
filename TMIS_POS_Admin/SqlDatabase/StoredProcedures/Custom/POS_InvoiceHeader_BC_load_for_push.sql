@@ -37,7 +37,9 @@ BEGIN
         l.ShortCode AS LocationCode,
         l.BC_ID     AS LocationBcId,
         bc.BC_InvoiceID    AS ExistingBcInvoiceID,
-        bc.BC_SalesOrderID AS ExistingBcSalesOrderID
+        bc.BC_InvoiceNo    AS ExistingBcInvoiceNo,
+        bc.BC_SalesOrderID AS ExistingBcSalesOrderID,
+        bc.BC_SalesOrderNo AS ExistingBcSalesOrderNo
       FROM [dbo].[POS_InvoiceHeaders] ih
       INNER JOIN [dbo].[POS_Locations] l
         ON l.LocationID = ih.FK_LocationID

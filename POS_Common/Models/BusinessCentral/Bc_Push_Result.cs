@@ -18,8 +18,17 @@ namespace POS_Common.Models.BusinessCentral
         /// <summary>True if the invoice was already in BC (idempotent no-op).</summary>
         public bool AlreadyPushed { get; set; }
 
-        /// <summary>Stamped on success; otherwise null.</summary>
+        /// <summary>BC posted-invoice GUID (or "ORDER:&lt;orderId&gt;" placeholder when AutoPost=false).</summary>
         public string BC_InvoiceID { get; set; }
+
+        /// <summary>BC posted-invoice document number (e.g. PS-INV103021). Null until shipAndInvoice succeeds.</summary>
+        public string BC_InvoiceNo { get; set; }
+
+        /// <summary>BC sales-order GUID. Stamped immediately after the order header is created so a retry can resume.</summary>
+        public string BC_SalesOrderID { get; set; }
+
+        /// <summary>BC sales-order document number (e.g. SO103021).</summary>
+        public string BC_SalesOrderNo { get; set; }
 
         /// <summary>Stamped on failure; otherwise null. Truncated to 4000 chars.</summary>
         public string ErrorMessage { get; set; }
@@ -36,6 +45,9 @@ namespace POS_Common.Models.BusinessCentral
         public string VoidedBy { get; set; }
         public string VoidReason { get; set; }
         public string BC_InvoiceID { get; set; }
+        public string BC_InvoiceNo { get; set; }
+        public string BC_SalesOrderID { get; set; }
+        public string BC_SalesOrderNo { get; set; }
         public DateTime? BC_PushedAt { get; set; }
     }
 

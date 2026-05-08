@@ -26,6 +26,9 @@ BEGIN
         ih.VoidedBy,
         ih.VoidReason,
         bc.BC_InvoiceID,
+        bc.BC_InvoiceNo,
+        bc.BC_SalesOrderID,
+        bc.BC_SalesOrderNo,
         bc.BC_PushedAt
       FROM [dbo].[POS_InvoiceHeaders] ih
       LEFT JOIN [dbo].[POS_InvoiceHeader_BC] bc
