@@ -32,13 +32,9 @@ namespace POS_Common.Models.Sync.POS_InvoiceHeaders
 
       public decimal? InclTotal { get; set; }
 
-      public string BC_InvoiceID { get; set; }
-
       public DateTime? DateCreated { get; set; }
 
       public DateTime? DatePaid { get; set; }
-
-      public bool? SyncedToServer { get; set; }
 
       public int? FK_CurrencyID { get; set; }
 

@@ -17,10 +17,8 @@ CREATE PROCEDURE dbo.POS_InvoiceHeaders_insert
     @ExclTotal DECIMAL (18, 4),
     @VatTotal DECIMAL (18, 4),
     @InclTotal DECIMAL (18, 4),
-    @BC_InvoiceID VARCHAR(255) = NULL,
     @DateCreated DATETIME,
     @DatePaid DATETIME = NULL,
-    @SyncedToServer BIT = NULL,
     @FK_CurrencyID INT,
     @IsPaid BIT,
     @AmountPaid DECIMAL (18, 4),
@@ -33,9 +31,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (InvoiceHeaderID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_InvoiceHeaders (InvoiceHeaderID, FK_LocationID, FK_AccountID, InvoiceNo, PartyName, BookingReference, DiscountTotal, GratuityTotal, ExclTotal, VatTotal, InclTotal, BC_InvoiceID, DateCreated, DatePaid, SyncedToServer, FK_CurrencyID, IsPaid, AmountPaid, AmountDue, IsVoided, VoidReason, VoidedDate, VoidedBy)
+    INSERT INTO POS_InvoiceHeaders (InvoiceHeaderID, FK_LocationID, FK_AccountID, InvoiceNo, PartyName, BookingReference, DiscountTotal, GratuityTotal, ExclTotal, VatTotal, InclTotal, DateCreated, DatePaid, FK_CurrencyID, IsPaid, AmountPaid, AmountDue, IsVoided, VoidReason, VoidedDate, VoidedBy)
     OUTPUT INSERTED.InvoiceHeaderID INTO @Inserted
-    VALUES (ISNULL(@InvoiceHeaderID, NEWID()), @FK_LocationID, @FK_AccountID, @InvoiceNo, @PartyName, @BookingReference, @DiscountTotal, @GratuityTotal, @ExclTotal, @VatTotal, @InclTotal, @BC_InvoiceID, @DateCreated, @DatePaid, @SyncedToServer, @FK_CurrencyID, @IsPaid, @AmountPaid, @AmountDue, @IsVoided, @VoidReason, @VoidedDate, @VoidedBy);
+    VALUES (ISNULL(@InvoiceHeaderID, NEWID()), @FK_LocationID, @FK_AccountID, @InvoiceNo, @PartyName, @BookingReference, @DiscountTotal, @GratuityTotal, @ExclTotal, @VatTotal, @InclTotal, @DateCreated, @DatePaid, @FK_CurrencyID, @IsPaid, @AmountPaid, @AmountDue, @IsVoided, @VoidReason, @VoidedDate, @VoidedBy);
 
     SELECT *
     FROM POS_InvoiceHeaders
