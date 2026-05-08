@@ -106,8 +106,8 @@ namespace POS_Api.Services.BusinessCentral
             var missing = lines.Where(l => string.IsNullOrWhiteSpace(l.ProductBcId)).ToList();
             if (missing.Any())
             {
-                var ids = string.Join(",", missing.Select(l => l.FK_ProductID));
-                return Fail(result, $"Products missing BC_ID: {ids}");
+                var products = string.Join("; ", missing.Select(l => $"'{l.ProductName}' (ProductID={l.FK_ProductID})"));
+                return Fail(result, $"Products missing BC_ID: {products}");
             }
 
             // Step 2: BC token + URL prefix
@@ -135,10 +135,25 @@ namespace POS_Api.Services.BusinessCentral
                 var orderId = await CreateSalesOrderAsync(
                     client, companyUrl, settings.PosCustomerNo, header, token);
 
-                // 4. Add each line (locationId = BC Location GUID)
+                // 4. Add each line (locationId = BC Location GUID).
+                // Wrap each line POST so a BC failure surfaces which product
+                // it choked on (its name + DB ProductID + BC item GUID).
                 foreach (var line in lines)
                 {
-                    await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationBcId, line, token);
+                    _logger.LogInformation(
+                        "BC push: invoice {Invoice} line {LineId} product '{Product}' (ProductID={ProductID}, BC_ID={BcId}) qty={Qty}",
+                        invoiceHeaderId, line.InvoiceLineID, line.ProductName, line.FK_ProductID, line.ProductBcId, line.Quantity);
+
+                    try
+                    {
+                        await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationBcId, line, token);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            $"Line failed for product '{line.ProductName}' " +
+                            $"(ProductID={line.FK_ProductID}, BC_ID={line.ProductBcId}): {ex.Message}", ex);
+                    }
                 }
 
                 // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
@@ -354,6 +369,7 @@ namespace POS_Api.Services.BusinessCentral
                     {
                         InvoiceLineID = (Guid)reader["InvoiceLineID"],
                         FK_ProductID  = reader["FK_ProductID"]  as int?,
+                        ProductName   = reader["ProductName"]   as string,
                         ProductBcId   = reader["ProductBcId"]   as string,
                         Quantity      = reader["Quantity"]      as decimal?,
                         LineDiscount  = reader["LineDiscount"]  as decimal?,
@@ -423,6 +439,7 @@ namespace POS_Api.Services.BusinessCentral
         {
             public Guid InvoiceLineID { get; set; }
             public int? FK_ProductID { get; set; }
+            public string ProductName { get; set; }   // POS_InvoiceLines.Product (snapshot)
             public string ProductBcId { get; set; }
             public decimal? Quantity { get; set; }
             public decimal? LineDiscount { get; set; }

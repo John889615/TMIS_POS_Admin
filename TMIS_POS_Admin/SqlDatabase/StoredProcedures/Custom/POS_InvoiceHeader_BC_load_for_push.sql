@@ -44,12 +44,16 @@ BEGIN
         ON bc.FK_InvoiceHeaderID = ih.InvoiceHeaderID
      WHERE ih.InvoiceHeaderID = @InvoiceHeaderID;
 
-    -- Lines (joined through InvoiceTabs to the Products table for BC_ID)
+    -- Lines (joined through InvoiceTabs to the Products table for BC_ID).
+    -- ProductName is the snapshot label that was on the POS line when it was
+    -- created (POS_InvoiceLines.Product). It surfaces in error messages so
+    -- the operator can identify which physical item is rejected by BC.
     SELECT
         il.InvoiceLineID,
         il.FK_InvoiceTabID,
         il.FK_ProductID,
-        p.BC_ID AS ProductBcId,
+        il.Product AS ProductName,
+        p.BC_ID    AS ProductBcId,
         il.Quantity,
         il.LineDiscount,
         il.LineTotalExcl,
