@@ -230,11 +230,19 @@ namespace POS_Api.Services.BusinessCentral
         private async Task<string> CreateSalesOrderAsync(HttpClient client, string companyUrl, string customerNumber, HeaderRow header, CancellationToken token)
         {
             var url = $"{companyUrl}/salesOrders";
+
+            // BC's UI auto-sets pricesIncludeTax based on the customer's
+            // "Prices Including VAT" / Customer Price Group setting. The
+            // v2.0 API does NOT do this defaulting on POST - if you don't
+            // pass it, the order is created in tax-exclusive mode and the
+            // VAT lookup picks a different setup row than the UI would.
+            // Send it explicitly so the API matches the UI behaviour.
             var body = JsonSerializer.Serialize(new
             {
                 customerNumber         = customerNumber,
                 orderDate              = (header.DateCreated ?? DateTime.UtcNow).ToString("yyyy-MM-dd"),
-                externalDocumentNumber = header.InvoiceNo
+                externalDocumentNumber = header.InvoiceNo,
+                pricesIncludeTax       = true
             });
 
             using var req = new HttpRequestMessage(HttpMethod.Post, url)
@@ -249,7 +257,19 @@ namespace POS_Api.Services.BusinessCentral
             using var doc = JsonDocument.Parse(respBody);
             if (!doc.RootElement.TryGetProperty("id", out var idEl) || idEl.ValueKind != JsonValueKind.String)
                 throw new Exception("BC POST salesOrders response missing 'id'.");
-            return idEl.GetString();
+
+            var orderId = idEl.GetString();
+            // Surface the BC order id and the documentNumber (BC's own SO no.)
+            // so the operator can find this exact order in BC and compare
+            // its VAT Bus. Posting Group / pricesIncludeTax against a manually
+            // created order on the same customer.
+            string docNumber = doc.RootElement.TryGetProperty("number", out var numEl) && numEl.ValueKind == JsonValueKind.String
+                ? numEl.GetString() : null;
+            _logger.LogInformation(
+                "BC sales order created. id={OrderId} number={DocNumber} customer={Customer} externalDocNo={ExtDoc}",
+                orderId, docNumber, customerNumber, header.InvoiceNo);
+
+            return orderId;
         }
 
         private async Task AddSalesOrderLineAsync(HttpClient client, string companyUrl, string orderId, string locationBcId, LineRow line, CancellationToken token)
