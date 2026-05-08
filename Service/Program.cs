@@ -177,8 +177,13 @@ using TMIS_Common.Models;
     // High-level BC service
     builder.Services.AddSingleton<IBusinessCentral_Service, BusinessCentral_Service>();
 
+    // Spec 3: BC push (paid POS invoices -> BC sales orders -> Microsoft.NAV.shipAndInvoice).
+    // Scoped because it talks to per-request DB state.
+    builder.Services.AddScoped<IBc_Push_Service, Bc_Push_Service>();
+
     // Timed hosted sync
     builder.Services.AddHostedService<BcSyncHostedService>();
+    builder.Services.AddHostedService<BcPushHostedService>();
     builder.Services.AddHostedService<POS_Api.Services.SilentSite.SilentSiteDetector_Service>();
 
     #endregion

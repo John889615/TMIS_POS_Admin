@@ -18,6 +18,10 @@ namespace POS_Common.Models.BusinessCentral
         public string BaseUrl { get; set; } = "https://api.businesscentral.dynamics.com/v2.0";
         public int RequestTimeoutSeconds { get; set; } = 100;
 
+        // Spec 3 additions:
+        public string PosCustomerNo { get; set; } = "";
+        public int PushSweepIntervalHours { get; set; } = 6;
+
         public HostedServiceSettings HostedService { get; set; } = new HostedServiceSettings();
 
         public class HostedServiceSettings

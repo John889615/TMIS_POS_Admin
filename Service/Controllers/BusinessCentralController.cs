@@ -9,7 +9,13 @@ namespace POS_Webservice.Controllers
     public class BusinessCentralController : ControllerBase
     {
         private readonly IBusinessCentral_Service _svc;
-        public BusinessCentralController(IBusinessCentral_Service svc) => _svc = svc;
+        private readonly IBc_Push_Service _push;
+
+        public BusinessCentralController(IBusinessCentral_Service svc, IBc_Push_Service push)
+        {
+            _svc = svc;
+            _push = push;
+        }
 
         [HttpGet("ping")]
         public async Task<IActionResult> Ping()
@@ -92,6 +98,37 @@ namespace POS_Webservice.Controllers
         public async Task<IActionResult> CreateInvoiceAsync()
         {
             var result = await _svc.CreateInvoiceAsync();
+            return Ok(result);
+        }
+
+        // ============================================================
+        // Spec 3 (2026-05-08): manual BC push + voided-invoice grid feed
+        // ============================================================
+
+        /// <summary>
+        /// Pushes a single paid POS invoice to BC. Idempotent - returns
+        /// AlreadyPushed=true if the invoice already has a BC_InvoiceID.
+        /// Triggered manually from the Admin UI for ad-hoc / recovery use.
+        /// </summary>
+        [HttpPost("push/invoice/{id:guid}")]
+        public async Task<IActionResult> PushInvoiceAsync(Guid id, CancellationToken token)
+        {
+            var result = await _push.PushInvoiceAsync(id, token);
+            if (result == null) return StatusCode(500);
+            if (!result.Success) return StatusCode(result.StatusCode ?? 500, result);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Returns voided invoices, partitioned by whether they were
+        /// already pushed to BC. The Admin UI grid binds to this.
+        /// </summary>
+        [HttpGet("voided-invoices")]
+        public async Task<IActionResult> GetVoidedInvoicesAsync(CancellationToken token)
+        {
+            var result = await _push.GetVoidedInvoicesAsync(token);
+            if (result == null) return StatusCode(500);
+            if (!result.Success) return StatusCode(result.StatusCode ?? 500, result);
             return Ok(result);
         }
     }

@@ -1,0 +1,426 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using POS_Api.ServiceInterfaces.BusinessCentral;
+using POS_Common.Enums;
+using POS_Common.Models;
+using POS_Common.Models.BusinessCentral;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using TMIS_Common.Sql;
+
+namespace POS_Api.Services.BusinessCentral
+{
+    /// <summary>
+    /// Spec 3: pushes one paid POS invoice to BC as a Sales Order,
+    /// then auto-posts via Microsoft.NAV.shipAndInvoice. Stock decrements
+    /// as a side-effect of BC posting (Posted Sales Shipment).
+    ///
+    /// Idempotent: short-circuits if BC_InvoiceID is already stamped.
+    /// On failure, stamps BC_LastError so the operator can see why.
+    /// </summary>
+    public class Bc_Push_Service : IBc_Push_Service
+    {
+        private readonly IHttpClientFactory _httpFactory;
+        private readonly IConfiguration _config;
+        private readonly ILogger<Bc_Push_Service> _logger;
+        private readonly IBcTokenProvider _tokenProvider;
+
+        public Bc_Push_Service(
+            IHttpClientFactory httpFactory,
+            IConfiguration config,
+            ILogger<Bc_Push_Service> logger,
+            IBcTokenProvider tokenProvider)
+        {
+            _httpFactory = httpFactory;
+            _config = config;
+            _logger = logger;
+            _tokenProvider = tokenProvider;
+        }
+
+        // -------------------------------------------------------------------
+        // PushInvoiceAsync
+        // -------------------------------------------------------------------
+
+        public async Task<ApiResponse<Bc_Push_Result>> PushInvoiceAsync(Guid invoiceHeaderId, CancellationToken token = default)
+        {
+            var result = new Bc_Push_Result { InvoiceHeaderID = invoiceHeaderId };
+
+            if (invoiceHeaderId == Guid.Empty)
+            {
+                return ApiResponse.Fail<Bc_Push_Result>(
+                    AppErrorCode.ValidationError,
+                    new List<string> { "InvoiceHeaderID is required." }, 400);
+            }
+
+            var settings = LoadSettings();
+            if (string.IsNullOrWhiteSpace(settings.PosCustomerNo))
+            {
+                return Fail(result, "BusinessCentral:PosCustomerNo is not configured.");
+            }
+
+            // Step 1: load invoice + lines + location code
+            HeaderRow header;
+            List<LineRow> lines;
+            try
+            {
+                (header, lines) = await LoadForPushAsync(invoiceHeaderId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Bc_Push_Service: load failed for {Id}", invoiceHeaderId);
+                return Fail(result, $"DB load failed: {ex.Message}");
+            }
+
+            if (header == null)
+            {
+                return Fail(result, "Invoice not found.");
+            }
+
+            // Idempotency: already pushed
+            if (!string.IsNullOrWhiteSpace(header.ExistingBcInvoiceID))
+            {
+                result.AlreadyPushed = true;
+                result.BC_InvoiceID  = header.ExistingBcInvoiceID;
+                return ApiResponse.Success(result);
+            }
+
+            if (header.IsPaid != true)
+                return Fail(result, "Invoice is not paid.");
+            if (header.IsVoided == true)
+                return Fail(result, "Invoice is voided.");
+            if (string.IsNullOrWhiteSpace(header.LocationCode))
+                return Fail(result, $"Location {header.FK_LocationID} has no ShortCode (BC location code).");
+            if (lines == null || lines.Count == 0)
+                return Fail(result, "Invoice has no lines.");
+
+            // Defensive: every line must have ProductBcId
+            var missing = lines.Where(l => string.IsNullOrWhiteSpace(l.ProductBcId)).ToList();
+            if (missing.Any())
+            {
+                var ids = string.Join(",", missing.Select(l => l.FK_ProductID));
+                return Fail(result, $"Products missing BC_ID: {ids}");
+            }
+
+            // Step 2: BC token + URL prefix
+            string companyUrl;
+            string bearer;
+            try
+            {
+                bearer = await _tokenProvider.GetAccessTokenAsync();
+                companyUrl = $"{settings.BaseUrl}/{settings.TenantId}/{settings.Environment}" +
+                             $"/api/v2.0/companies({settings.CompanyId})";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Bc_Push_Service: token/url failed for {Id}", invoiceHeaderId);
+                return Fail(result, $"BC auth failed: {ex.Message}");
+            }
+
+            // Step 3..5: create order, add lines, post via shipAndInvoice
+            var client = _httpFactory.CreateClient("bc");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearer);
+
+            try
+            {
+                // 3. Create the sales order header
+                var orderId = await CreateSalesOrderAsync(
+                    client, companyUrl, settings.PosCustomerNo, header, token);
+
+                // 4. Add each line
+                foreach (var line in lines)
+                {
+                    await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationCode, line, token);
+                }
+
+                // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
+                var bcInvoiceId = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
+
+                // Step 6: stamp success
+                await StampResultAsync(invoiceHeaderId, success: true, bcInvoiceId: bcInvoiceId, errorMessage: null);
+
+                result.Pushed       = true;
+                result.BC_InvoiceID = bcInvoiceId;
+                return ApiResponse.Success(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Bc_Push_Service: BC push failed for {Id}", invoiceHeaderId);
+                var msg = Truncate(ex.Message, 4000);
+                try { await StampResultAsync(invoiceHeaderId, success: false, bcInvoiceId: null, errorMessage: msg); }
+                catch (Exception stampEx) { _logger.LogError(stampEx, "stamp_result failed for {Id}", invoiceHeaderId); }
+                return Fail(result, msg);
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // GetVoidedInvoicesAsync
+        // -------------------------------------------------------------------
+
+        public async Task<ApiResponse<Bc_VoidedInvoices_Response>> GetVoidedInvoicesAsync(CancellationToken token = default)
+        {
+            var rows = new List<Bc_VoidedInvoice_Row>();
+            try
+            {
+                var connectionString = _config.GetConnectionString("ApplicationDb_1");
+                using var conn = SqlClient.CreateInstance(connectionString);
+                await conn.OpenAsync(token);
+                using var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    conn, "POS_InvoiceHeader_BC_select_voided", null);
+
+                while (await reader.ReadAsync(token))
+                {
+                    rows.Add(new Bc_VoidedInvoice_Row
+                    {
+                        InvoiceHeaderID  = (Guid)reader["InvoiceHeaderID"],
+                        InvoiceNo        = reader["InvoiceNo"]        as string,
+                        PartyName        = reader["PartyName"]        as string,
+                        BookingReference = reader["BookingReference"] as string,
+                        InclTotal        = reader["InclTotal"]        as decimal?,
+                        VoidedDate       = reader["VoidedDate"]       as DateTime?,
+                        VoidedBy         = reader["VoidedBy"]         as string,
+                        VoidReason       = reader["VoidReason"]       as string,
+                        BC_InvoiceID     = reader["BC_InvoiceID"]     as string,
+                        BC_PushedAt      = reader["BC_PushedAt"]      as DateTime?,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetVoidedInvoicesAsync failed");
+                return ApiResponse.Fail<Bc_VoidedInvoices_Response>(
+                    AppErrorCode.ServerError, new List<string> { ex.Message }, 500);
+            }
+
+            var resp = new Bc_VoidedInvoices_Response
+            {
+                VoidedAndPushed    = rows.Where(r => !string.IsNullOrEmpty(r.BC_InvoiceID)).ToList(),
+                VoidedAndNotPushed = rows.Where(r =>  string.IsNullOrEmpty(r.BC_InvoiceID)).ToList(),
+            };
+            return ApiResponse.Success(resp);
+        }
+
+        // -------------------------------------------------------------------
+        // BC OData calls
+        // -------------------------------------------------------------------
+
+        private async Task<string> CreateSalesOrderAsync(HttpClient client, string companyUrl, string customerNumber, HeaderRow header, CancellationToken token)
+        {
+            var url = $"{companyUrl}/salesOrders";
+            var body = JsonSerializer.Serialize(new
+            {
+                customerNumber         = customerNumber,
+                orderDate              = (header.DateCreated ?? DateTime.UtcNow).ToString("yyyy-MM-dd"),
+                externalDocumentNumber = header.InvoiceNo
+            });
+
+            using var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json"),
+            };
+            using var resp = await client.SendAsync(req, token);
+            var respBody = await resp.Content.ReadAsStringAsync(token);
+            if (!resp.IsSuccessStatusCode)
+                throw new Exception($"BC POST salesOrders failed {(int)resp.StatusCode}: {respBody}");
+
+            using var doc = JsonDocument.Parse(respBody);
+            if (!doc.RootElement.TryGetProperty("id", out var idEl) || idEl.ValueKind != JsonValueKind.String)
+                throw new Exception("BC POST salesOrders response missing 'id'.");
+            return idEl.GetString();
+        }
+
+        private async Task AddSalesOrderLineAsync(HttpClient client, string companyUrl, string orderId, string locationCode, LineRow line, CancellationToken token)
+        {
+            var url = $"{companyUrl}/salesOrders({orderId})/salesOrderLines";
+
+            // Per spec Q6: Unit Price = (LineTotalExcl + LineDiscount) / Quantity.
+            // Discount is sent separately so it shows as a real discount in BC.
+            decimal qty = line.Quantity ?? 0m;
+            decimal lineDiscount = line.LineDiscount ?? 0m;
+            decimal unitPrice = qty > 0
+                ? Math.Round(((line.LineTotalExcl ?? 0m) + lineDiscount) / qty, 4, MidpointRounding.AwayFromZero)
+                : 0m;
+
+            var body = JsonSerializer.Serialize(new
+            {
+                lineType       = "Item",
+                itemId         = line.ProductBcId,
+                quantity       = qty,
+                unitPrice      = unitPrice,
+                discountAmount = lineDiscount,
+                locationCode   = locationCode
+            });
+
+            using var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json"),
+            };
+            using var resp = await client.SendAsync(req, token);
+            var respBody = await resp.Content.ReadAsStringAsync(token);
+            if (!resp.IsSuccessStatusCode)
+                throw new Exception($"BC POST salesOrderLines failed {(int)resp.StatusCode}: {respBody}");
+        }
+
+        private async Task<string> ShipAndInvoiceAsync(HttpClient client, string companyUrl, string orderId, CancellationToken token)
+        {
+            var url = $"{companyUrl}/salesOrders({orderId})/Microsoft.NAV.shipAndInvoice";
+
+            using var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent("{}", Encoding.UTF8, "application/json"),
+            };
+            using var resp = await client.SendAsync(req, token);
+            var respBody = await resp.Content.ReadAsStringAsync(token);
+            if (!resp.IsSuccessStatusCode)
+                throw new Exception($"BC shipAndInvoice failed {(int)resp.StatusCode}: {respBody}");
+
+            // BC may return the new posted-invoice id as a string body, an
+            // object with "value" or "id", or empty (then we fall back to the
+            // sales order id as a placeholder marker).
+            if (string.IsNullOrWhiteSpace(respBody))
+                return orderId;
+
+            try
+            {
+                using var doc = JsonDocument.Parse(respBody);
+                var root = doc.RootElement;
+                if (root.ValueKind == JsonValueKind.String) return root.GetString();
+                if (root.TryGetProperty("value", out var v) && v.ValueKind == JsonValueKind.String) return v.GetString();
+                if (root.TryGetProperty("id",    out var i) && i.ValueKind == JsonValueKind.String) return i.GetString();
+            }
+            catch
+            {
+                // Body wasn't JSON; treat as opaque id string
+                return respBody.Trim('"');
+            }
+
+            return respBody.Trim('"');
+        }
+
+        // -------------------------------------------------------------------
+        // SQL helpers
+        // -------------------------------------------------------------------
+
+        private async Task<(HeaderRow header, List<LineRow> lines)> LoadForPushAsync(Guid invoiceHeaderId)
+        {
+            HeaderRow header = null;
+            var lines = new List<LineRow>();
+
+            var connectionString = _config.GetConnectionString("ApplicationDb_1");
+            using var conn = SqlClient.CreateInstance(connectionString);
+            await conn.OpenAsync();
+
+            using var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                conn,
+                "POS_InvoiceHeader_BC_load_for_push",
+                new SqlParameter { DbType = DbType.Guid, Direction = ParameterDirection.Input, ParameterName = "@InvoiceHeaderID", Value = invoiceHeaderId });
+
+            // Set 0: header
+            if (await reader.ReadAsync())
+            {
+                header = new HeaderRow
+                {
+                    InvoiceHeaderID      = (Guid)reader["InvoiceHeaderID"],
+                    InvoiceNo            = reader["InvoiceNo"]            as string,
+                    DateCreated          = reader["DateCreated"]          as DateTime?,
+                    IsPaid               = reader["IsPaid"]               as bool?,
+                    IsVoided             = reader["IsVoided"]             as bool?,
+                    FK_LocationID        = reader["FK_LocationID"]        as int?,
+                    LocationCode         = reader["LocationCode"]         as string,
+                    ExistingBcInvoiceID  = reader["ExistingBcInvoiceID"]  as string,
+                };
+            }
+
+            // Set 1: lines
+            if (await reader.NextResultAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    lines.Add(new LineRow
+                    {
+                        InvoiceLineID = (Guid)reader["InvoiceLineID"],
+                        FK_ProductID  = reader["FK_ProductID"]  as int?,
+                        ProductBcId   = reader["ProductBcId"]   as string,
+                        Quantity      = reader["Quantity"]      as decimal?,
+                        LineDiscount  = reader["LineDiscount"]  as decimal?,
+                        LineTotalExcl = reader["LineTotalExcl"] as decimal?,
+                        LineTotalIncl = reader["LineTotalIncl"] as decimal?,
+                    });
+                }
+            }
+
+            return (header, lines);
+        }
+
+        private async Task StampResultAsync(Guid invoiceHeaderId, bool success, string bcInvoiceId, string errorMessage)
+        {
+            var connectionString = _config.GetConnectionString("ApplicationDb_1");
+            using var conn = SqlClient.CreateInstance(connectionString);
+            await conn.OpenAsync();
+            await SqlClient.ExecuteNonQueryStoredProcedureAsync(
+                conn,
+                "POS_InvoiceHeader_BC_stamp_result",
+                new SqlParameter { DbType = DbType.Guid,    Direction = ParameterDirection.Input, ParameterName = "@InvoiceHeaderID", Value = invoiceHeaderId },
+                new SqlParameter { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@Success",         Value = success },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcInvoiceID",     Value = (object)bcInvoiceId  ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@ErrorMessage",    Value = (object)errorMessage ?? DBNull.Value });
+        }
+
+        // -------------------------------------------------------------------
+        // Helpers
+        // -------------------------------------------------------------------
+
+        private BusinessCentralSettings LoadSettings()
+        {
+            var s = new BusinessCentralSettings();
+            _config.GetSection("BusinessCentral").Bind(s);
+            return s;
+        }
+
+        private ApiResponse<Bc_Push_Result> Fail(Bc_Push_Result result, string message)
+        {
+            result.ErrorMessage = message;
+            // Stamp the failure to the extension table; ignore if it itself fails.
+            try { StampResultAsync(result.InvoiceHeaderID, success: false, bcInvoiceId: null, errorMessage: Truncate(message, 4000)).GetAwaiter().GetResult(); }
+            catch (Exception ex) { _logger.LogWarning(ex, "stamp_result during Fail() threw for {Id}", result.InvoiceHeaderID); }
+            return ApiResponse.Fail<Bc_Push_Result>(AppErrorCode.ServerError, new List<string> { message }, 500);
+        }
+
+        private static string Truncate(string s, int max) => string.IsNullOrEmpty(s) ? s : (s.Length <= max ? s : s.Substring(0, max));
+
+        // -------------------------------------------------------------------
+        // Internal row shapes (mirror the load_for_push result sets)
+        // -------------------------------------------------------------------
+
+        private sealed class HeaderRow
+        {
+            public Guid InvoiceHeaderID { get; set; }
+            public string InvoiceNo { get; set; }
+            public DateTime? DateCreated { get; set; }
+            public bool? IsPaid { get; set; }
+            public bool? IsVoided { get; set; }
+            public int? FK_LocationID { get; set; }
+            public string LocationCode { get; set; }
+            public string ExistingBcInvoiceID { get; set; }
+        }
+
+        private sealed class LineRow
+        {
+            public Guid InvoiceLineID { get; set; }
+            public int? FK_ProductID { get; set; }
+            public string ProductBcId { get; set; }
+            public decimal? Quantity { get; set; }
+            public decimal? LineDiscount { get; set; }
+            public decimal? LineTotalExcl { get; set; }
+            public decimal? LineTotalIncl { get; set; }
+        }
+    }
+}
