@@ -231,16 +231,27 @@ namespace POS_Api.Services.BusinessCentral
         {
             var url = $"{companyUrl}/salesOrders";
 
-            // BC's UI auto-sets pricesIncludeTax based on the customer's
-            // "Prices Including VAT" / Customer Price Group setting. The
-            // v2.0 API does NOT do this defaulting on POST - if you don't
-            // pass it, the order is created in tax-exclusive mode and the
-            // VAT lookup picks a different setup row than the UI would.
-            // Send it explicitly so the API matches the UI behaviour.
+            // BC's UI auto-defaults two fields that the v2.0 API does NOT
+            // populate on POST - both are required when we later call
+            // Microsoft.NAV.shipAndInvoice:
+            //
+            //   pricesIncludeTax  - based on the customer's "Prices
+            //                       Including VAT" / Customer Price Group.
+            //                       Without it the VAT lookup mismatches.
+            //   postingDate       - required to post; without it,
+            //                       shipAndInvoice fails with
+            //                       "Posting Date must have a value".
+            //
+            // orderDate is the date the customer placed the order;
+            // postingDate is the date the financial entries land in
+            // the GL. For POS we use today for both.
+            var orderDate   = (header.DateCreated ?? DateTime.UtcNow).ToString("yyyy-MM-dd");
+            var postingDate = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var body = JsonSerializer.Serialize(new
             {
                 customerNumber         = customerNumber,
-                orderDate              = (header.DateCreated ?? DateTime.UtcNow).ToString("yyyy-MM-dd"),
+                orderDate              = orderDate,
+                postingDate            = postingDate,
                 externalDocumentNumber = header.InvoiceNo,
                 pricesIncludeTax       = true
             });
