@@ -97,8 +97,8 @@ namespace POS_Api.Services.BusinessCentral
                 return Fail(result, "Invoice is not paid.");
             if (header.IsVoided == true)
                 return Fail(result, "Invoice is voided.");
-            if (string.IsNullOrWhiteSpace(header.LocationCode))
-                return Fail(result, $"Location {header.FK_LocationID} has no ShortCode (BC location code).");
+            if (string.IsNullOrWhiteSpace(header.LocationBcId))
+                return Fail(result, $"Location {header.FK_LocationID} has no BC_ID (BC location GUID required for salesOrderLine.locationId).");
             if (lines == null || lines.Count == 0)
                 return Fail(result, "Invoice has no lines.");
 
@@ -135,10 +135,10 @@ namespace POS_Api.Services.BusinessCentral
                 var orderId = await CreateSalesOrderAsync(
                     client, companyUrl, settings.PosCustomerNo, header, token);
 
-                // 4. Add each line
+                // 4. Add each line (locationId = BC Location GUID)
                 foreach (var line in lines)
                 {
-                    await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationCode, line, token);
+                    await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationBcId, line, token);
                 }
 
                 // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
@@ -237,7 +237,7 @@ namespace POS_Api.Services.BusinessCentral
             return idEl.GetString();
         }
 
-        private async Task AddSalesOrderLineAsync(HttpClient client, string companyUrl, string orderId, string locationCode, LineRow line, CancellationToken token)
+        private async Task AddSalesOrderLineAsync(HttpClient client, string companyUrl, string orderId, string locationBcId, LineRow line, CancellationToken token)
         {
             var url = $"{companyUrl}/salesOrders({orderId})/salesOrderLines";
 
@@ -249,6 +249,11 @@ namespace POS_Api.Services.BusinessCentral
                 ? Math.Round(((line.LineTotalExcl ?? 0m) + lineDiscount) / qty, 4, MidpointRounding.AwayFromZero)
                 : 0m;
 
+            // BC v2.0 salesOrderLine expects:
+            //   itemId      = item GUID  (lineObjectNumber works only if lineType=Item is set;
+            //                             itemId is the canonical lookup)
+            //   locationId  = location GUID (the property "locationCode" does NOT exist
+            //                             on this resource - common mistake)
             var body = JsonSerializer.Serialize(new
             {
                 lineType       = "Item",
@@ -256,7 +261,7 @@ namespace POS_Api.Services.BusinessCentral
                 quantity       = qty,
                 unitPrice      = unitPrice,
                 discountAmount = lineDiscount,
-                locationCode   = locationCode
+                locationId     = locationBcId
             });
 
             using var req = new HttpRequestMessage(HttpMethod.Post, url)
@@ -335,6 +340,7 @@ namespace POS_Api.Services.BusinessCentral
                     IsVoided             = reader["IsVoided"]             as bool?,
                     FK_LocationID        = reader["FK_LocationID"]        as int?,
                     LocationCode         = reader["LocationCode"]         as string,
+                    LocationBcId         = reader["LocationBcId"]         as string,
                     ExistingBcInvoiceID  = reader["ExistingBcInvoiceID"]  as string,
                 };
             }
@@ -408,7 +414,8 @@ namespace POS_Api.Services.BusinessCentral
             public bool? IsPaid { get; set; }
             public bool? IsVoided { get; set; }
             public int? FK_LocationID { get; set; }
-            public string LocationCode { get; set; }
+            public string LocationCode { get; set; }   // POS_Locations.ShortCode  (informational)
+            public string LocationBcId { get; set; }   // POS_Locations.BC_ID      (BC location GUID, used for locationId on salesOrderLine)
             public string ExistingBcInvoiceID { get; set; }
         }
 

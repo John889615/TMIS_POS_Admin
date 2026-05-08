@@ -23,6 +23,10 @@ BEGIN
     SET NOCOUNT ON;
 
     -- Header
+    -- LocationBcId carries POS_Locations.BC_ID (the BC Location GUID).
+    -- BC's salesOrderLine resource expects "locationId" = GUID; the
+    -- string "locationCode" property does NOT exist on that type.
+    -- LocationCode (ShortCode) is kept for diagnostics / future use.
     SELECT
         ih.InvoiceHeaderID,
         ih.InvoiceNo,
@@ -31,6 +35,7 @@ BEGIN
         ih.IsVoided,
         ih.FK_LocationID,
         l.ShortCode AS LocationCode,
+        l.BC_ID     AS LocationBcId,
         bc.BC_InvoiceID AS ExistingBcInvoiceID
       FROM [dbo].[POS_InvoiceHeaders] ih
       INNER JOIN [dbo].[POS_Locations] l
