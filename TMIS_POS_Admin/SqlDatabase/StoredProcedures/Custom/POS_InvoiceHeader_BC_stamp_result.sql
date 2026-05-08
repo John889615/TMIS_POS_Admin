@@ -9,22 +9,29 @@ GO
 -- POS_InvoiceHeader_BC_stamp_result
 --   Idempotent UPSERT into POS_InvoiceHeader_BC.
 --
---   On success:
---     * Stamps BC_InvoiceID and BC_PushedAt.
---     * Clears BC_LastError.
---     * Stamps BC_LastAttemptAt.
---   On failure:
---     * Stamps BC_LastError (truncated to 4000 chars by caller).
---     * Stamps BC_LastAttemptAt.
---     * Leaves BC_InvoiceID alone.
+--   Three orthogonal stamps the caller can drive (any combination):
+--     * BC_SalesOrderID  - stamped right after BC creates the order
+--                          (before lines / before shipAndInvoice).
+--                          Survives failures so the next attempt can
+--                          reuse the existing BC order rather than
+--                          create a zombie duplicate.
+--     * BC_InvoiceID     - stamped after a successful shipAndInvoice
+--                          (or the "ORDER:<guid>" placeholder when
+--                          BusinessCentral.AutoPost = false).
+--     * BC_LastError     - stamped on any failed attempt.
 --
---   Caller passes @Success = 1 with @BcInvoiceID populated, OR
---   @Success = 0 with @ErrorMessage populated.
+--   Pass non-null parameters for the fields you want to update.
+--   NULL or '' parameters preserve the existing value (no overwrite).
+--
+--   On every call BC_LastAttemptAt is bumped to NOW.
+--   On Success=1, BC_LastError is cleared.
+--   When @BcInvoiceID is provided AND Success=1, BC_PushedAt is set.
 -- =============================================================
 CREATE PROCEDURE dbo.POS_InvoiceHeader_BC_stamp_result
     @InvoiceHeaderID UNIQUEIDENTIFIER,
     @Success         BIT,
     @BcInvoiceID     VARCHAR(255) = NULL,
+    @BcSalesOrderID  VARCHAR(255) = NULL,
     @ErrorMessage    VARCHAR(MAX) = NULL
 AS
 BEGIN
@@ -43,20 +50,22 @@ BEGIN
                    WHERE FK_InvoiceHeaderID = @InvoiceHeaderID)
         BEGIN
             UPDATE [dbo].[POS_InvoiceHeader_BC]
-               SET BC_InvoiceID     = CASE WHEN @Success = 1 THEN @BcInvoiceID ELSE BC_InvoiceID END,
-                   BC_PushedAt      = CASE WHEN @Success = 1 THEN @Now         ELSE BC_PushedAt END,
-                   BC_LastError     = CASE WHEN @Success = 1 THEN NULL         ELSE @ErrorMessage END,
+               SET BC_InvoiceID     = COALESCE(NULLIF(@BcInvoiceID,    ''), BC_InvoiceID),
+                   BC_SalesOrderID  = COALESCE(NULLIF(@BcSalesOrderID, ''), BC_SalesOrderID),
+                   BC_PushedAt      = CASE WHEN @Success = 1 AND NULLIF(@BcInvoiceID, '') IS NOT NULL THEN @Now ELSE BC_PushedAt END,
+                   BC_LastError     = CASE WHEN @Success = 1 THEN NULL ELSE @ErrorMessage END,
                    BC_LastAttemptAt = @Now
              WHERE FK_InvoiceHeaderID = @InvoiceHeaderID;
         END
         ELSE
         BEGIN
             INSERT INTO [dbo].[POS_InvoiceHeader_BC]
-                    (FK_InvoiceHeaderID, BC_InvoiceID, BC_PushedAt, BC_LastError, BC_LastAttemptAt)
+                    (FK_InvoiceHeaderID, BC_InvoiceID, BC_SalesOrderID, BC_PushedAt, BC_LastError, BC_LastAttemptAt)
             VALUES  (@InvoiceHeaderID,
-                     CASE WHEN @Success = 1 THEN @BcInvoiceID ELSE NULL END,
-                     CASE WHEN @Success = 1 THEN @Now         ELSE NULL END,
-                     CASE WHEN @Success = 1 THEN NULL         ELSE @ErrorMessage END,
+                     NULLIF(@BcInvoiceID,    ''),
+                     NULLIF(@BcSalesOrderID, ''),
+                     CASE WHEN @Success = 1 AND NULLIF(@BcInvoiceID, '') IS NOT NULL THEN @Now ELSE NULL END,
+                     CASE WHEN @Success = 1 THEN NULL ELSE @ErrorMessage END,
                      @Now);
         END
 

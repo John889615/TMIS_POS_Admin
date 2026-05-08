@@ -85,8 +85,14 @@ namespace POS_Api.Services.BusinessCentral
                 return Fail(result, "Invoice not found.");
             }
 
-            // Idempotency: already pushed
-            if (!string.IsNullOrWhiteSpace(header.ExistingBcInvoiceID))
+            // Idempotency: a real posted-invoice id (NOT an "ORDER:..."
+            // placeholder from a previous AutoPost=false run) means BC has
+            // already posted this invoice. Short-circuit.
+            bool hasOrderPlaceholder =
+                !string.IsNullOrWhiteSpace(header.ExistingBcInvoiceID)
+                && header.ExistingBcInvoiceID.StartsWith("ORDER:", StringComparison.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrWhiteSpace(header.ExistingBcInvoiceID) && !hasOrderPlaceholder)
             {
                 result.AlreadyPushed = true;
                 result.BC_InvoiceID  = header.ExistingBcInvoiceID;
@@ -125,71 +131,108 @@ namespace POS_Api.Services.BusinessCentral
                 return Fail(result, $"BC auth failed: {ex.Message}");
             }
 
-            // Step 3..5: create order, add lines, post via shipAndInvoice
+            // Step 3..5: create order (or reuse), add lines (or skip), post via shipAndInvoice
             var client = _httpFactory.CreateClient("bc");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearer);
 
+            // RESUME MODE: a previous attempt already created the order
+            // (BC_SalesOrderID is stamped). Skip header + line creation and
+            // jump straight to shipAndInvoice. Avoids piling up zombie orders
+            // in BC every time a posting-setup error surfaces.
+            bool resume = !string.IsNullOrWhiteSpace(header.ExistingBcSalesOrderID);
+            string orderId = header.ExistingBcSalesOrderID;
+
             try
             {
-                // 3. Create the sales order header
-                var orderId = await CreateSalesOrderAsync(
-                    client, companyUrl, settings.PosCustomerNo, header, token);
-
-                // 4. Add each line (locationId = BC Location GUID).
-                // Wrap each line POST so a BC failure surfaces which product
-                // it choked on (its name + DB ProductID + BC item GUID).
-                foreach (var line in lines)
+                if (!resume)
                 {
-                    _logger.LogInformation(
-                        "BC push: invoice {Invoice} line {LineId} product '{Product}' (ProductID={ProductID}, BC_ID={BcId}) qty={Qty}",
-                        invoiceHeaderId, line.InvoiceLineID, line.ProductName, line.FK_ProductID, line.ProductBcId, line.Quantity);
+                    // 3. Create the sales order header
+                    orderId = await CreateSalesOrderAsync(
+                        client, companyUrl, settings.PosCustomerNo, header, token);
 
+                    // Stamp the order id NOW so a downstream failure (line
+                    // creation, posting setup, etc.) leaves the order id
+                    // recoverable. The next attempt will resume from here.
                     try
                     {
-                        await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationBcId, line, token);
+                        await StampResultAsync(invoiceHeaderId, success: true,
+                            bcInvoiceId: null, bcSalesOrderId: orderId, errorMessage: null);
                     }
-                    catch (Exception ex)
+                    catch (Exception stampEx)
                     {
-                        throw new Exception(
-                            $"Line failed for product '{line.ProductName}' " +
-                            $"(ProductID={line.FK_ProductID}, BC_ID={line.ProductBcId}): {ex.Message}", ex);
+                        _logger.LogWarning(stampEx, "stamp BC_SalesOrderID failed for {Id}; continuing", invoiceHeaderId);
+                    }
+
+                    // 4. Add each line (locationId = BC Location GUID).
+                    // Wrap each line POST so a BC failure surfaces which product
+                    // it choked on (its name + DB ProductID + BC item GUID).
+                    foreach (var line in lines)
+                    {
+                        _logger.LogInformation(
+                            "BC push: invoice {Invoice} line {LineId} product '{Product}' (ProductID={ProductID}, BC_ID={BcId}) qty={Qty}",
+                            invoiceHeaderId, line.InvoiceLineID, line.ProductName, line.FK_ProductID, line.ProductBcId, line.Quantity);
+
+                        try
+                        {
+                            await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationBcId, line, token);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception(
+                                $"Line failed for product '{line.ProductName}' " +
+                                $"(ProductID={line.FK_ProductID}, BC_ID={line.ProductBcId}): {ex.Message}", ex);
+                        }
                     }
                 }
+                else
+                {
+                    _logger.LogInformation(
+                        "BC push RESUME: invoice {Invoice} reusing existing BC sales order {OrderId} (skipping create + lines).",
+                        invoiceHeaderId, orderId);
+                }
 
-                string stampedId;
+                string stampedInvoiceId;
                 if (settings.AutoPost)
                 {
                     // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
-                    stampedId = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
+                    stampedInvoiceId = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
                 }
                 else
                 {
                     // BYPASS MODE: leave the order Open in BC. Stock does NOT
-                    // decrement. Posted invoice does NOT exist. The operator
-                    // must post the order manually in BC after fixing the
-                    // General/VAT Posting Setup. We stamp the order id with
-                    // an "ORDER:" prefix so the extension table marks the
-                    // row as pushed (sweep won't recreate) and the prefix
-                    // makes it visually distinct from a real posted-invoice id.
-                    stampedId = "ORDER:" + orderId;
+                    // decrement. Posted invoice does NOT exist. Operator must
+                    // post the order manually in BC after fixing General/VAT
+                    // Posting Setup. We stamp the order id with an "ORDER:"
+                    // prefix on BC_InvoiceID so the sweep treats the row as
+                    // done; the prefix is visually distinct from a real
+                    // posted-invoice id, and BC_SalesOrderID still holds the
+                    // raw order id for direct lookup in BC.
+                    stampedInvoiceId = "ORDER:" + orderId;
                     _logger.LogWarning(
                         "BC AutoPost disabled - order {OrderId} created OPEN. Stock NOT deducted. " +
                         "Operator must post manually in BC after fixing posting-setup config.",
                         orderId);
                 }
 
-                // Step 6: stamp success
-                await StampResultAsync(invoiceHeaderId, success: true, bcInvoiceId: stampedId, errorMessage: null);
+                // Step 6: stamp success (also re-stamps BC_SalesOrderID, no-op if same)
+                await StampResultAsync(invoiceHeaderId, success: true,
+                    bcInvoiceId: stampedInvoiceId, bcSalesOrderId: orderId, errorMessage: null);
 
                 result.Pushed       = true;
-                result.BC_InvoiceID = stampedId;
+                result.BC_InvoiceID = stampedInvoiceId;
                 return ApiResponse.Success(result);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Bc_Push_Service: BC push failed for {Id}", invoiceHeaderId);
                 var msg = Truncate(ex.Message, 4000);
-                try { await StampResultAsync(invoiceHeaderId, success: false, bcInvoiceId: null, errorMessage: msg); }
+                try
+                {
+                    // Preserve any orderId we already obtained so a future
+                    // retry can resume on the existing BC order.
+                    await StampResultAsync(invoiceHeaderId, success: false,
+                        bcInvoiceId: null, bcSalesOrderId: orderId, errorMessage: msg);
+                }
                 catch (Exception stampEx) { _logger.LogError(stampEx, "stamp_result failed for {Id}", invoiceHeaderId); }
                 return Fail(result, msg);
             }
@@ -398,15 +441,16 @@ namespace POS_Api.Services.BusinessCentral
             {
                 header = new HeaderRow
                 {
-                    InvoiceHeaderID      = (Guid)reader["InvoiceHeaderID"],
-                    InvoiceNo            = reader["InvoiceNo"]            as string,
-                    DateCreated          = reader["DateCreated"]          as DateTime?,
-                    IsPaid               = reader["IsPaid"]               as bool?,
-                    IsVoided             = reader["IsVoided"]             as bool?,
-                    FK_LocationID        = reader["FK_LocationID"]        as int?,
-                    LocationCode         = reader["LocationCode"]         as string,
-                    LocationBcId         = reader["LocationBcId"]         as string,
-                    ExistingBcInvoiceID  = reader["ExistingBcInvoiceID"]  as string,
+                    InvoiceHeaderID         = (Guid)reader["InvoiceHeaderID"],
+                    InvoiceNo               = reader["InvoiceNo"]               as string,
+                    DateCreated             = reader["DateCreated"]             as DateTime?,
+                    IsPaid                  = reader["IsPaid"]                  as bool?,
+                    IsVoided                = reader["IsVoided"]                as bool?,
+                    FK_LocationID           = reader["FK_LocationID"]           as int?,
+                    LocationCode            = reader["LocationCode"]            as string,
+                    LocationBcId            = reader["LocationBcId"]            as string,
+                    ExistingBcInvoiceID     = reader["ExistingBcInvoiceID"]     as string,
+                    ExistingBcSalesOrderID  = reader["ExistingBcSalesOrderID"]  as string,
                 };
             }
 
@@ -432,7 +476,7 @@ namespace POS_Api.Services.BusinessCentral
             return (header, lines);
         }
 
-        private async Task StampResultAsync(Guid invoiceHeaderId, bool success, string bcInvoiceId, string errorMessage)
+        private async Task StampResultAsync(Guid invoiceHeaderId, bool success, string bcInvoiceId, string bcSalesOrderId, string errorMessage)
         {
             var connectionString = _config.GetConnectionString("ApplicationDb_1");
             using var conn = SqlClient.CreateInstance(connectionString);
@@ -442,8 +486,9 @@ namespace POS_Api.Services.BusinessCentral
                 "POS_InvoiceHeader_BC_stamp_result",
                 new SqlParameter { DbType = DbType.Guid,    Direction = ParameterDirection.Input, ParameterName = "@InvoiceHeaderID", Value = invoiceHeaderId },
                 new SqlParameter { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@Success",         Value = success },
-                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcInvoiceID",     Value = (object)bcInvoiceId  ?? DBNull.Value },
-                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@ErrorMessage",    Value = (object)errorMessage ?? DBNull.Value });
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcInvoiceID",     Value = (object)bcInvoiceId    ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@BcSalesOrderID",  Value = (object)bcSalesOrderId ?? DBNull.Value },
+                new SqlParameter { DbType = DbType.String,  Direction = ParameterDirection.Input, ParameterName = "@ErrorMessage",    Value = (object)errorMessage   ?? DBNull.Value });
         }
 
         // -------------------------------------------------------------------
@@ -461,7 +506,12 @@ namespace POS_Api.Services.BusinessCentral
         {
             result.ErrorMessage = message;
             // Stamp the failure to the extension table; ignore if it itself fails.
-            try { StampResultAsync(result.InvoiceHeaderID, success: false, bcInvoiceId: null, errorMessage: Truncate(message, 4000)).GetAwaiter().GetResult(); }
+            try
+            {
+                StampResultAsync(result.InvoiceHeaderID, success: false,
+                    bcInvoiceId: null, bcSalesOrderId: null, errorMessage: Truncate(message, 4000))
+                    .GetAwaiter().GetResult();
+            }
             catch (Exception ex) { _logger.LogWarning(ex, "stamp_result during Fail() threw for {Id}", result.InvoiceHeaderID); }
             return ApiResponse.Fail<Bc_Push_Result>(AppErrorCode.ServerError, new List<string> { message }, 500);
         }
@@ -483,6 +533,7 @@ namespace POS_Api.Services.BusinessCentral
             public string LocationCode { get; set; }   // POS_Locations.ShortCode  (informational)
             public string LocationBcId { get; set; }   // POS_Locations.BC_ID      (BC location GUID, used for locationId on salesOrderLine)
             public string ExistingBcInvoiceID { get; set; }
+            public string ExistingBcSalesOrderID { get; set; }  // BC sales order id, set after a previous successful CreateSalesOrderAsync
         }
 
         private sealed class LineRow
