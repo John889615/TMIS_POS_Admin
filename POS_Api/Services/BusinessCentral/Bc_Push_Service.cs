@@ -156,14 +156,33 @@ namespace POS_Api.Services.BusinessCentral
                     }
                 }
 
-                // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
-                var bcInvoiceId = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
+                string stampedId;
+                if (settings.AutoPost)
+                {
+                    // 5. Ship + invoice (atomic action; BC creates Posted Sales Invoice + Posted Sales Shipment)
+                    stampedId = await ShipAndInvoiceAsync(client, companyUrl, orderId, token);
+                }
+                else
+                {
+                    // BYPASS MODE: leave the order Open in BC. Stock does NOT
+                    // decrement. Posted invoice does NOT exist. The operator
+                    // must post the order manually in BC after fixing the
+                    // General/VAT Posting Setup. We stamp the order id with
+                    // an "ORDER:" prefix so the extension table marks the
+                    // row as pushed (sweep won't recreate) and the prefix
+                    // makes it visually distinct from a real posted-invoice id.
+                    stampedId = "ORDER:" + orderId;
+                    _logger.LogWarning(
+                        "BC AutoPost disabled - order {OrderId} created OPEN. Stock NOT deducted. " +
+                        "Operator must post manually in BC after fixing posting-setup config.",
+                        orderId);
+                }
 
                 // Step 6: stamp success
-                await StampResultAsync(invoiceHeaderId, success: true, bcInvoiceId: bcInvoiceId, errorMessage: null);
+                await StampResultAsync(invoiceHeaderId, success: true, bcInvoiceId: stampedId, errorMessage: null);
 
                 result.Pushed       = true;
-                result.BC_InvoiceID = bcInvoiceId;
+                result.BC_InvoiceID = stampedId;
                 return ApiResponse.Success(result);
             }
             catch (Exception ex)
