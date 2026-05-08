@@ -18,16 +18,17 @@ GO
 --   Guid1   TabLineID              Bool1   IsVoided
 --   Guid2   FK_TabID               Bool2   ServedAsQuantified
 --   Guid3   FK_PointerID           Date1   DateCreated
---   Int2    FK_ProductID           Date2   DateUpdated
---   Int3    FK_PriceCodeID         Decimal1 UnitCostExcl
---   Int5    FK_MenuID              Decimal2 Vat
---   String1 Product (50)           Decimal3 UnitCostIncl
---   String2 Notes (MAX)            Decimal4 Quantity
---   String3 AutoNotes (MAX)        Decimal5 Discount
---   String4 ServedAs (50)          Decimal6 ServedAsQuantity
---   String5 MenuName (100)         Decimal7 DiscountPerc
---   String6 CreatedBy (255)        Decimal8 Gratuity
---   String7 SyncStatus (50)        Decimal9 GratuityPerc
+--   Int1    FK_CostCenterID        Date2   DateUpdated
+--   Int2    FK_ProductID           Decimal1 UnitCostExcl
+--   Int3    FK_PriceCodeID         Decimal2 Vat
+--   Int5    FK_MenuID              Decimal3 UnitCostIncl
+--   String1 Product (50)           Decimal4 Quantity
+--   String2 Notes (MAX)            Decimal5 Discount
+--   String3 AutoNotes (MAX)        Decimal6 ServedAsQuantity
+--   String4 ServedAs (50)          Decimal7 DiscountPerc
+--   String5 MenuName (100)         Decimal8 Gratuity
+--   String6 CreatedBy (255)        Decimal9 GratuityPerc
+--   String7 SyncStatus (50)
 -- =============================================================
 CREATE PROCEDURE dbo.BulkUpsertToServer_TabLines
     @Rows dbo.BulkInsertToServer READONLY
@@ -47,6 +48,7 @@ BEGIN
                 CAST(String6 AS VARCHAR(255)) AS CreatedBy,
                 Int2  AS FK_ProductID,
                 Int3  AS FK_PriceCodeID,
+                Int1  AS FK_CostCenterID,
                 Guid3 AS FK_PointerID,
                 Decimal1 AS UnitCostExcl,
                 Decimal2 AS Vat,
@@ -132,6 +134,7 @@ BEGIN
         ;WITH UpsertSrc AS
         (
             SELECT TabLineID, FK_TabID, CreatedBy, FK_ProductID, FK_PriceCodeID,
+                   FK_CostCenterID,
                    FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product,
                    Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes,
                    DateCreated, DateUpdated, ServedAs, ServedAsQuantified,
@@ -148,6 +151,7 @@ BEGIN
                 T.CreatedBy           = S.CreatedBy,
                 T.FK_ProductID        = S.FK_ProductID,
                 T.FK_PriceCodeID      = S.FK_PriceCodeID,
+                T.FK_CostCenterID     = S.FK_CostCenterID,
                 T.FK_PointerID        = S.FK_PointerID,
                 T.UnitCostExcl        = S.UnitCostExcl,
                 T.Vat                 = S.Vat,
@@ -170,11 +174,13 @@ BEGIN
                 T.GratuityPerc        = S.GratuityPerc
         WHEN NOT MATCHED BY TARGET THEN
             INSERT (TabLineID, FK_TabID, CreatedBy, FK_ProductID, FK_PriceCodeID,
+                    FK_CostCenterID,
                     FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product,
                     Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes,
                     DateCreated, DateUpdated, ServedAs, ServedAsQuantified,
                     ServedAsQuantity, FK_MenuID, MenuName, Gratuity, GratuityPerc)
             VALUES (S.TabLineID, S.FK_TabID, S.CreatedBy, S.FK_ProductID, S.FK_PriceCodeID,
+                    S.FK_CostCenterID,
                     S.FK_PointerID, S.UnitCostExcl, S.Vat, S.UnitCostIncl, S.Product,
                     S.Quantity, S.Discount, S.DiscountPerc, S.IsVoided, S.Notes, S.AutoNotes,
                     S.DateCreated, S.DateUpdated, S.ServedAs, S.ServedAsQuantified,

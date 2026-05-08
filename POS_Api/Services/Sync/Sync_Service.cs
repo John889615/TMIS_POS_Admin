@@ -2345,10 +2345,12 @@ namespace POS_Api.Services.Sync
                 {
                     // Slot mapping aligns with BulkUpsertToServer_TabLines (Spec 2).
                     // DiscountPerc moved INT -> Decimal slot. New: Gratuity, GratuityPerc.
+                    // 2026-05-08: Int1 carries FK_CostCenterID.
                     var row = tvp.NewRow();
                     row["Guid1"] = ToDb(item.TabLineID);
                     row["Guid2"] = ToDb(item.FK_TabID);
                     row["Guid3"] = ToDb(item.FK_PointerID);
+                    row["Int1"] = ToDb(item.FK_CostCenterID);
                     row["Int2"] = ToDb(item.FK_ProductID);
                     row["Int3"] = ToDb(item.FK_PriceCodeID);
                     row["Int5"] = ToDb(item.FK_MenuID);

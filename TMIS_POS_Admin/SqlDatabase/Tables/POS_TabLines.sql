@@ -46,6 +46,13 @@ CREATE TABLE POS_TabLines
 	Gratuity DECIMAL(18, 4) NULL,
 	GratuityPerc DECIMAL(18, 4) NULL,
 
+	-- 2026-05-08: per-line cost centre, mirrors FOH TabLines.FK_CostCenterID.
+	FK_CostCenterID INT NULL FOREIGN KEY REFERENCES POS_CostCenters (CostCenterID),
+
 	DateCreated DATETIME NOT NULL,
 	DateUpdated DATETIME NOT NULL
 )
+GO
+
+CREATE INDEX IX_POS_TabLines_FK_CostCenterID
+    ON POS_TabLines (FK_CostCenterID)

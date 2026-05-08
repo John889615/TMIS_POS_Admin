@@ -273,6 +273,9 @@ namespace POS_Common.ModelsDto.SyncController.FromServer
         // Per Spec 1: new gratuity fields.
         public decimal? Gratuity { get; set; }
         public decimal? GratuityPerc { get; set; }
+        // 2026-05-08: per-line cost centre carried from FOH so the BC push
+        // can attribute stock movement to the right cost centre.
+        public int? FK_CostCenterID { get; set; }
         public string SyncStatus { get; set; }
     }
 
