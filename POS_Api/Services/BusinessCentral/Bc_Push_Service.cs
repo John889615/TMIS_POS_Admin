@@ -181,22 +181,32 @@ namespace POS_Api.Services.BusinessCentral
                     // 4. Add each line (locationId = BC Location GUID).
                     // Wrap each line POST so a BC failure surfaces which product
                     // it choked on (its name + DB ProductID + BC item GUID).
+                    // Per-line locationId comes from the cost-centre chain
+                    // resolved by the SP (header location is used as the
+                    // fallback for legacy lines without FK_CostCenterID).
                     currentStage = "AddLine";
                     foreach (var line in lines)
                     {
+                        var lineLocationBcId = !string.IsNullOrWhiteSpace(line.LineLocationBcId)
+                            ? line.LineLocationBcId
+                            : header.LocationBcId;
+
                         _logger.LogInformation(
-                            "BC push: invoice {Invoice} line {LineId} product '{Product}' (ProductID={ProductID}, BC_ID={BcId}) qty={Qty}",
-                            invoiceHeaderId, line.InvoiceLineID, line.ProductName, line.FK_ProductID, line.ProductBcId, line.Quantity);
+                            "BC push: invoice {Invoice} line {LineId} product '{Product}' (ProductID={ProductID}, BC_ID={BcId}) qty={Qty} location={LocationBcId} (CostCenterID={CostCenter}, LocationID={LocationId})",
+                            invoiceHeaderId, line.InvoiceLineID, line.ProductName, line.FK_ProductID,
+                            line.ProductBcId, line.Quantity, lineLocationBcId,
+                            line.LineCostCenterID, line.LineLocationID);
 
                         try
                         {
-                            await AddSalesOrderLineAsync(client, companyUrl, orderId, header.LocationBcId, line, token);
+                            await AddSalesOrderLineAsync(client, companyUrl, orderId, lineLocationBcId, line, token);
                         }
                         catch (Exception ex)
                         {
                             throw new Exception(
                                 $"Line failed for product '{line.ProductName}' " +
-                                $"(ProductID={line.FK_ProductID}, BC_ID={line.ProductBcId}): {ex.Message}", ex);
+                                $"(ProductID={line.FK_ProductID}, BC_ID={line.ProductBcId}, " +
+                                $"LocationBC_ID={lineLocationBcId}): {ex.Message}", ex);
                         }
                     }
                 }
@@ -540,14 +550,17 @@ namespace POS_Api.Services.BusinessCentral
                 {
                     lines.Add(new LineRow
                     {
-                        InvoiceLineID = (Guid)reader["InvoiceLineID"],
-                        FK_ProductID  = reader["FK_ProductID"]  as int?,
-                        ProductName   = reader["ProductName"]   as string,
-                        ProductBcId   = reader["ProductBcId"]   as string,
-                        Quantity      = reader["Quantity"]      as decimal?,
-                        LineDiscount  = reader["LineDiscount"]  as decimal?,
-                        LineTotalExcl = reader["LineTotalExcl"] as decimal?,
-                        LineTotalIncl = reader["LineTotalIncl"] as decimal?,
+                        InvoiceLineID    = (Guid)reader["InvoiceLineID"],
+                        FK_ProductID     = reader["FK_ProductID"]     as int?,
+                        ProductName      = reader["ProductName"]      as string,
+                        ProductBcId      = reader["ProductBcId"]      as string,
+                        Quantity         = reader["Quantity"]         as decimal?,
+                        LineDiscount     = reader["LineDiscount"]     as decimal?,
+                        LineTotalExcl    = reader["LineTotalExcl"]    as decimal?,
+                        LineTotalIncl    = reader["LineTotalIncl"]    as decimal?,
+                        LineLocationBcId = reader["LineLocationBcId"] as string,
+                        LineCostCenterID = reader["LineCostCenterID"] as int?,
+                        LineLocationID   = reader["LineLocationID"]   as int?,
                     });
                 }
             }
@@ -646,6 +659,15 @@ namespace POS_Api.Services.BusinessCentral
             public decimal? LineDiscount { get; set; }
             public decimal? LineTotalExcl { get; set; }
             public decimal? LineTotalIncl { get; set; }
+
+            // Per-line BC location GUID resolved by the SP through the
+            // chain InvoiceLine -> TabLine.FK_CostCenterID ->
+            // POS_CostCenters.FK_LocationID -> POS_Locations.BC_ID,
+            // with COALESCE fallback to the header location's BC_ID
+            // for legacy lines that have no cost centre on file.
+            public string LineLocationBcId { get; set; }
+            public int? LineCostCenterID { get; set; }
+            public int? LineLocationID { get; set; }
         }
     }
 }
