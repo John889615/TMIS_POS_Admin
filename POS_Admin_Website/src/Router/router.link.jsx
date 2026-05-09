@@ -267,6 +267,7 @@ import CostCenterProduct from "../feature-module/stock/costCenterProduct";
 import PriceCodePage from "../feature-module/stock/priceCode";
 import DebtorProductPagePage from "../feature-module/stock/debtorProductPrice";
 import BcSyncPage from "../feature-module/Sync/bcSync";
+import BcInvoicingPage from "../feature-module/Sync/bcInvoicing";
 import ServedAsProduct from "../feature-module/Products/servedAsProduct.jsx";
 
 export const publicRoutes = [
@@ -1929,6 +1930,13 @@ export const publicRoutes = [
     path: routes.BcSyncPage,
     name: "bcSyncPage",
     element: <BcSyncPage />,
+    route: Route,
+  },
+  {
+    id: 168,
+    path: routes.BcInvoicingPage,
+    name: "bcInvoicingPage",
+    element: <BcInvoicingPage />,
     route: Route,
   },
   {

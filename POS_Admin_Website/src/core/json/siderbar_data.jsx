@@ -15,6 +15,12 @@ export const SidebarData = [
         icon: <Icon.Tag />,
         showSubRoute: false,
       },
+      {
+        label: "BC Invoicing",
+        link: "/BcInvoicingPage",
+        icon: <Icon.FileText />,
+        showSubRoute: false,
+      },
     ],
   },
   {
