@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_StockRequests_insert
     @ManagerNotes VARCHAR(255) = NULL,
     @Notes VARCHAR(MAX) = NULL,
     @DateOrdered DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @FK_ApprovedByUserID INT = NULL,
     @DateApproved DATETIME = NULL
 AS

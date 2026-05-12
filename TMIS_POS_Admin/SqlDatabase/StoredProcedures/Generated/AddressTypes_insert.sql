@@ -11,14 +11,16 @@ CREATE PROCEDURE dbo.AddressTypes_insert
     @IsRequired BIT,
     @CanEdit BIT,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (AddressTypeID INT);
 
-    INSERT INTO AddressTypes (FK_EntityID, [Type], IsRequired, CanEdit, DateCreated, DateUpdated)
+    INSERT INTO AddressTypes (FK_EntityID, [Type], IsRequired, CanEdit, DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.AddressTypeID INTO @Inserted
-    VALUES (@FK_EntityID, @Type, @IsRequired, @CanEdit, @DateCreated, @DateUpdated);
+    VALUES (@FK_EntityID, @Type, @IsRequired, @CanEdit, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM AddressTypes

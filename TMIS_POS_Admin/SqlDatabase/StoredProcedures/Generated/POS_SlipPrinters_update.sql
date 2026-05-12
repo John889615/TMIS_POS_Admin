@@ -19,7 +19,7 @@ CREATE PROCEDURE dbo.POS_SlipPrinters_update
     @FK_CreatedUserID INT,
     @FK_UpdatedUserID INT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @AutoCut BIT = NULL
 AS
 BEGIN

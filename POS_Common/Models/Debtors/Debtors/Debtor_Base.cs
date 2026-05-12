@@ -25,6 +25,10 @@ namespace POS_Common.Models.Debtors.Debtors
       public DateTime? DateUpdated { get; set; }
 
       public string BC_ID { get; set; }
+
+      public int? FK_CreatedUserID { get; set; }
+
+      public int? FK_UpdatedUserID { get; set; }
        #endregion
   }
 }

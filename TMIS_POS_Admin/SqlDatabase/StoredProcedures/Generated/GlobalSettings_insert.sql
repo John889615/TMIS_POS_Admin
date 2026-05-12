@@ -10,7 +10,7 @@ CREATE PROCEDURE dbo.GlobalSettings_insert
     @Value VARCHAR(255),
     @Environment VARCHAR(40),
     @FK_CreatedUserID INT,
-    @FK_UpdatedUserID INT,
+    @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
     @DateUpdated DATETIME = NULL
 AS

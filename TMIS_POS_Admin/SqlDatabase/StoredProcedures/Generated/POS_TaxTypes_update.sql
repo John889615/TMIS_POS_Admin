@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_TaxTypes_update
     @ValidTo DATETIME = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_TaxTypes

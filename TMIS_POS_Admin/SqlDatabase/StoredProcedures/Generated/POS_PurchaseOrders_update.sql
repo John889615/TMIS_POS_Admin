@@ -17,7 +17,7 @@ CREATE PROCEDURE dbo.POS_PurchaseOrders_update
     @Notes VARCHAR(MAX) = NULL,
     @ManagerNotes VARCHAR(MAX) = NULL,
     @DateOrdered DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_PurchaseOrders

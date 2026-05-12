@@ -59,6 +59,8 @@ namespace POS_Common.Models.Sync.POS_TabLines
       public decimal? Gratuity { get; set; }
 
       public decimal? GratuityPerc { get; set; }
+
+      public int? FK_CostCenterID { get; set; }
        #endregion
   }
 }

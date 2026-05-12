@@ -16,7 +16,7 @@ CREATE PROCEDURE dbo.POS_DebtorMenus_update
     @ValidTo DATETIME = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_DebtorMenus

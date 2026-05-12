@@ -10,12 +10,16 @@ CREATE PROCEDURE dbo.Entities_update
     @EntityID INT,
     @Name VARCHAR(255),
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE Entities
     SET     [Name] = @Name,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE EntityID = @EntityID;
 
     SELECT *

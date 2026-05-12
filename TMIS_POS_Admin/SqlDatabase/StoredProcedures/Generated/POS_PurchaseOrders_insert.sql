@@ -15,7 +15,7 @@ CREATE PROCEDURE dbo.POS_PurchaseOrders_insert
     @Notes VARCHAR(MAX) = NULL,
     @ManagerNotes VARCHAR(MAX) = NULL,
     @DateOrdered DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (PurchaseOrderID INT);

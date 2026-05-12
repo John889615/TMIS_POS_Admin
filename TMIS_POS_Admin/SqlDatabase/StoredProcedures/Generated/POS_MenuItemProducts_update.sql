@@ -12,7 +12,7 @@ CREATE PROCEDURE dbo.POS_MenuItemProducts_update
     @FK_ProductID INT,
     @DateCreated DATETIME,
     @FK_CreatedUserID INT,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @FK_UpdatedUserID INT,
     @DisplayOrder INT
 AS

@@ -22,7 +22,7 @@ CREATE PROCEDURE dbo.POS_SupplierProducts_insert
     @IsPreferred INT,
     @IsActive BIT,
     @DateAdded DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (SupplierProductID INT);

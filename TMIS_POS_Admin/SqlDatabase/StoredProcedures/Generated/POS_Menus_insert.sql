@@ -9,7 +9,7 @@ CREATE PROCEDURE dbo.POS_Menus_insert
     @MenuName VARCHAR(50),
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (MenuID INT);

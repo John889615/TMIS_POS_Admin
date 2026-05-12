@@ -14,7 +14,15 @@ namespace POS_Common.Models.EntityData.CountryRegions
 
       public string Region { get; set; }
 
-      public int? FK_ContinentID { get; set; }
+      public int? FK_CreatedUserID { get; set; }
+
+      public int? FK_UpdatedUserID { get; set; }
+
+      public DateTime? DateCreated { get; set; }
+
+      public DateTime? DateUpdated { get; set; }
+
+      public int? FK_CountryID { get; set; }
        #endregion
   }
 }

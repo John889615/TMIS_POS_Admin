@@ -18,7 +18,7 @@ CREATE PROCEDURE dbo.POS_ProductExtras_update
     @FK_CreatedUserID INT,
     @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_ProductExtras

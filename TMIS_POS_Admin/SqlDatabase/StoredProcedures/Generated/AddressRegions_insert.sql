@@ -11,14 +11,16 @@ CREATE PROCEDURE dbo.AddressRegions_insert
     @FK_CountryID INT = NULL,
     @FK_ProvinceID INT = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (AddressRegionID INT);
 
-    INSERT INTO AddressRegions (RegionName, Description, FK_CountryID, FK_ProvinceID, DateCreated, DateUpdated)
+    INSERT INTO AddressRegions (RegionName, Description, FK_CountryID, FK_ProvinceID, DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.AddressRegionID INTO @Inserted
-    VALUES (@RegionName, @Description, @FK_CountryID, @FK_ProvinceID, @DateCreated, @DateUpdated);
+    VALUES (@RegionName, @Description, @FK_CountryID, @FK_ProvinceID, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM AddressRegions

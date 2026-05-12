@@ -17,14 +17,16 @@ CREATE PROCEDURE dbo.Addresses_insert
     @Longitude DECIMAL (18, 4) = NULL,
     @Notes NVARCHAR(1000) = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (AddressID INT);
 
-    INSERT INTO Addresses (FK_CountryID, FK_ProvinceID, FK_AddressRegionID, StreetAddress, Locality, PostalCode, Landmark, Latitude, Longitude, Notes, DateCreated, DateUpdated)
+    INSERT INTO Addresses (FK_CountryID, FK_ProvinceID, FK_AddressRegionID, StreetAddress, Locality, PostalCode, Landmark, Latitude, Longitude, Notes, DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.AddressID INTO @Inserted
-    VALUES (@FK_CountryID, @FK_ProvinceID, @FK_AddressRegionID, @StreetAddress, @Locality, @PostalCode, @Landmark, @Latitude, @Longitude, @Notes, @DateCreated, @DateUpdated);
+    VALUES (@FK_CountryID, @FK_ProvinceID, @FK_AddressRegionID, @StreetAddress, @Locality, @PostalCode, @Landmark, @Latitude, @Longitude, @Notes, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM Addresses

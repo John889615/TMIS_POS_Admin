@@ -20,7 +20,7 @@ CREATE PROCEDURE dbo.POS_Products_insert
     @QrCode VARCHAR(255) = NULL,
     @IsActive BIT,
     @DateAdded DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (ProductID INT);

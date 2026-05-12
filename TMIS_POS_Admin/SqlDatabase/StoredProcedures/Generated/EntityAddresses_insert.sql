@@ -14,14 +14,16 @@ CREATE PROCEDURE dbo.EntityAddresses_insert
     @ValidFrom DATE = NULL,
     @ValidTo DATE = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (EntityAddressID INT);
 
-    INSERT INTO EntityAddresses (FK_EntityID, EntityRecordID, FK_AddressID, FK_AddressTypeID, IsPrimary, ValidFrom, ValidTo, DateCreated, DateUpdated)
+    INSERT INTO EntityAddresses (FK_EntityID, EntityRecordID, FK_AddressID, FK_AddressTypeID, IsPrimary, ValidFrom, ValidTo, DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.EntityAddressID INTO @Inserted
-    VALUES (@FK_EntityID, @EntityRecordID, @FK_AddressID, @FK_AddressTypeID, @IsPrimary, @ValidFrom, @ValidTo, @DateCreated, @DateUpdated);
+    VALUES (@FK_EntityID, @EntityRecordID, @FK_AddressID, @FK_AddressTypeID, @IsPrimary, @ValidFrom, @ValidTo, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM EntityAddresses

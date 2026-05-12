@@ -55,7 +55,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             AutoCut = row["AutoCut"].GetType() != typeof(DBNull) ? (bool?)row["AutoCut"] : null,
          };
       }
@@ -199,7 +199,7 @@ namespace POS_Api.Translators
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             IsFinalised = (bool?)row["IsFinalised"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -216,7 +216,7 @@ namespace POS_Api.Translators
             VarianceAmount = row["VarianceAmount"].GetType() != typeof(DBNull) ? (decimal?)row["VarianceAmount"] : null,
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -284,7 +284,7 @@ namespace POS_Api.Translators
             FK_TabLineID = (Guid?)row["FK_TabLineID"],
             FK_GuestID = (int?)row["FK_GuestID"],
             Note = row["Note"].GetType() != typeof(DBNull) ? (string)row["Note"] : null,
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -322,7 +322,7 @@ namespace POS_Api.Translators
             AutoNotes = row["AutoNotes"].GetType() != typeof(DBNull) ? (string)row["AutoNotes"] : null,
             CreatedBy = (string)row["CreatedBy"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             ServedAs = row["ServedAs"].GetType() != typeof(DBNull) ? (string)row["ServedAs"] : null,
             ServedAsQuantified = row["ServedAsQuantified"].GetType() != typeof(DBNull) ? (bool?)row["ServedAsQuantified"] : null,
             ServedAsQuantity = row["ServedAsQuantity"].GetType() != typeof(DBNull) ? (decimal?)row["ServedAsQuantity"] : null,
@@ -330,6 +330,7 @@ namespace POS_Api.Translators
             MenuName = row["MenuName"].GetType() != typeof(DBNull) ? (string)row["MenuName"] : null,
             Gratuity = row["Gratuity"].GetType() != typeof(DBNull) ? (decimal?)row["Gratuity"] : null,
             GratuityPerc = row["GratuityPerc"].GetType() != typeof(DBNull) ? (decimal?)row["GratuityPerc"] : null,
+            FK_CostCenterID = row["FK_CostCenterID"].GetType() != typeof(DBNull) ? (int?)row["FK_CostCenterID"] : null,
          };
       }
 
@@ -375,7 +376,7 @@ namespace POS_Api.Translators
             AdditionalInfo = row["AdditionalInfo"].GetType() != typeof(DBNull) ? (string)row["AdditionalInfo"] : null,
             CreatedBy = (string)row["CreatedBy"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             TableNumber = row["TableNumber"].GetType() != typeof(DBNull) ? (int?)row["TableNumber"] : null,
          };
       }
@@ -391,7 +392,7 @@ namespace POS_Api.Translators
             VoidedBy = (string)row["VoidedBy"],
             Note = row["Note"].GetType() != typeof(DBNull) ? (string)row["Note"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 

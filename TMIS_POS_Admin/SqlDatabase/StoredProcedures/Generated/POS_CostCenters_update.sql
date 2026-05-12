@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_CostCenters_update
     @FK_StatusID INT,
     @FK_CostCenterTypeID INT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @BC_ID VARCHAR(255) = NULL
 AS
 BEGIN

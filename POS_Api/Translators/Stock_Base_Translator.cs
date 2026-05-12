@@ -23,6 +23,7 @@ using POS_Common.Models.Stock.POS_CostCenterProductPriceHistory;
 using POS_Common.Models.Stock.POS_PriceCodes;
 using POS_Common.Models.Stock.POS_DebtorProductPrices;
 using POS_Common.Models.Stock.POS_OrderStatus;
+using POS_Common.Models.Stock.POS_DocumentSequences;
 using POS_Common.Models.Stock.Custom.StockRequestSelectAllStockRequest;
 using POS_Common.Models.Stock.Custom.StockRequestSelectSingleNumber;
 using POS_Common.Models.Stock.Custom.StockRequestLinesSelectAllStockRequestLines;
@@ -48,7 +49,7 @@ namespace POS_Api.Translators
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             ManagerNotes = row["ManagerNotes"].GetType() != typeof(DBNull) ? (string)row["ManagerNotes"] : null,
             DateOrdered = (DateTime?)row["DateOrdered"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -121,7 +122,7 @@ namespace POS_Api.Translators
             ManagerNotes = row["ManagerNotes"].GetType() != typeof(DBNull) ? (string)row["ManagerNotes"] : null,
             Notes = row["Notes"].GetType() != typeof(DBNull) ? (string)row["Notes"] : null,
             DateOrdered = (DateTime?)row["DateOrdered"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_ApprovedByUserID = row["FK_ApprovedByUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_ApprovedByUserID"] : null,
             DateApproved = row["DateApproved"].GetType() != typeof(DBNull) ? (DateTime?)row["DateApproved"] : null,
          };
@@ -217,7 +218,7 @@ namespace POS_Api.Translators
             IsPreferred = (int?)row["IsPreferred"],
             IsActive = (bool?)row["IsActive"],
             DateAdded = (DateTime?)row["DateAdded"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -316,7 +317,7 @@ namespace POS_Api.Translators
             Description = row["Description"].GetType() != typeof(DBNull) ? (string)row["Description"] : null,
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -336,7 +337,7 @@ namespace POS_Api.Translators
             EndDate = row["EndDate"].GetType() != typeof(DBNull) ? (DateTime?)row["EndDate"] : null,
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_DefaultUnitID = row["FK_DefaultUnitID"].GetType() != typeof(DBNull) ? (int?)row["FK_DefaultUnitID"] : null,
          };
       }
@@ -348,6 +349,21 @@ namespace POS_Api.Translators
          {
             OrderStatusID = (int?)row["OrderStatusID"],
             OrderStatus = (string)row["OrderStatus"],
+         };
+      }
+
+       
+      internal static DocumentSequence Translate_DocumentSequence(IDataRecord row)
+      {
+         return new DocumentSequence()
+         {
+            DocumentSequenceID = (int?)row["DocumentSequenceID"],
+            DocumentType = (string)row["DocumentType"],
+            Prefix = (string)row["Prefix"],
+            PadLength = (int?)row["PadLength"],
+            NextNumber = (long?)row["NextNumber"],
+            DateCreated = (DateTime?)row["DateCreated"],
+            DateUpdated = (DateTime?)row["DateUpdated"],
          };
       }
 

@@ -17,14 +17,16 @@ CREATE PROCEDURE dbo.EntityContacts_insert
     @ValidFrom DATE = NULL,
     @ValidTo DATE = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (EntityContactID INT);
 
-    INSERT INTO EntityContacts (FK_EntityID, EntityRecordID, FK_ContactID, IsPrimary, IsMarketing, IsEmergency, PreferredContactTime, PreferredLanguageCode, ValidFrom, ValidTo, DateCreated, DateUpdated)
+    INSERT INTO EntityContacts (FK_EntityID, EntityRecordID, FK_ContactID, IsPrimary, IsMarketing, IsEmergency, PreferredContactTime, PreferredLanguageCode, ValidFrom, ValidTo, DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.EntityContactID INTO @Inserted
-    VALUES (@FK_EntityID, @EntityRecordID, @FK_ContactID, @IsPrimary, @IsMarketing, @IsEmergency, @PreferredContactTime, @PreferredLanguageCode, @ValidFrom, @ValidTo, @DateCreated, @DateUpdated);
+    VALUES (@FK_EntityID, @EntityRecordID, @FK_ContactID, @IsPrimary, @IsMarketing, @IsEmergency, @PreferredContactTime, @PreferredLanguageCode, @ValidFrom, @ValidTo, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM EntityContacts

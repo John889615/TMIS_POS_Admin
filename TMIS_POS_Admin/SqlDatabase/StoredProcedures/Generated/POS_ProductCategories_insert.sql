@@ -12,7 +12,7 @@ CREATE PROCEDURE dbo.POS_ProductCategories_insert
     @IsMaster BIT,
     @IsActive BIT,
     @DateAdded DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (ProductCategoryID INT);

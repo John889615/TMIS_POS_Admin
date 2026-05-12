@@ -10,7 +10,7 @@ CREATE PROCEDURE dbo.POS_CostCenterTypes_update
     @CostCenterTypeID INT,
     @Name VARCHAR(50),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_CostCenterTypes

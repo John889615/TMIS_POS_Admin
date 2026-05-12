@@ -10,15 +10,6 @@ namespace POS_Common.Models.Debtors.DebtorTypes
   {
        #region Properties
        
-      public int? DebtorTypeID { get; set; }
-
-      public string Type { get; set; }
-
-      public string Description { get; set; }
-
-      public DateTime? DateCreated { get; set; }
-
-      public DateTime? DateUpdated { get; set; }
        #endregion
   }
 }

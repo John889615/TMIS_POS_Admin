@@ -30,11 +30,15 @@ namespace POS_Common.Models.EntityData.Countries
 
       public int? FK_CurrencyID { get; set; }
 
-      public int? FK_CountryRegionID { get; set; }
+      public int? FK_ContinentID { get; set; }
 
-      public int? FK_CountrySubregionID { get; set; }
+      public int? FK_CreatedUserID { get; set; }
 
-      public int? FK_TimeZoneID { get; set; }
+      public int? FK_UpdatedUserID { get; set; }
+
+      public DateTime? DateCreated { get; set; }
+
+      public DateTime? DateUpdated { get; set; }
        #endregion
   }
 }

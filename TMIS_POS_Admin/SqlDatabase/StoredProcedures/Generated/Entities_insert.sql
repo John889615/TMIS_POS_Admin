@@ -8,14 +8,16 @@ GO
 CREATE PROCEDURE dbo.Entities_insert
     @Name VARCHAR(255),
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (EntityID INT);
 
-    INSERT INTO Entities ([Name], DateCreated, DateUpdated)
+    INSERT INTO Entities ([Name], DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.EntityID INTO @Inserted
-    VALUES (@Name, @DateCreated, @DateUpdated);
+    VALUES (@Name, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM Entities

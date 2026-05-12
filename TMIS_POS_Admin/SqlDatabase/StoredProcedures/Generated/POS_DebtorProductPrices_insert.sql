@@ -16,7 +16,7 @@ CREATE PROCEDURE dbo.POS_DebtorProductPrices_insert
     @EndDate DATETIME = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @FK_DefaultUnitID INT = NULL
 AS
 BEGIN

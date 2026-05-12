@@ -13,7 +13,7 @@ CREATE PROCEDURE dbo.POS_DebtorMenuPrinters_update
     @FK_CreatedUserID INT,
     @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @FK_OrderSlipTypeID INT = NULL
 AS
 BEGIN

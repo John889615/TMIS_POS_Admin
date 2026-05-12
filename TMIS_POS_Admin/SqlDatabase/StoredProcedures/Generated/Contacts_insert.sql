@@ -14,14 +14,16 @@ CREATE PROCEDURE dbo.Contacts_insert
     @VerifiedAt DATETIME = NULL,
     @Notes NVARCHAR(500) = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (ContactID INT);
 
-    INSERT INTO Contacts (ContactValue, FK_ContactTypeID, FK_DialingCodeID, IsVerified, VerificationToken, VerifiedAt, Notes, DateCreated, DateUpdated)
+    INSERT INTO Contacts (ContactValue, FK_ContactTypeID, FK_DialingCodeID, IsVerified, VerificationToken, VerifiedAt, Notes, DateCreated, DateUpdated, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.ContactID INTO @Inserted
-    VALUES (@ContactValue, @FK_ContactTypeID, @FK_DialingCodeID, @IsVerified, @VerificationToken, @VerifiedAt, @Notes, @DateCreated, @DateUpdated);
+    VALUES (@ContactValue, @FK_ContactTypeID, @FK_DialingCodeID, @IsVerified, @VerificationToken, @VerifiedAt, @Notes, @DateCreated, @DateUpdated, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM Contacts

@@ -5,11 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using POS_Common.Models.Debtors.Branches;
-using POS_Common.Models.Debtors.Debtors;
-using POS_Common.Models.Debtors.DebtorTypeMappings;
-using POS_Common.Models.Debtors.DebtorTypes;
-using POS_Common.Models.Debtors.Departments;
 using POS_Common.Models.Debtors.POS_CostCenters;
 using POS_Common.Models.Debtors.POS_CostCenterTypes;
 using POS_Common.Models.Debtors.POS_Locations;
@@ -22,79 +17,6 @@ namespace POS_Api.Translators
    {
        #region Translators
        
-      internal static Branch Translate_Branch(IDataRecord row)
-      {
-         return new Branch()
-         {
-            BranchID = (int?)row["BranchID"],
-            ShortCode = (string)row["ShortCode"],
-            Name = (string)row["Name"],
-            FK_StatusID = (int?)row["FK_StatusID"],
-            DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
-         };
-      }
-
-       
-      internal static Debtor Translate_Debtor(IDataRecord row)
-      {
-         return new Debtor()
-         {
-            DebtorID = (int?)row["DebtorID"],
-            ShortCode = (string)row["ShortCode"],
-            Name = (string)row["Name"],
-            FK_MasterDebtorID = row["FK_MasterDebtorID"].GetType() != typeof(DBNull) ? (int?)row["FK_MasterDebtorID"] : null,
-            IsMasterDebtor = (bool?)row["IsMasterDebtor"],
-            DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
-            BC_ID = row["BC_ID"].GetType() != typeof(DBNull) ? (string)row["BC_ID"] : null,
-         };
-      }
-
-       
-      internal static DebtorTypeMapping Translate_DebtorTypeMapping(IDataRecord row)
-      {
-         return new DebtorTypeMapping()
-         {
-            DebtorTypeMappingID = (int?)row["DebtorTypeMappingID"],
-            FK_DebtorID = (int?)row["FK_DebtorID"],
-            FK_DebtorTypeID = (int?)row["FK_DebtorTypeID"],
-            FK_StatusID = (int?)row["FK_StatusID"],
-            FK_BranchID = row["FK_BranchID"].GetType() != typeof(DBNull) ? (int?)row["FK_BranchID"] : null,
-            FK_DepartmentID = row["FK_DepartmentID"].GetType() != typeof(DBNull) ? (int?)row["FK_DepartmentID"] : null,
-            DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
-         };
-      }
-
-       
-      internal static DebtorType Translate_DebtorType(IDataRecord row)
-      {
-         return new DebtorType()
-         {
-            DebtorTypeID = (int?)row["DebtorTypeID"],
-            Type = (string)row["Type"],
-            Description = (string)row["Description"],
-            DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
-         };
-      }
-
-       
-      internal static Department Translate_Department(IDataRecord row)
-      {
-         return new Department()
-         {
-            DepartmentID = (int?)row["DepartmentID"],
-            ShortCode = (string)row["ShortCode"],
-            Name = (string)row["Name"],
-            FK_StatusID = (int?)row["FK_StatusID"],
-            DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
-         };
-      }
-
-       
       internal static CostCenter Translate_CostCenter(IDataRecord row)
       {
          return new CostCenter()
@@ -106,7 +28,7 @@ namespace POS_Api.Translators
             FK_StatusID = (int?)row["FK_StatusID"],
             FK_CostCenterTypeID = (int?)row["FK_CostCenterTypeID"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             BC_ID = row["BC_ID"].GetType() != typeof(DBNull) ? (string)row["BC_ID"] : null,
          };
       }
@@ -119,7 +41,7 @@ namespace POS_Api.Translators
             CostCenterTypeID = (int?)row["CostCenterTypeID"],
             Name = (string)row["Name"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -136,7 +58,7 @@ namespace POS_Api.Translators
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
             ContactEmail = row["ContactEmail"].GetType() != typeof(DBNull) ? (string)row["ContactEmail"] : null,
             SupportEmail = row["SupportEmail"].GetType() != typeof(DBNull) ? (string)row["SupportEmail"] : null,
@@ -156,7 +78,7 @@ namespace POS_Api.Translators
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
          };
       }
@@ -172,7 +94,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_InvoiceSlipTypeID = row["FK_InvoiceSlipTypeID"].GetType() != typeof(DBNull) ? (int?)row["FK_InvoiceSlipTypeID"] : null,
             FK_TabSlipTypeID = row["FK_TabSlipTypeID"].GetType() != typeof(DBNull) ? (int?)row["FK_TabSlipTypeID"] : null,
          };

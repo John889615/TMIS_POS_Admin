@@ -15,7 +15,7 @@ CREATE PROCEDURE dbo.POS_PaymentTypes_insert
     @RequireAdditionalInfo BIT,
     @RequireElevation BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (PaymentTypeID INT);

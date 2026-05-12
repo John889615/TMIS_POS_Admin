@@ -18,7 +18,7 @@ CREATE PROCEDURE dbo.POS_CashUpHeaders_update
     @Notes VARCHAR(MAX) = NULL,
     @IsFinalised BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_CashUpHeaders

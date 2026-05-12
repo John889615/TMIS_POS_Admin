@@ -13,7 +13,9 @@ CREATE PROCEDURE dbo.AddressRegions_update
     @FK_CountryID INT = NULL,
     @FK_ProvinceID INT = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE AddressRegions
@@ -21,7 +23,9 @@ BEGIN
     Description = @Description,
     FK_CountryID = @FK_CountryID,
     FK_ProvinceID = @FK_ProvinceID,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE AddressRegionID = @AddressRegionID;
 
     SELECT *

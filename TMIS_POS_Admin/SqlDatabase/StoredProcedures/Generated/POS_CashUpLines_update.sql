@@ -15,7 +15,7 @@ CREATE PROCEDURE dbo.POS_CashUpLines_update
     @VarianceAmount DECIMAL (18, 4) = NULL,
     @Notes VARCHAR(MAX) = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_CashUpLines

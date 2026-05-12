@@ -30,7 +30,7 @@ namespace POS_Api.Translators
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
             DisplayOrder = (int?)row["DisplayOrder"],
          };
@@ -49,7 +49,7 @@ namespace POS_Api.Translators
             FK_ReferenceInsertID = row["FK_ReferenceInsertID"].GetType() != typeof(DBNull) ? (int?)row["FK_ReferenceInsertID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
          };
       }
@@ -68,7 +68,7 @@ namespace POS_Api.Translators
             ValidTo = row["ValidTo"].GetType() != typeof(DBNull) ? (DateTime?)row["ValidTo"] : null,
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -82,7 +82,7 @@ namespace POS_Api.Translators
             FK_ProductID = (int?)row["FK_ProductID"],
             DateCreated = (DateTime?)row["DateCreated"],
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
             DisplayOrder = (int?)row["DisplayOrder"],
          };
@@ -100,7 +100,7 @@ namespace POS_Api.Translators
             FK_MenuItemID = row["FK_MenuItemID"].GetType() != typeof(DBNull) ? (int?)row["FK_MenuItemID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_UpdatedUserID = (int?)row["FK_UpdatedUserID"],
          };
       }
@@ -114,7 +114,7 @@ namespace POS_Api.Translators
             MenuName = (string)row["MenuName"],
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -129,7 +129,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
             FK_OrderSlipTypeID = row["FK_OrderSlipTypeID"].GetType() != typeof(DBNull) ? (int?)row["FK_OrderSlipTypeID"] : null,
          };
       }
@@ -145,7 +145,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 

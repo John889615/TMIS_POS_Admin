@@ -17,7 +17,7 @@ CREATE PROCEDURE dbo.POS_CashUpHeaders_insert
     @Notes VARCHAR(MAX) = NULL,
     @IsFinalised BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (CashUpHeaderID UNIQUEIDENTIFIER);

@@ -28,6 +28,7 @@ using POS_Common.Models.Stock.POS_CostCenterProductPriceHistory;
 using POS_Common.Models.Stock.POS_PriceCodes;
 using POS_Common.Models.Stock.POS_DebtorProductPrices;
 using POS_Common.Models.Stock.POS_OrderStatus;
+using POS_Common.Models.Stock.POS_DocumentSequences;
 
 namespace POS_Api.Services.Stock
 {
@@ -5337,6 +5338,296 @@ namespace POS_Api.Services.Stock
                     else
                     {
                         Log.Warning("OrderStatus failed to update.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+        #endregion
+
+        #region POS_DocumentSequences
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Select_Single_Transaction(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Select_Single(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Select_Single(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Select_Single(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Select_Single(DocumentSequence item, SqlConnection sqlConn)
+        {
+            try
+            {
+                DocumentSequence resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_DocumentSequences_select_single",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DocumentSequenceID", Value = item.DocumentSequenceID }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<DocumentSequence>(Stock_Translator.Translate_DocumentSequence);
+                        Log.Information("DocumentSequence found: DocumentSequenceID={DocumentSequenceID}, DocumentType={DocumentType}, Prefix={Prefix}, PadLength={PadLength}, NextNumber={NextNumber}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.DocumentSequenceID, resultItem.DocumentType, resultItem.Prefix, resultItem.PadLength, resultItem.NextNumber, resultItem.DateCreated, resultItem.DateUpdated);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("No DocumentSequence found with the given DocumentSequenceID.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Insert_Transaction(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Insert(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Insert(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Insert(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Insert(DocumentSequence item, SqlConnection sqlConn)
+        {
+            try
+            {
+                DocumentSequence resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_DocumentSequences_insert",
+                        new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@DocumentType", Value = item.DocumentType }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Prefix", Value = item.Prefix }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@PadLength", Value = item.PadLength }
+                        , new SqlParameter() { DbType = DbType.Int64, Direction = ParameterDirection.Input, ParameterName = "@NextNumber", Value = item.NextNumber }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<DocumentSequence>(Stock_Translator.Translate_DocumentSequence);
+                        Log.Information("DocumentSequence found: DocumentSequenceID={DocumentSequenceID}, DocumentType={DocumentType}, Prefix={Prefix}, PadLength={PadLength}, NextNumber={NextNumber}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.DocumentSequenceID, resultItem.DocumentType, resultItem.Prefix, resultItem.PadLength, resultItem.NextNumber, resultItem.DateCreated, resultItem.DateUpdated);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("DocumentSequence failed to create.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<DocumentSequence>> POS_DocumentSequences_Select_All_Transaction(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Select_All(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<DocumentSequence>> POS_DocumentSequences_Select_All(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Select_All(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<List<DocumentSequence>> POS_DocumentSequences_Select_All(DocumentSequence item, SqlConnection sqlConn)
+        {
+            try
+            {
+                List<DocumentSequence> resultItem = new List<DocumentSequence>();
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_DocumentSequences_select_all",
+                    null))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem.AddRange(await reader.TranslateAsync<DocumentSequence>(Stock_Translator.Translate_DocumentSequence));
+                        Log.Information("DocumentSequence records found: {Count}", resultItem.Count);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("No DocumentSequence records found.");
+                        return default;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Update_Transaction(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (var transaction = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeAsyncFlowOption.Enabled))
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Update(item, sqlConn);
+                    transaction.Complete();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Update(DocumentSequence item, string connectionString)
+        {
+            try
+            {
+                using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
+                {
+                    await sqlConn.OpenAsync();
+                    var result = await POS_DocumentSequences_Update(item, sqlConn);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in generated code");
+                return default;
+            }
+        }
+
+        public static async Task<DocumentSequence> POS_DocumentSequences_Update(DocumentSequence item, SqlConnection sqlConn)
+        {
+            try
+            {
+                DocumentSequence resultItem = null;
+
+                using (var reader = await SqlClient.ExecuteReaderStoredProcedureAsync(
+                    sqlConn,
+                    "POS_DocumentSequences_update",
+                        new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@DocumentSequenceID", Value = item.DocumentSequenceID }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@DocumentType", Value = item.DocumentType }
+                        , new SqlParameter() { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Prefix", Value = item.Prefix }
+                        , new SqlParameter() { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@PadLength", Value = item.PadLength }
+                        , new SqlParameter() { DbType = DbType.Int64, Direction = ParameterDirection.Input, ParameterName = "@NextNumber", Value = item.NextNumber }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateCreated", Value = item.DateCreated }
+                        , new SqlParameter() { DbType = DbType.DateTime, Direction = ParameterDirection.Input, ParameterName = "@DateUpdated", Value = item.DateUpdated }                ))
+                {
+                    if (reader.HasRows)
+                    {
+                        resultItem = await reader.TranslateSingleAsync<DocumentSequence>(Stock_Translator.Translate_DocumentSequence);
+                        Log.Information("DocumentSequence found: DocumentSequenceID={DocumentSequenceID}, DocumentType={DocumentType}, Prefix={Prefix}, PadLength={PadLength}, NextNumber={NextNumber}, DateCreated={DateCreated}, DateUpdated={DateUpdated}", resultItem.DocumentSequenceID, resultItem.DocumentType, resultItem.Prefix, resultItem.PadLength, resultItem.NextNumber, resultItem.DateCreated, resultItem.DateUpdated);
+                        return resultItem;
+                    }
+                    else
+                    {
+                        Log.Warning("DocumentSequence failed to update.");
                         return default;
                     }
                 }

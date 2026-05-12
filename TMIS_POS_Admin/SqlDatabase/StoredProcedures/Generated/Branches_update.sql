@@ -12,7 +12,7 @@ CREATE PROCEDURE dbo.Branches_update
     @Name VARCHAR(255),
     @FK_StatusID INT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE Branches

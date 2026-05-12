@@ -45,7 +45,7 @@ namespace POS_Api.Translators
             QrCode = row["QrCode"].GetType() != typeof(DBNull) ? (string)row["QrCode"] : null,
             IsActive = (bool?)row["IsActive"],
             DateAdded = (DateTime?)row["DateAdded"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -61,7 +61,7 @@ namespace POS_Api.Translators
             IsMaster = (bool?)row["IsMaster"],
             IsActive = (bool?)row["IsActive"],
             DateAdded = (DateTime?)row["DateAdded"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -76,7 +76,7 @@ namespace POS_Api.Translators
             BC_ID = row["BC_ID"].GetType() != typeof(DBNull) ? (string)row["BC_ID"] : null,
             IsActive = (bool?)row["IsActive"],
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -110,7 +110,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -125,7 +125,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -145,7 +145,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -160,7 +160,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -175,7 +175,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 
@@ -193,7 +193,7 @@ namespace POS_Api.Translators
             FK_CreatedUserID = (int?)row["FK_CreatedUserID"],
             FK_UpdatedUserID = row["FK_UpdatedUserID"].GetType() != typeof(DBNull) ? (int?)row["FK_UpdatedUserID"] : null,
             DateCreated = (DateTime?)row["DateCreated"],
-            DateUpdated = (DateTime?)row["DateUpdated"],
+            DateUpdated = row["DateUpdated"].GetType() != typeof(DBNull) ? (DateTime?)row["DateUpdated"] : null,
          };
       }
 

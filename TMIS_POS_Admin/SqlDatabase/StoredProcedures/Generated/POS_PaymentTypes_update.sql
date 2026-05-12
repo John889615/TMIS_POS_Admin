@@ -17,7 +17,7 @@ CREATE PROCEDURE dbo.POS_PaymentTypes_update
     @RequireAdditionalInfo BIT,
     @RequireElevation BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_PaymentTypes

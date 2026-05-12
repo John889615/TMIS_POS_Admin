@@ -10,13 +10,20 @@ CREATE PROCEDURE dbo.ContactTypes_update
     @ContactTypeID INT,
     @Type VARCHAR(50),
     @IsPhoneNumberType BIT,
-    @IsEmailType BIT
+    @IsEmailType BIT,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL,
+    @DateCreated DATETIME,
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE ContactTypes
     SET     [Type] = @Type,
     IsPhoneNumberType = @IsPhoneNumberType,
-    IsEmailType = @IsEmailType
+    IsEmailType = @IsEmailType,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID,
+    DateUpdated = @DateUpdated
     WHERE ContactTypeID = @ContactTypeID;
 
     SELECT *

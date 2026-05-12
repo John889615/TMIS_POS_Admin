@@ -22,7 +22,7 @@ CREATE PROCEDURE dbo.POS_Products_update
     @QrCode VARCHAR(255) = NULL,
     @IsActive BIT,
     @DateAdded DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_Products

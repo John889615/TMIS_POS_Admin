@@ -11,7 +11,7 @@ CREATE PROCEDURE dbo.POS_TabLineGuests_update
     @FK_TabLineID UNIQUEIDENTIFIER,
     @FK_GuestID INT,
     @Note VARCHAR(MAX) = NULL,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_TabLineGuests

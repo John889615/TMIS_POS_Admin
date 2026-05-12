@@ -12,7 +12,8 @@ CREATE PROCEDURE dbo.EntitySettings_insert
     @IsBranch BIT = NULL,
     @IsDepartment BIT = NULL,
     @IsUser BIT = NULL,
-    @FK_CreatedUserID INT,
+    @IsGuest BIT = NULL,
+    @FK_CreatedUserID INT = NULL,
     @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
     @DateUpdated DATETIME = NULL
@@ -20,9 +21,9 @@ AS
 BEGIN
     DECLARE @Inserted TABLE (EntitySettingID INT);
 
-    INSERT INTO EntitySettings (FK_EntityID, IsCreditor, IsDebtor, IsBranch, IsDepartment, IsUser, FK_CreatedUserID, FK_UpdatedUserID, DateCreated, DateUpdated)
+    INSERT INTO EntitySettings (FK_EntityID, IsCreditor, IsDebtor, IsBranch, IsDepartment, IsUser, IsGuest, FK_CreatedUserID, FK_UpdatedUserID, DateCreated, DateUpdated)
     OUTPUT INSERTED.EntitySettingID INTO @Inserted
-    VALUES (@FK_EntityID, @IsCreditor, @IsDebtor, @IsBranch, @IsDepartment, @IsUser, @FK_CreatedUserID, @FK_UpdatedUserID, @DateCreated, @DateUpdated);
+    VALUES (@FK_EntityID, @IsCreditor, @IsDebtor, @IsBranch, @IsDepartment, @IsUser, @IsGuest, @FK_CreatedUserID, @FK_UpdatedUserID, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM EntitySettings

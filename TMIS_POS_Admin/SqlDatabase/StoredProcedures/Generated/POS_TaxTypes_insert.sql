@@ -12,7 +12,7 @@ CREATE PROCEDURE dbo.POS_TaxTypes_insert
     @ValidTo DATETIME = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (TaxTypeID INT);

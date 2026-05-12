@@ -11,7 +11,7 @@ CREATE PROCEDURE dbo.POS_Units_insert
     @BC_ID VARCHAR(255) = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (UnitID INT);

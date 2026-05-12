@@ -16,7 +16,9 @@ CREATE PROCEDURE dbo.Contacts_update
     @VerifiedAt DATETIME = NULL,
     @Notes NVARCHAR(500) = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE Contacts
@@ -27,7 +29,9 @@ BEGIN
     VerificationToken = @VerificationToken,
     VerifiedAt = @VerifiedAt,
     Notes = @Notes,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE ContactID = @ContactID;
 
     SELECT *

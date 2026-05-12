@@ -35,18 +35,26 @@ const StockRequestForm = ({
         () => (productList || []).map(p => ({
             value: p.POS_ProductID,
             label: p.ProductName,
-            defaultUnitId: p.FK_UnitID ?? p.FK_DefaultUnitID ?? null,
+            productUnitId: p.FK_UnitID ?? null,
         })),
         [productList]
     );
 
-    const unitOptions = useMemo(
-        () => (unitList || []).map(u => ({
-            value: u.POS_UnitID,
-            label: u.Symbol ? `${u.Unit} (${u.Symbol})` : u.Unit,
-        })),
-        [unitList]
-    );
+    const productUnitById = useMemo(() => {
+        const map = new Map();
+        (productList || []).forEach(p => {
+            map.set(p.POS_ProductID, p.FK_UnitID ?? null);
+        });
+        return map;
+    }, [productList]);
+
+    const unitLabelById = useMemo(() => {
+        const map = new Map();
+        (unitList || []).forEach(u => {
+            map.set(u.POS_UnitID, u.Symbol ? `${u.Unit} (${u.Symbol})` : u.Unit);
+        });
+        return map;
+    }, [unitList]);
 
     const selectStyles = useMemo(() => ({
         control: (base, state) => ({
@@ -100,7 +108,7 @@ const StockRequestForm = ({
             if (isEdit) {
                 const seeded = (existingLines || []).map(l => ({
                     FK_ProductID: l.FK_ProductID ?? '',
-                    FK_UnitID:    l.FK_UnitID ?? '',
+                    FK_UnitID:    l.FK_ProductID ? (productUnitById.get(l.FK_ProductID) ?? '') : '',
                     Quantity:     l.Quantity ?? '',
                     Notes:        l.Notes ?? '',
                 }));
@@ -119,7 +127,7 @@ const StockRequestForm = ({
                     : null
             );
         }
-    }, [showModel, data, debtorOptions, isEdit, existingLines]);
+    }, [showModel, data, debtorOptions, isEdit, existingLines, productUnitById]);
 
     const updateLine = (idx, field, value) => {
         setLines(prev => prev.map((line, i) => i === idx ? { ...line, [field]: value } : line));
@@ -132,11 +140,6 @@ const StockRequestForm = ({
         const form = formRef.current;
         if (!form) return null;
 
-        const refNumber = form.RefNumber?.value?.trim();
-        if (!refNumber) {
-            alert('Please enter a Ref Number.');
-            return null;
-        }
         if (!fromDebtor) {
             alert('Please select From Debtor.');
             return null;
@@ -147,7 +150,6 @@ const StockRequestForm = ({
         }
 
         const stockData = {
-            RefNumber: refNumber,
             FK_FromDebtorID: fromDebtor.value,
             FK_ToDebtorID: toDebtor.value,
             Notes: form.Notes?.value?.trim() ?? '',
@@ -198,7 +200,15 @@ const StockRequestForm = ({
                         <div className="col-lg-12">
                             <div className="input-blocks">
                                 <label>Ref. Number</label>
-                                <input name="RefNumber" required type="text" defaultValue={data?.RefNumber} className="form-control" />
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={isEdit ? (data?.RefNumber || '') : ''}
+                                    placeholder="Auto-generated on save"
+                                    readOnly
+                                    disabled
+                                    tabIndex={-1}
+                                />
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -269,9 +279,9 @@ const StockRequestForm = ({
                                                     const productValue = line.FK_ProductID
                                                         ? productOptions.find(o => o.value === parseInt(line.FK_ProductID)) || null
                                                         : null;
-                                                    const unitValue = line.FK_UnitID
-                                                        ? unitOptions.find(o => o.value === parseInt(line.FK_UnitID)) || null
-                                                        : null;
+                                                    const unitLabel = line.FK_UnitID
+                                                        ? (unitLabelById.get(parseInt(line.FK_UnitID)) || '')
+                                                        : '';
                                                     return (
                                                         <tr key={idx}>
                                                             <td>
@@ -283,11 +293,11 @@ const StockRequestForm = ({
                                                                         const productId = opt ? opt.value : '';
                                                                         setLines(prev => prev.map((l, i) => {
                                                                             if (i !== idx) return l;
-                                                                            const next = { ...l, FK_ProductID: productId };
-                                                                            if (opt && opt.defaultUnitId && !l.FK_UnitID) {
-                                                                                next.FK_UnitID = opt.defaultUnitId;
-                                                                            }
-                                                                            return next;
+                                                                            return {
+                                                                                ...l,
+                                                                                FK_ProductID: productId,
+                                                                                FK_UnitID: opt ? (opt.productUnitId ?? '') : '',
+                                                                            };
                                                                         }));
                                                                     }}
                                                                     placeholder="Select product.."
@@ -300,18 +310,13 @@ const StockRequestForm = ({
                                                                 />
                                                             </td>
                                                             <td>
-                                                                <Select
-                                                                    classNamePrefix="react-select"
-                                                                    options={unitOptions}
-                                                                    value={unitValue}
-                                                                    onChange={(opt) => updateLine(idx, 'FK_UnitID', opt ? opt.value : '')}
-                                                                    placeholder="Select unit.."
-                                                                    isClearable
-                                                                    isSearchable
-                                                                    styles={compactSelectStyles}
-                                                                    theme={selectTheme}
-                                                                    menuPortalTarget={document.body}
-                                                                    noOptionsMessage={() => "No units found"}
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control form-control-sm"
+                                                                    value={unitLabel}
+                                                                    readOnly
+                                                                    disabled
+                                                                    tabIndex={-1}
                                                                 />
                                                             </td>
                                                             <td>

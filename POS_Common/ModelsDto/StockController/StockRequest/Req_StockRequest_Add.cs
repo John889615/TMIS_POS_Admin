@@ -8,9 +8,6 @@ namespace POS_Common.ModelsDto.StockController.StockRequest
         #region Properties
 
         [Required]
-        public string RefNumber { get; set; }
-
-        [Required]
         public int? FK_FromDebtorID { get; set; }
 
         [Required]

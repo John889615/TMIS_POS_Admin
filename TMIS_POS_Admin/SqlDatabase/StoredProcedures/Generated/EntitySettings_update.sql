@@ -14,7 +14,8 @@ CREATE PROCEDURE dbo.EntitySettings_update
     @IsBranch BIT = NULL,
     @IsDepartment BIT = NULL,
     @IsUser BIT = NULL,
-    @FK_CreatedUserID INT,
+    @IsGuest BIT = NULL,
+    @FK_CreatedUserID INT = NULL,
     @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
     @DateUpdated DATETIME = NULL
@@ -27,6 +28,7 @@ BEGIN
     IsBranch = @IsBranch,
     IsDepartment = @IsDepartment,
     IsUser = @IsUser,
+    IsGuest = @IsGuest,
     FK_CreatedUserID = @FK_CreatedUserID,
     FK_UpdatedUserID = @FK_UpdatedUserID,
     DateUpdated = @DateUpdated

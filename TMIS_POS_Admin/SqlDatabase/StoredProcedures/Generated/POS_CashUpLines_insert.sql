@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_CashUpLines_insert
     @VarianceAmount DECIMAL (18, 4) = NULL,
     @Notes VARCHAR(MAX) = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (CashUpPaymentTypeID UNIQUEIDENTIFIER);

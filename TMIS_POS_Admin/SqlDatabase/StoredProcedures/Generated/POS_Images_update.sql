@@ -17,7 +17,7 @@ CREATE PROCEDURE dbo.POS_Images_update
     @ImageUrl VARCHAR(255),
     @LocalUrl VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_Images

@@ -10,7 +10,7 @@ CREATE PROCEDURE dbo.POS_TabLineGuests_insert
     @FK_TabLineID UNIQUEIDENTIFIER,
     @FK_GuestID INT,
     @Note VARCHAR(MAX) = NULL,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (TabLineGuestID UNIQUEIDENTIFIER);

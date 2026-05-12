@@ -7,14 +7,18 @@ GO
 
 CREATE PROCEDURE dbo.Continents_insert
     @Name VARCHAR(255),
-    @ShortCode VARCHAR(2) = NULL
+    @ShortCode VARCHAR(2) = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL,
+    @DateCreated DATETIME,
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (ContinentID INT);
 
-    INSERT INTO Continents ([Name], ShortCode)
+    INSERT INTO Continents ([Name], ShortCode, FK_CreatedUserID, FK_UpdatedUserID, DateCreated, DateUpdated)
     OUTPUT INSERTED.ContinentID INTO @Inserted
-    VALUES (@Name, @ShortCode);
+    VALUES (@Name, @ShortCode, @FK_CreatedUserID, @FK_UpdatedUserID, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM Continents

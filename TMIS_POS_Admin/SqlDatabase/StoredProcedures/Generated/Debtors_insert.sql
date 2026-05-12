@@ -11,15 +11,17 @@ CREATE PROCEDURE dbo.Debtors_insert
     @FK_MasterDebtorID INT = NULL,
     @IsMasterDebtor BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
-    @BC_ID VARCHAR(255) = NULL
+    @DateUpdated DATETIME = NULL,
+    @BC_ID VARCHAR(255) = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (DebtorID INT);
 
-    INSERT INTO Debtors (ShortCode, [Name], FK_MasterDebtorID, IsMasterDebtor, DateCreated, DateUpdated, BC_ID)
+    INSERT INTO Debtors (ShortCode, [Name], FK_MasterDebtorID, IsMasterDebtor, DateCreated, DateUpdated, BC_ID, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.DebtorID INTO @Inserted
-    VALUES (@ShortCode, @Name, @FK_MasterDebtorID, @IsMasterDebtor, @DateCreated, @DateUpdated, @BC_ID);
+    VALUES (@ShortCode, @Name, @FK_MasterDebtorID, @IsMasterDebtor, @DateCreated, @DateUpdated, @BC_ID, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM Debtors

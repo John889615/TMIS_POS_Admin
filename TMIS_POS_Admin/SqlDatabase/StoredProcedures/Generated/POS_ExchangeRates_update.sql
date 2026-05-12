@@ -11,7 +11,7 @@ CREATE PROCEDURE dbo.POS_ExchangeRates_update
     @FK_CurrencyID INT,
     @ExchangeRate DECIMAL (18, 4),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_ExchangeRates

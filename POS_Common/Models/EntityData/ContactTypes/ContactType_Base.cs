@@ -17,6 +17,14 @@ namespace POS_Common.Models.EntityData.ContactTypes
       public bool? IsPhoneNumberType { get; set; }
 
       public bool? IsEmailType { get; set; }
+
+      public int? FK_CreatedUserID { get; set; }
+
+      public int? FK_UpdatedUserID { get; set; }
+
+      public DateTime? DateCreated { get; set; }
+
+      public DateTime? DateUpdated { get; set; }
        #endregion
   }
 }

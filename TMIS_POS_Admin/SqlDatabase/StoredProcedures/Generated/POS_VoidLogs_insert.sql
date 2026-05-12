@@ -12,7 +12,7 @@ CREATE PROCEDURE dbo.POS_VoidLogs_insert
     @VoidedBy VARCHAR(255),
     @Note VARCHAR(MAX) = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (VoidLogID UNIQUEIDENTIFIER);

@@ -32,7 +32,7 @@ CREATE PROCEDURE dbo.POS_Tabs_update
     @AdditionalInfo VARCHAR(255) = NULL,
     @CreatedBy VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @TableNumber INT = NULL
 AS
 BEGIN

@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_DebtorMenus_insert
     @ValidTo DATETIME = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (DebtorMenuID INT);

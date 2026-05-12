@@ -24,14 +24,15 @@ CREATE PROCEDURE dbo.POS_TabLines_update
     @AutoNotes VARCHAR(MAX) = NULL,
     @CreatedBy VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @ServedAs VARCHAR(50) = NULL,
     @ServedAsQuantified BIT = NULL,
     @ServedAsQuantity DECIMAL (18, 4) = NULL,
     @FK_MenuID INT = NULL,
     @MenuName VARCHAR(100) = NULL,
     @Gratuity DECIMAL (18, 4) = NULL,
-    @GratuityPerc DECIMAL (18, 4) = NULL
+    @GratuityPerc DECIMAL (18, 4) = NULL,
+    @FK_CostCenterID INT = NULL
 AS
 BEGIN
     UPDATE POS_TabLines
@@ -57,7 +58,8 @@ BEGIN
     FK_MenuID = @FK_MenuID,
     MenuName = @MenuName,
     Gratuity = @Gratuity,
-    GratuityPerc = @GratuityPerc
+    GratuityPerc = @GratuityPerc,
+    FK_CostCenterID = @FK_CostCenterID
     WHERE TabLineID = @TabLineID;
 
     SELECT *

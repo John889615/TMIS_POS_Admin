@@ -15,16 +15,18 @@ CREATE PROCEDURE dbo.Countries_insert
     @NumericCode SMALLINT = NULL,
     @FK_DialingCodeID INT = NULL,
     @FK_CurrencyID INT = NULL,
-    @FK_CountryRegionID INT = NULL,
-    @FK_CountrySubregionID INT = NULL,
-    @FK_TimeZoneID INT = NULL
+    @FK_ContinentID INT = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL,
+    @DateCreated DATETIME,
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (CountryID INT);
 
-    INSERT INTO Countries (CountryName, NativeName, OfficialName, ISO2Code, ISO3Code, PrimaryLanguageCode, NumericCode, FK_DialingCodeID, FK_CurrencyID, FK_CountryRegionID, FK_CountrySubregionID, FK_TimeZoneID)
+    INSERT INTO Countries (CountryName, NativeName, OfficialName, ISO2Code, ISO3Code, PrimaryLanguageCode, NumericCode, FK_DialingCodeID, FK_CurrencyID, FK_ContinentID, FK_CreatedUserID, FK_UpdatedUserID, DateCreated, DateUpdated)
     OUTPUT INSERTED.CountryID INTO @Inserted
-    VALUES (@CountryName, @NativeName, @OfficialName, @ISO2Code, @ISO3Code, @PrimaryLanguageCode, @NumericCode, @FK_DialingCodeID, @FK_CurrencyID, @FK_CountryRegionID, @FK_CountrySubregionID, @FK_TimeZoneID);
+    VALUES (@CountryName, @NativeName, @OfficialName, @ISO2Code, @ISO3Code, @PrimaryLanguageCode, @NumericCode, @FK_DialingCodeID, @FK_CurrencyID, @FK_ContinentID, @FK_CreatedUserID, @FK_UpdatedUserID, @DateCreated, @DateUpdated);
 
     SELECT *
     FROM Countries

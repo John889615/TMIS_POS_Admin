@@ -16,7 +16,9 @@ CREATE PROCEDURE dbo.EntityAddresses_update
     @ValidFrom DATE = NULL,
     @ValidTo DATE = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE EntityAddresses
@@ -27,7 +29,9 @@ BEGIN
     IsPrimary = @IsPrimary,
     ValidFrom = @ValidFrom,
     ValidTo = @ValidTo,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE EntityAddressID = @EntityAddressID;
 
     SELECT *

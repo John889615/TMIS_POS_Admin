@@ -9,15 +9,17 @@ CREATE PROCEDURE dbo.CountryProvinces_insert
     @ProvinceName VARCHAR(100),
     @ISO2Code VARCHAR(2),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
-    @FK_CountryID INT = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CountryID INT = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (CountryProvinceID INT);
 
-    INSERT INTO CountryProvinces (ProvinceName, ISO2Code, DateCreated, DateUpdated, FK_CountryID)
+    INSERT INTO CountryProvinces (ProvinceName, ISO2Code, DateCreated, DateUpdated, FK_CountryID, FK_CreatedUserID, FK_UpdatedUserID)
     OUTPUT INSERTED.CountryProvinceID INTO @Inserted
-    VALUES (@ProvinceName, @ISO2Code, @DateCreated, @DateUpdated, @FK_CountryID);
+    VALUES (@ProvinceName, @ISO2Code, @DateCreated, @DateUpdated, @FK_CountryID, @FK_CreatedUserID, @FK_UpdatedUserID);
 
     SELECT *
     FROM CountryProvinces

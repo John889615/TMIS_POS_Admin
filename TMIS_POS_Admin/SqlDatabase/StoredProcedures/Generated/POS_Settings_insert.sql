@@ -11,7 +11,7 @@ CREATE PROCEDURE dbo.POS_Settings_insert
     @HeadOfficeNo VARCHAR(255),
     @FK_CurrencyID INT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (SettingID INT);

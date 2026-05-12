@@ -7,11 +7,11 @@ IF OBJECT_ID('dbo.DebtorTypeMappings_select_single', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE dbo.DebtorTypeMappings_select_single
-    @DebtorTypeMappingID INT
+
 AS
 BEGIN
     SELECT *
     FROM DebtorTypeMappings
-    WHERE DebtorTypeMappingID = @DebtorTypeMappingID;
+    WHERE ;
 END
 GO

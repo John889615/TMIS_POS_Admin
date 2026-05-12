@@ -12,7 +12,7 @@ CREATE PROCEDURE dbo.POS_PriceCodes_update
     @Description VARCHAR(255) = NULL,
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_PriceCodes

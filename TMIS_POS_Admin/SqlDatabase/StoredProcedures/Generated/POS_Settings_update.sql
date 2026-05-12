@@ -13,7 +13,7 @@ CREATE PROCEDURE dbo.POS_Settings_update
     @HeadOfficeNo VARCHAR(255),
     @FK_CurrencyID INT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_Settings

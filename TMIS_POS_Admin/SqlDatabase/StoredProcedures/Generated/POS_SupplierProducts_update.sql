@@ -24,7 +24,7 @@ CREATE PROCEDURE dbo.POS_SupplierProducts_update
     @IsPreferred INT,
     @IsActive BIT,
     @DateAdded DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_SupplierProducts

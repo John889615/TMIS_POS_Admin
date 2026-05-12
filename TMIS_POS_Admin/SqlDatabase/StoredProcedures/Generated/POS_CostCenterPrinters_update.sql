@@ -13,7 +13,7 @@ CREATE PROCEDURE dbo.POS_CostCenterPrinters_update
     @FK_CreatedUserID INT,
     @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @FK_InvoiceSlipTypeID INT = NULL,
     @FK_TabSlipTypeID INT = NULL
 AS

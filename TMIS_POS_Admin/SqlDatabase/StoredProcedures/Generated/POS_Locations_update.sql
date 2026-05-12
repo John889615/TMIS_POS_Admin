@@ -15,7 +15,7 @@ CREATE PROCEDURE dbo.POS_Locations_update
     @IsActive BIT,
     @DateCreated DATETIME,
     @FK_CreatedUserID INT,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @FK_UpdatedUserID INT,
     @ContactEmail NVARCHAR(200) = NULL,
     @SupportEmail NVARCHAR(200) = NULL,

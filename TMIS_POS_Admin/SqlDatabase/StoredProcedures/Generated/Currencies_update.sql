@@ -11,14 +11,21 @@ CREATE PROCEDURE dbo.Currencies_update
     @Currency VARCHAR(5),
     @Name VARCHAR(50),
     @ISO2Code VARCHAR(2) = NULL,
-    @Symbol NVARCHAR(10) = NULL
+    @Symbol NVARCHAR(10) = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL,
+    @DateCreated DATETIME,
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE Currencies
     SET     Currency = @Currency,
     [Name] = @Name,
     ISO2Code = @ISO2Code,
-    Symbol = @Symbol
+    Symbol = @Symbol,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID,
+    DateUpdated = @DateUpdated
     WHERE CurrencyID = @CurrencyID;
 
     SELECT *

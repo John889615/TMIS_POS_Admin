@@ -10,7 +10,7 @@ CREATE PROCEDURE dbo.POS_ImageCategories_update
     @ImageCategoryID INT,
     @Category VARCHAR(50),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_ImageCategories

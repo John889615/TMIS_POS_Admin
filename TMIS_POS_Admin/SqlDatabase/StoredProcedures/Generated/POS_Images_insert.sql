@@ -15,7 +15,7 @@ CREATE PROCEDURE dbo.POS_Images_insert
     @ImageUrl VARCHAR(255),
     @LocalUrl VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (ImageID INT);

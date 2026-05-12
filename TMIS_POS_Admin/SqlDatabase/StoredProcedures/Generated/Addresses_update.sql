@@ -19,7 +19,9 @@ CREATE PROCEDURE dbo.Addresses_update
     @Longitude DECIMAL (18, 4) = NULL,
     @Notes NVARCHAR(1000) = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE Addresses
@@ -33,7 +35,9 @@ BEGIN
     Latitude = @Latitude,
     Longitude = @Longitude,
     Notes = @Notes,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE AddressID = @AddressID;
 
     SELECT *

@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_ProductSubstitutions_insert
     @FK_CreatedUserID INT,
     @FK_UpdatedUserID INT = NULL,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (ProductSubstitutionID INT);

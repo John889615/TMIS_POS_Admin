@@ -23,21 +23,22 @@ CREATE PROCEDURE dbo.POS_TabLines_insert
     @AutoNotes VARCHAR(MAX) = NULL,
     @CreatedBy VARCHAR(255),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME,
+    @DateUpdated DATETIME = NULL,
     @ServedAs VARCHAR(50) = NULL,
     @ServedAsQuantified BIT = NULL,
     @ServedAsQuantity DECIMAL (18, 4) = NULL,
     @FK_MenuID INT = NULL,
     @MenuName VARCHAR(100) = NULL,
     @Gratuity DECIMAL (18, 4) = NULL,
-    @GratuityPerc DECIMAL (18, 4) = NULL
+    @GratuityPerc DECIMAL (18, 4) = NULL,
+    @FK_CostCenterID INT = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (TabLineID UNIQUEIDENTIFIER);
 
-    INSERT INTO POS_TabLines (TabLineID, FK_TabID, FK_ProductID, FK_PriceCodeID, FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product, Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes, CreatedBy, DateCreated, DateUpdated, ServedAs, ServedAsQuantified, ServedAsQuantity, FK_MenuID, MenuName, Gratuity, GratuityPerc)
+    INSERT INTO POS_TabLines (TabLineID, FK_TabID, FK_ProductID, FK_PriceCodeID, FK_PointerID, UnitCostExcl, Vat, UnitCostIncl, Product, Quantity, Discount, DiscountPerc, IsVoided, Notes, AutoNotes, CreatedBy, DateCreated, DateUpdated, ServedAs, ServedAsQuantified, ServedAsQuantity, FK_MenuID, MenuName, Gratuity, GratuityPerc, FK_CostCenterID)
     OUTPUT INSERTED.TabLineID INTO @Inserted
-    VALUES (ISNULL(@TabLineID, NEWID()), @FK_TabID, @FK_ProductID, @FK_PriceCodeID, @FK_PointerID, @UnitCostExcl, @Vat, @UnitCostIncl, @Product, @Quantity, @Discount, @DiscountPerc, @IsVoided, @Notes, @AutoNotes, @CreatedBy, @DateCreated, @DateUpdated, @ServedAs, @ServedAsQuantified, @ServedAsQuantity, @FK_MenuID, @MenuName, @Gratuity, @GratuityPerc);
+    VALUES (ISNULL(@TabLineID, NEWID()), @FK_TabID, @FK_ProductID, @FK_PriceCodeID, @FK_PointerID, @UnitCostExcl, @Vat, @UnitCostIncl, @Product, @Quantity, @Discount, @DiscountPerc, @IsVoided, @Notes, @AutoNotes, @CreatedBy, @DateCreated, @DateUpdated, @ServedAs, @ServedAsQuantified, @ServedAsQuantity, @FK_MenuID, @MenuName, @Gratuity, @GratuityPerc, @FK_CostCenterID);
 
     SELECT *
     FROM POS_TabLines

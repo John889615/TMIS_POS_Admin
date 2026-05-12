@@ -14,7 +14,7 @@ CREATE PROCEDURE dbo.POS_ProductCategories_update
     @IsMaster BIT,
     @IsActive BIT,
     @DateAdded DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_ProductCategories

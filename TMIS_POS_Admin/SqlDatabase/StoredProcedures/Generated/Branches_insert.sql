@@ -10,7 +10,7 @@ CREATE PROCEDURE dbo.Branches_insert
     @Name VARCHAR(255),
     @FK_StatusID INT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (BranchID INT);

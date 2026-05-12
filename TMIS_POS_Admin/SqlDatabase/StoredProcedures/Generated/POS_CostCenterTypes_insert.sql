@@ -8,7 +8,7 @@ GO
 CREATE PROCEDURE dbo.POS_CostCenterTypes_insert
     @Name VARCHAR(50),
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     DECLARE @Inserted TABLE (CostCenterTypeID INT);

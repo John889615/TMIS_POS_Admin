@@ -11,7 +11,7 @@ CREATE PROCEDURE dbo.POS_Menus_update
     @MenuName VARCHAR(50),
     @IsActive BIT,
     @DateCreated DATETIME,
-    @DateUpdated DATETIME
+    @DateUpdated DATETIME = NULL
 AS
 BEGIN
     UPDATE POS_Menus

@@ -13,7 +13,9 @@ CREATE PROCEDURE dbo.AddressTypes_update
     @IsRequired BIT,
     @CanEdit BIT,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE AddressTypes
@@ -21,7 +23,9 @@ BEGIN
     [Type] = @Type,
     IsRequired = @IsRequired,
     CanEdit = @CanEdit,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE AddressTypeID = @AddressTypeID;
 
     SELECT *

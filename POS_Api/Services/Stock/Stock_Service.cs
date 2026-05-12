@@ -1526,27 +1526,27 @@ namespace POS_Api.Services
 
                 var connectionString = GetConnectionString();
 
-                var existing = await StockRequest_Select_Single_Number(new StockRequest()
-                {
-                    RefNumber = request.RefNumber
-                }, connectionString);
-
-                if (existing != null)
-                {
-                    _logger.LogService("Stock Request already exists", request.RefNumber);
-                    return ApiResponse.Fail<object>(AppErrorCode.StockRequestExists, new List<string> { "Stock Request already exists." }, 400);
-                }
-
                 int newId;
+                string refNumber;
 
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 using (SqlConnection sqlConn = SqlClient.CreateInstance(connectionString))
                 {
                     await sqlConn.OpenAsync();
 
+                    refNumber = await POS_Api.Services.DocumentSequence.DocumentSequence_Service.Get_Next_Reference(
+                        POS_Api.Services.DocumentSequence.DocumentSequence_Service.DocumentTypes.StockRequest,
+                        sqlConn);
+
+                    if (string.IsNullOrEmpty(refNumber))
+                    {
+                        _logger.LogService("Failed to mint Stock Request reference number", request);
+                        return ApiResponse.Fail<object>(AppErrorCode.DatabaseError, new List<string> { "Failed to generate Stock Request reference number." }, 500);
+                    }
+
                     var inserted = await POS_StockRequests_Insert(new StockRequest()
                     {
-                        RefNumber        = request.RefNumber,
+                        RefNumber        = refNumber,
                         FK_FromDebtorID  = request.FK_FromDebtorID,
                         FK_ToDebtorID    = request.FK_ToDebtorID,
                         FK_OrderStatusID = (int)StockRequestStatus.Draft,
@@ -1566,11 +1566,21 @@ namespace POS_Api.Services
 
                     foreach (var line in request.Lines)
                     {
+                        var product = await POS_Api.Services.Inventory.Inventory_Base_Service.POS_Products_Select_Single(
+                            new POS_Common.Models.Inventory.POS_Products.Product { ProductID = line.FK_ProductID },
+                            sqlConn);
+
+                        if (product == null)
+                        {
+                            _logger.LogService("Product not found for Stock Request line", line.FK_ProductID);
+                            return ApiResponse.Fail<object>(AppErrorCode.ProductNotFound, new List<string> { $"Product {line.FK_ProductID} not found." }, 400);
+                        }
+
                         var insertedLine = await POS_StockRequestLines_Insert(new StockRequestLine()
                         {
                             FK_StockRequestID = newId,
                             FK_ProductID      = line.FK_ProductID,
-                            FK_UnitID         = line.FK_UnitID,
+                            FK_UnitID         = product.FK_UnitID,
                             Quantity          = line.Quantity,
                             Notes             = line.Notes,
                             IsDeclined        = false
@@ -1586,7 +1596,7 @@ namespace POS_Api.Services
                     scope.Complete();
                 }
 
-                return ApiResponse.Success<object>(new { POS_StockRequestID = newId });
+                return ApiResponse.Success<object>(new { POS_StockRequestID = newId, RefNumber = refNumber });
             }
             catch (Exception ex)
             {
@@ -1648,11 +1658,21 @@ namespace POS_Api.Services
 
                     foreach (var line in request.Lines)
                     {
+                        var product = await POS_Api.Services.Inventory.Inventory_Base_Service.POS_Products_Select_Single(
+                            new POS_Common.Models.Inventory.POS_Products.Product { ProductID = line.FK_ProductID },
+                            sqlConn);
+
+                        if (product == null)
+                        {
+                            _logger.LogService("Product not found for Stock Request line during update", line.FK_ProductID);
+                            return ApiResponse.Fail<object>(AppErrorCode.ProductNotFound, new List<string> { $"Product {line.FK_ProductID} not found." }, 400);
+                        }
+
                         var insertedLine = await POS_StockRequestLines_Insert(new StockRequestLine()
                         {
                             FK_StockRequestID = existing.StockRequestID.Value,
                             FK_ProductID      = line.FK_ProductID,
-                            FK_UnitID         = line.FK_UnitID,
+                            FK_UnitID         = product.FK_UnitID,
                             Quantity          = line.Quantity,
                             Notes             = line.Notes,
                             IsDeclined        = false

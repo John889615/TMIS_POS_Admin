@@ -24,6 +24,8 @@ namespace POS_Common.Models.EntityData.EntitySettings
 
       public bool? IsUser { get; set; }
 
+      public bool? IsGuest { get; set; }
+
       public int? FK_CreatedUserID { get; set; }
 
       public int? FK_UpdatedUserID { get; set; }

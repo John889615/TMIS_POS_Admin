@@ -19,7 +19,9 @@ CREATE PROCEDURE dbo.EntityContacts_update
     @ValidFrom DATE = NULL,
     @ValidTo DATE = NULL,
     @DateCreated DATETIME = NULL,
-    @DateUpdated DATETIME = NULL
+    @DateUpdated DATETIME = NULL,
+    @FK_CreatedUserID INT = NULL,
+    @FK_UpdatedUserID INT = NULL
 AS
 BEGIN
     UPDATE EntityContacts
@@ -33,7 +35,9 @@ BEGIN
     PreferredLanguageCode = @PreferredLanguageCode,
     ValidFrom = @ValidFrom,
     ValidTo = @ValidTo,
-    DateUpdated = @DateUpdated
+    DateUpdated = @DateUpdated,
+    FK_CreatedUserID = @FK_CreatedUserID,
+    FK_UpdatedUserID = @FK_UpdatedUserID
     WHERE EntityContactID = @EntityContactID;
 
     SELECT *
